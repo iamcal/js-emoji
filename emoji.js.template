@@ -1,9 +1,15 @@
 var emoji = {
-rx: new RegExp("#RX#", "g"),
+rx: null,
 map: {
 #MAP#
 },
 replace: function(str){
   return str.replace(emoji.rx, function(m){ return '<span class="emoji-'+emoji.map[m]+'">'+m+'</span>'; });
+},
+init: function(){
+  var a = [];
+  for (var i in emoji.map) a.push(i);
+  emoji.rx = new RegExp('('+a.join('|')+')', "g");
 }
 };
+emoji.init();
