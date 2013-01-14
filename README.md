@@ -2,8 +2,8 @@
 
 Recent OSX and iOS versions allow display and input of emoji. It's nice to show them on 
 other devices too, and doing it in the browser is a good place to do it. This work-in-progress
-
 library converts the emoji character codes to HTML span elements which can be styled using CSS.
+
 
 ## Usage
 
