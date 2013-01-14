@@ -28,17 +28,14 @@
 	foreach ($map as $k => $v) $rx[] = str_replace("\\", "\\\\", $k);
 	$rx = '('.implode('|', $rx).')';
 
-	echo "var emoji = {\n";
-	echo "rx: new RegExp(\"$rx\", \"g\"),\n";
-	echo "map: {\n";
+	$map_out = "";
 	foreach ($map as $k => $v){
-		echo "\"$k\":\"$v\",\n";
+		$map_out .= "\"$k\":\"$v\",\n";
 	}
-	echo "},\n";
-	echo "replace: function(str){\n";
-	echo "  return str.replace(emoji.rx, function(m){ return '<span class=\"emoji-'+emoji.map[m]+'\">'+m+'</span>'; });\n";
-	echo "}\n";
-	echo "};\n";
+
+
+	$template = file_get_contents('emoji.js.template');
+	echo str_replace(array('#RX#', '#MAP#'), array($rx, $map_out), $template);
 
 
 
