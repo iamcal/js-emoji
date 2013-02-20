@@ -849,7 +849,7 @@ map: {
 
 },
 replace: function(str){
-  return str.replace(emoji.rx, function(m){ return '<span class="emoji-'+emoji.map[m]+'">'+m+'</span>'; });
+  return str.replace(emoji.rx, function(m){ return '<span class="emoji emoji-'+emoji.map[m]+'">'+m+'</span>'; });
 },
 init: function(){
   var a = [];
