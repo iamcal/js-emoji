@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+</head>
+</head>
+<body onload="test()">
+
+<div id="out">
+</div>
+
+<script src="emoji.js"></script>
+<script>
+
+var long = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin fermentum rutrum luctus.";
+long += " Maecenas hendrerit arcu quam, ultrices rhoncus lacus. Nunc ultricies nisl sit amet metus";
+long += " feugiat quis sagittis risus blandit. Nunc nec eros quam, sit amet fringilla felis. Donec";
+long += " quis odio vitae urna fermentum ultricies vel at nunc. Phasellus id risus eros. Nulla condimentum";
+long += " hendrerit feugiat. In dui metus, iaculis quis sollicitudin ac, tincidunt vel libero. Sed justo";
+long += " neque, varius gravida lobortis et, cursus in orci. Donec eget erat risus, ac lobortis nisi.";
+long += " Quisque erat sapien, aliquam et porta non, hendrerit eget dolor.";
+
+var tests = [
+	["hello", "hello"],
+	["a\uD83C\uDFA6b", "a<span class=\"emoji-cinema\">\uD83C\uDFA6</span>b"],
+	[long, long]
+];
+
+function test(){
+
+	var loops = 1000;
+
+	for (var i=0; i<tests.length; i++){
+		var error = false;
+		var s = new Date().getTime();
+		for (var j=0; j<loops; j++){
+			var x = emoji.replace(tests[i][0]);
+			if (x != tests[i][1]){
+				error = true;
+
+				var msg = "Test "+i+" failed. Expected "+tests[i][1]+", got "+x;
+				log(msg);
+				break;
+			}
+		}
+		var e = new Date().getTime();
+
+		if (!error){
+			var msg = "Test "+i+" ran "+loops+' times in '+(e-s)+'ms';
+
+			log(msg);
+		}
+	}
+
+}
+
+function log(str){
+	var out = document.getElementById('out');
+	var div = document.createElement('DIV');
+	div.innerText = str;
+	out.appendChild(div);
+}
+
+</script>
+
+</body>
+</html>
+
