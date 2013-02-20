@@ -4,11 +4,12 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <link href="emoji.css" rel="stylesheet" type="text/css" />
 <script src="emoji.js" type="text/javascript"></script>
+<meta name="viewport" content="width=420, user-scalable=no">
 </head>
 <body onload="go()">
 
 <p>Input:</p>
-<textarea id="input" style="width: 400px; height: 150px" onkeyup="go()">foo &#x2764; bar &#x1F603; baz</textarea>
+<textarea id="input" style="width: 400px; height: 150px" onkeyup="go()" onchange="go()">foo &#x2764; bar &#x1F603; baz</textarea>
 
 <p>Styled output:</p>
 <div id="out1" style="width: 400px; height: 150px; background-color: #eee"></div>
