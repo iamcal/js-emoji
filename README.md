@@ -14,10 +14,4 @@ library converts the emoji character codes to HTML span elements which can be st
     // with:
     //   <span class="emoji-no-pedestrians">\u{1F6B7}</span>
 
-
-## Caveats
-
-The repo does not currently contain the CSS for formatting the emoji.
-
-At present, the function is too slow to be used in production/
-It's unclear which part is slow (the finding or the replacing).
+You can view a live demo <a href="http://unicodey.com/js-emoji/demo.htm">here</a>.
