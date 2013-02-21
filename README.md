@@ -54,3 +54,15 @@ You can modify a database and table using a statement like:
     ALTER TABLE my_table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 You will also need to modify your connection character set.
+
+
+## Known issues
+
+*  The image used for replacement is lacking some of the emoji added in iOS 6. If you
+   have a more recent image, please send a pull request.
+*  The replaced images are fixed at 20px square. By modifying the CSS (both the base
+   class and the positioning info) you could scale them, but this would be awkward.
+   A solution using canvas scaling might be possible.
+*  There is no user agent detection, so as-is the code will replace emoji with images
+   even on platforms that support emoji natively.
+
