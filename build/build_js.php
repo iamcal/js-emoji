@@ -33,6 +33,8 @@
 		$map_out .= "\"$k\":\"$v\",\n";
 	}
 
+	# remove the final trailing comma for IE
+	$map_out = substr($map_out, 0, -2)."\n";
 
 	$template = file_get_contents('emoji.js.template');
 	echo str_replace(array('#RX#', '#MAP#'), array($rx, $map_out), $template);

@@ -845,7 +845,7 @@ map: {
 "\uD83D\uDC65":"busts-in-silhouette",
 "\uD83D\uDCAC":"speech-balloon",
 "\uD83D\uDC63":"footprints",
-"\uD83D\uDCAD":"thought-balloon",
+"\uD83D\uDCAD":"thought-balloon"
 
 },
 replace: function(str){
