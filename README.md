@@ -66,3 +66,16 @@ You will also need to modify your connection character set.
 *  There is no user agent detection, so as-is the code will replace emoji with images
    even on platforms that support emoji natively.
 
+
+## Performance
+
+As you might expect, performance varies greatly across browsers. Numbers are for operations
+per second.
+
+                                Chrome      FF     IE9
+    Short string, no emoji   4,000,000  40,000  12,000
+    Short string, emoji        400,000  70,000  30,000
+    Long string, no emoji    4,000,000     450      90
+
+It might be possible to change the replacement method used in each browser to improve processing
+times.
