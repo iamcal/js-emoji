@@ -1,16 +1,20 @@
 <?php
 	#
-	# decode original css map
+	# build a map of codepoint sequences to files
 	#
 
-	$lines = file('css.txt');
+	$dir = dirname(__FILE__).'/gemoji/images/emoji/unicode';
 
-	$map = array();
-	foreach($lines as $line){
+	$files = array();
 
-		if (preg_match('!\.(E[0-9A-F]{3}) \{ background-position\: 0px (-?\d+)px!', $line, $m)){
+	$dh = opendir($dir);
+	while (($file = readdir($dh)) !== false){
+		if (preg_match('!\.png$!', $file)){
 
-			$map[hexdec($m[1])] = $m[2];
+			$key = StrToUpper(pathinfo($file, PATHINFO_FILENAME));
+			if (preg_match('!^00(..)$!', $key)) $key = substr($key, 2, 2)."-20E3";
+
+			$files[$key] = $file;
 		}
 	}
 
@@ -31,10 +35,14 @@
 
 	foreach ($catalog as $row){
 
-		$code = $row['softbank']['unicode'][0];
-		$offset = (isset($map[$code])) ? $map[$code] : -9200;
+		$chars = array();
+		foreach ($row['unicode'] as $c) $chars[] = sprintf('%X', $c);
+		$key = implode('-', $chars);
+
+		$file = $files[$key];
+		if (!$file) $file = $files['2754']; # fallback to white-question-mark-ornament
 
 		$name = StrToLower(str_replace(' ', '-', $row['char_name']['title']));
 
-		echo ".emoji-{$name}{background-position:0 {$offset}px}\n";
+		echo ".emoji-{$name}{background-image: url(emoji/{$file})}\n";
 	}
