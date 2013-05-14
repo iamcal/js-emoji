@@ -1,6 +1,3 @@
-[submodule "build/gemoji"]
-	path = build/gemoji
-	url = git://github.com/github/gemoji.git
 [submodule "build/emoji-data"]
 	path = build/emoji-data
 	url = git@github.com:iamcal/emoji-data.git
