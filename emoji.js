@@ -72,7 +72,7 @@ var emoji = new function(){
 		}
 		if (window.getComputedStyle){
 			var st = window.getComputedStyle(document.body);
-			if (st['background-size']){
+			if (st['background-size'] || st['backgroundSize']){
 				self.replace_mode = 'css';
 				return;
 			}
