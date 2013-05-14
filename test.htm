@@ -1,0 +1,51 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<link href="emoji.css" rel="stylesheet" type="text/css" />
+</head>
+</head>
+<body>
+
+<h2>Automatic mode detection</h2>
+
+<div id="rm1"></div>
+<div id="out1"></div>
+
+<hr />
+
+<h2>Manual mode selection</h2>
+
+<select id="mode" onchange="return go2();">
+<option value="unified">Unified (iOS 6, OSX 7)</option>
+<option value="softbank">Softbank (iOS 5)</option>
+<option value="google">Google (Android)</option>
+<option value="css">CSS (Modern browsers)</option>
+<option value="img">Image (fallback)</option>
+<option value="text">Text mode</option>
+</select>
+
+<div id="out2"></div>
+
+
+<script src="emoji.js"></script>
+<script>
+
+emoji.init_env();
+document.getElementById('rm1').innerText = "Detected replace mode : "+emoji.replace_mode;
+document.getElementById('out1').innerHTML = emoji.replace_colons("hello :smile: world");
+go2();
+
+function go2(){
+	var s = document.getElementById('mode');
+	var mode = s.options[s.selectedIndex].value;
+	emoji.text_mode = mode == 'text';
+	emoji.replace_mode = mode;
+	document.getElementById('out2').innerHTML = emoji.replace_colons("hello :smile: world");
+	return false;
+}
+
+</script>
+
+</body>
+</html>
+
