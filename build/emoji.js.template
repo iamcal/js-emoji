@@ -12,6 +12,13 @@ var emoji = new function(){
 			return val ? self.replacement(val) : m;
 		});
 	};
+	this.replace_unified = function(str){
+		self.init_unified();
+		return str.replace(self.rx_unified, function(m){
+			var val = self.map.unified[m];
+			return val ? self.replacement(val) : m;
+		});
+	};
 	this.replacement = function(idx){
 		var text_name = self.data[idx][4] || ':'+self.data[idx][3]+':';
 		if (self.text_mode) return text_name;
@@ -23,13 +30,26 @@ var emoji = new function(){
 		if (self.replace_mode == 'css') return '<span class="emoji" style="background-image:url('+img+')">'+text_name+'</span>';
 		return '<img src="'+img+'" class="emoji" />';
 	};
-	this.init_colons =  function(){
+	this.init_colons = function(){
 		if (self.inits.colons) return;
 		self.inits.colons = 1;
 		self.rx_colons = new RegExp('\:[^\\s:]+\:', 'g');
 		self.map.colons = {};
 		for (var i in self.data){
 			self.map.colons[self.data[i][3]] = i;
+		}
+	};
+	this.init_unified = function(){
+		if (self.inits.unified) return;
+		self.inits.unified = 1;
+
+		var a = [];
+		for (var i in self.data) a.push(self.data[i][0]);
+		self.rx_unified = new RegExp('('+a.join('|')+')', "g");
+
+		self.map.unified = {};
+		for (var i in self.data){
+			self.map.unified[self.data[i][0]] = i;
 		}
 	};
 	this.init_env = function(){
