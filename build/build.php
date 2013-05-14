@@ -17,6 +17,7 @@
 			calc_bytes($row['google']),
 			$row['short_name'],
 		);
+		if ($row['text']) $out[$key][] = $row['text'];
 	}
 
 	$json = json_encode($out);
