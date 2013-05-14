@@ -1,8 +1,10 @@
-# js-emoji - Display emoji in the browser on PCs and older Macs
+# js-emoji - Display emoji in the browser, everywhere
 
 Recent OSX and iOS versions allow display and input of emoji. It's nice to show them on 
-other devices too, and the browser is a good place to do it. This library converts the 
-emoji character codes to HTML span elements which can be styled using CSS.
+other devices too, and the browser is a good place to do it. This library converts emoji
+(either from character codes or colon-sequecnes like `:smile:`) into something that will
+work on the host computer - either native character codes, a CSS styled span or a text
+representation.
 
 
 ## Usage
@@ -11,12 +13,22 @@ emoji character codes to HTML span elements which can be styled using CSS.
     <script src="emoji.js" type="text/javascript"></script>
     <script type="text/javascript">
 
-    var output = emoji.replace(input);
+    // replaces \u{1F604} with platform appropriate content
+    var output1 = emoji.replace_unified(input);
 
-    // replaces:
-    //   \u{1F6B7}
-    // with:
-    //   <span class="emoji-no-pedestrians">\u{1F6B7}</span>
+    // replaces :smile: with platform appropriate content
+    var output2 = emoji.replace_colons(input);
+
+    // force text output mode
+    emoji.text_mode = true;
+
+    // change the path to your emoji images (requires trailing slash)
+    // you can grab the images from here:
+    // https://github.com/github/gemoji/tree/master/images/emoji/unicode
+    emoji.img_path = "http://my-cdn.com/images/emoji/";
+
+    // find out the auto-detected mode
+    alert(emoji.replace_mode);
 
     </script>
 
@@ -27,19 +39,18 @@ You can view a live demo <a href="http://unicodey.com/js-emoji/demo.htm">here</a
 
 The library is designed to be used with the following flow:
 
-1.  User enters text on iPhone or Mac running OSX Lion
+1.  User enters text on an iPhone/iPod, Mac running OSX Lion or Android phone
 2.  Within that text, user enters some emoji
-3.  Data is stored by application
-4.  When data is viewed by users on iPhone or Lion Mac, emoji appear normally
-5.  When data is viewed on PC, older Mac or Linux, emoji are replaced with 
-    inline `<span>` elements with background images.
+3.  Data is stored by application, optionally translated to `:colon:` style
+4.  When data is viewed by users on iPhone, Lion Mac or Android phone, emoji appear normally
+5.  When data is viewed on PC, older Mac or Linux, emoji are replaced with inline `<span>` elements with background images or simple images.
 
-With version 6, iOS switched to using the Unified emoji encodings, instead of the previous
-Softbank codes.
-You can read about the different encodings <a href="http://www.iamcal.com/emoji-in-web-apps/">here</a>.
-When emoji support was added in OSX, it also used the Unified codes.
-The upshot is that no conversion is really necessary any more, unless you have users in 
-Japan or want to support older iOS versions (5 and below).
+While the JS library can replace unified emoji codes (as used by iOS6), it's **much** slower than
+replacing colon sequences. By translating to and storing colon sequences on the backend, you are able to:
+
+* Support Android phones (Google emoji codepoints)
+* Support older iPhones (Softbank emoji codepoints)
+* Allow PC users to enter `:smile:` and have it appear as an emoji everywhere
 
 
 ## Using MySQL for storage
@@ -48,6 +59,7 @@ Some special care may be needed to store emoji in your database. While some char
 within the Basic Multilingual Plane (BMP), others (e.g. Close Umbrella, U+1F302) are not. As such, 
 they require 4 bytes of storage to encode each character. Inside MySQL, this requires switching from `utf8` 
 storage to `utf8mb4`.
+
 You can modify a database and table using a statement like:
 
     ALTER DATABASE my_database DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
@@ -55,27 +67,4 @@ You can modify a database and table using a statement like:
 
 You will also need to modify your connection character set.
 
-
-## Known issues
-
-*  The image used for replacement is lacking some of the emoji added in iOS 6. If you
-   have a more recent image, please send a pull request.
-*  The replaced images are fixed at 20px square. By modifying the CSS (both the base
-   class and the positioning info) you could scale them, but this would be awkward.
-   A solution using canvas scaling might be possible.
-*  There is no user agent detection, so as-is the code will replace emoji with images
-   even on platforms that support emoji natively.
-
-
-## Performance
-
-As you might expect, performance varies greatly across browsers. Numbers are for operations
-per second.
-
-                                Chrome      FF     IE9
-    Short string, no emoji   4,000,000  40,000  12,000
-    Short string, emoji        400,000  70,000  30,000
-    Long string, no emoji    4,000,000     450      90
-
-It might be possible to change the replacement method used in each browser to improve processing
-times.
+You don't need to worry about this if you translate to colon syntax before storage.
