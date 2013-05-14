@@ -1,5 +1,6 @@
 var emoji2 = new function(){
 	var self = this;
+	this.img_path = 'emoji/';
 	this.inits = {};
 	this.map = {};
 	this.text_mode = false;
@@ -12,15 +13,15 @@ var emoji2 = new function(){
 		});
 	};
 	this.replacement = function(idx){
-		if (self.text_mode){
-			return emoji_data[idx][4] || ':'+emoji_data[idx][3]+':';
-		}else{
-			self.init_env();
-			if (self.replace_mode == 'unified') return emoji_data[idx][0];
-			if (self.replace_mode == 'softbank') return emoji_data[idx][1];
-			if (self.replace_mode == 'google') return emoji_data[idx][2];
-			return '<span class="emoji emoji-'+idx+'">:'+idx+':</span>';
-		}
+		var text_name = emoji_data[idx][4] || ':'+emoji_data[idx][3]+':';
+		if (self.text_mode) return text_name;
+		self.init_env();
+		if (self.replace_mode == 'unified') return emoji_data[idx][0];
+		if (self.replace_mode == 'softbank') return emoji_data[idx][1];
+		if (self.replace_mode == 'google') return emoji_data[idx][2];
+		var img = self.img_path+idx+'.png';
+		if (self.replace_mode == 'css') return '<span class="emoji" style="background-image:url('+img+')">'+text_name+'</span>';
+		return '<img src="'+img+'" class="emoji" />';
 	};
 	this.init_colons =  function(){
 		if (self.inits.colons) return;
@@ -39,8 +40,23 @@ var emoji2 = new function(){
 		if (ua.match(/(iPhone|iPod|iPad|iPhone\s+Simulator)/i)){
 			if (ua.match(/OS\s+[12345]/i)) self.replace_mode = 'softbank';
 			if (ua.match(/OS\s+[6789]/i)) self.replace_mode = 'unified';
+			return;
 		}
-		if (ua.match(/Mac OS X 10[._ ][789]/i)) self.replace_mode = 'unified';
-		if (ua.match(/Android/i)) self.replace_mode = 'google';	
+		if (ua.match(/Mac OS X 10[._ ][789]/i)){
+			self.replace_mode = 'unified';
+			return;
+		}
+		if (ua.match(/Android/i)){
+			self.replace_mode = 'google';
+			return;
+		}
+		if (window.getComputedStyle){
+			var st = window.getComputedStyle(document.body);
+			if (st['background-size']){
+				self.replace_mode = 'css';
+				return;
+			}
+		}
+		// nothing fancy detected - use images
 	};
 };
