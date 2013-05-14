@@ -1,10 +1,10 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Emoji translation demo</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=420, user-scalable=no" />
 	<link href="emoji.css" rel="stylesheet" type="text/css" />
-</head>
 </head>
 <body>
 
@@ -48,7 +48,7 @@
 
 emoji.init_env();
 var auto_mode = emoji.replace_mode;
-document.getElementById('rm1').innerText = "Detected replace mode : "+emoji.replace_mode;
+document.getElementById('rm1').innerHTML = "Detected replace mode : "+emoji.replace_mode;
 document.getElementById('out1').innerHTML = emoji.replace_colons("hello :smile: world");
 go();
 go2();
@@ -61,6 +61,7 @@ function go(){
 
 	document.getElementById('out3').innerHTML = out;
 	document.getElementById('out4').innerText = out;
+	document.getElementById('out4').textContent = out;
 }
 
 function go2(){
