@@ -18,10 +18,22 @@ long += " hendrerit feugiat. In dui metus, iaculis quis sollicitudin ac, tincidu
 long += " neque, varius gravida lobortis et, cursus in orci. Donec eget erat risus, ac lobortis nisi.";
 long += " Quisque erat sapien, aliquam et porta non, hendrerit eget dolor.";
 
+var e_unified = "\uD83C\uDFA6";
+var e_colon = ":cinema:";
+var e_replace = '<span class="emoji" style="background-image:url(emoji/1f3a6.png)">:cinema:</span>';
+
 var tests = [
 	["hello", "hello"],
-	["a\uD83C\uDFA6b", "a<span class=\"emoji emoji-cinema\">\uD83C\uDFA6</span>b"],
-	[long, long]
+	["a"+e_unified+"b", "a"+e_replace+"b"],
+	[long, long],
+	[long+'a '+e_unified+' b', long+"a "+e_replace+" b"]
+];
+
+var tests2 = [
+	["hello", "hello"],
+	["a"+e_colon+"b", "a"+e_replace+"b"],
+	[long, long],
+	[long+'a '+e_colon+' b', long+"a "+e_replace+" b"]
 ];
 
 function test(){
@@ -32,11 +44,11 @@ function test(){
 		var error = false;
 		var s = new Date().getTime();
 		for (var j=0; j<loops; j++){
-			var x = emoji.replace(tests[i][0]);
+			var x = emoji.replace_unified(tests[i][0]);
 			if (x != tests[i][1]){
 				error = true;
 
-				var msg = "Test "+i+" failed. Expected "+tests[i][1]+", got "+x;
+				var msg = "[Unified] Test "+i+" failed. Expected "+tests[i][1]+", got "+x;
 				log(msg);
 				break;
 			}
@@ -44,7 +56,33 @@ function test(){
 		var e = new Date().getTime();
 
 		if (!error){
-			var msg = "Test "+i+" ran "+loops+' times in '+(e-s)+'ms';
+			var z = Math.round(1000 / ((e-s) / loops));
+			var msg = "[Unified] Test "+i+" ran "+loops+' times in '+(e-s)+'ms ('+z+' strings/sec)';
+
+			log(msg);
+		}
+	}
+
+	log('-');
+
+	for (var i=0; i<tests2.length; i++){
+		var error = false;
+		var s = new Date().getTime();
+		for (var j=0; j<loops; j++){
+			var x = emoji.replace_colons(tests2[i][0]);
+			if (x != tests2[i][1]){
+				error = true;
+
+				var msg = "[Colons] Test "+i+" failed. Expected "+tests2[i][1]+", got "+x;
+				log(msg);
+				break;
+			}
+		}
+		var e = new Date().getTime();
+
+		if (!error){
+			var z = Math.round(1000 / ((e-s) / loops));
+			var msg = "[Colons] Test "+i+" ran "+loops+' times in '+(e-s)+'ms ('+z+' strings/sec)';
 
 			log(msg);
 		}
