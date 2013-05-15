@@ -58,15 +58,24 @@ var emoji = new function(){
 		self.replace_mode = 'img';
 		var ua = navigator.userAgent;
 		if (ua.match(/(iPhone|iPod|iPad|iPhone\s+Simulator)/i)){
-			if (ua.match(/OS\s+[12345]/i)) self.replace_mode = 'softbank';
-			if (ua.match(/OS\s+[6789]/i)) self.replace_mode = 'unified';
-			return;
+			if (ua.match(/OS\s+[12345]/i)){
+				self.replace_mode = 'softbank';
+				return;
+			}
+			if (ua.match(/OS\s+[6789]/i)){
+				self.replace_mode = 'unified';
+				return;
+			}
 		}
 		if (ua.match(/Mac OS X 10[._ ][789]/i)){
-			self.replace_mode = 'unified';
-			return;
+			if (!ua.match(/Chrome/i)){
+				self.replace_mode = 'unified';
+				return;
+			}
 		}
-		if (ua.match(/Android/i)){
+		// Need a better way to detect android devices that actually
+		// support emoji.
+		if (false && ua.match(/Android/i)){
 			self.replace_mode = 'google';
 			return;
 		}
