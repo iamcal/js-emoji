@@ -23,11 +23,11 @@ var emoji = new function(){
 		var text_name = self.data[idx][4] || ':'+self.data[idx][3]+':';
 		if (self.text_mode) return text_name;
 		self.init_env();
-		if (self.replace_mode == 'unified') return self.data[idx][0];
-		if (self.replace_mode == 'softbank') return self.data[idx][1];
-		if (self.replace_mode == 'google') return self.data[idx][2];
+		if (self.replace_mode == 'unified'  && self.data[idx][0]) return self.data[idx][0];
+		if (self.replace_mode == 'softbank' && self.data[idx][1]) return self.data[idx][1];
+		if (self.replace_mode == 'google'   && self.data[idx][2]) return self.data[idx][2];
 		var img = self.img_path+idx+'.png';
-		if (self.replace_mode == 'css') return '<span class="emoji" style="background-image:url('+img+')">'+text_name+'</span>';
+		if (self.supports_css) return '<span class="emoji" style="background-image:url('+img+')">:'+self.data[idx][3]+':</span>';
 		return '<img src="'+img+'" class="emoji" />';
 	};
 	this.init_colons = function(){
@@ -56,7 +56,14 @@ var emoji = new function(){
 		if (self.inits.env) return;
 		self.inits.env = 1;
 		self.replace_mode = 'img';
+		self.supports_css = false;
 		var ua = navigator.userAgent;
+		if (window.getComputedStyle){
+			var st = window.getComputedStyle(document.body);
+			if (st['background-size'] || st['backgroundSize']){
+				self.supports_css = true;
+			}
+		}
 		if (ua.match(/(iPhone|iPod|iPad|iPhone\s+Simulator)/i)){
 			if (ua.match(/OS\s+[12345]/i)){
 				self.replace_mode = 'softbank';
@@ -79,12 +86,8 @@ var emoji = new function(){
 			self.replace_mode = 'google';
 			return;
 		}
-		if (window.getComputedStyle){
-			var st = window.getComputedStyle(document.body);
-			if (st['background-size'] || st['backgroundSize']){
-				self.replace_mode = 'css';
-				return;
-			}
+		if (self.supports_css){
+			self.replace_mode = 'css';
 		}
 		// nothing fancy detected - use images
 	};
