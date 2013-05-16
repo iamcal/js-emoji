@@ -27,7 +27,7 @@ var emoji = new function(){
 		if (self.replace_mode == 'softbank') return self.data[idx][1];
 		if (self.replace_mode == 'google') return self.data[idx][2];
 		var img = self.img_path+idx+'.png';
-		if (self.replace_mode == 'css') return '<span class="emoji" style="background-image:url('+img+')">'+text_name+'</span>';
+		if (self.replace_mode == 'css') return '<span class="emoji" style="background-image:url('+img+')">:'+self.data[idx][3]+':</span>';
 		return '<img src="'+img+'" class="emoji" />';
 	};
 	this.init_colons = function(){
