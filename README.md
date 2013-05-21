@@ -22,6 +22,9 @@ representation.
     // force text output mode
     emoji.text_mode = true;
 
+    // show the short-name as a `title` attribute for css/img emoji
+    emoji.include_title = true;
+
     // change the path to your emoji images (requires trailing slash)
     // you can grab the images from here:
     // https://github.com/github/gemoji/tree/master/images/emoji/unicode

@@ -4,6 +4,7 @@ var emoji = new function(){
 	this.inits = {};
 	this.map = {};
 	this.text_mode = false;
+	this.include_title = false;
 	this.replace_colons = function(str){
 		self.init_colons();
 		return str.replace(self.rx_colons, function(m){
@@ -27,8 +28,9 @@ var emoji = new function(){
 		if (self.replace_mode == 'softbank' && self.data[idx][1]) return self.data[idx][1];
 		if (self.replace_mode == 'google'   && self.data[idx][2]) return self.data[idx][2];
 		var img = self.img_path+idx+'.png';
-		if (self.supports_css) return '<span class="emoji" style="background-image:url('+img+')">:'+self.data[idx][3]+':</span>';
-		return '<img src="'+img+'" class="emoji" />';
+		var title = self.include_title ? ' title="'+self.data[idx][3]+'"' : '';
+		if (self.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+self.data[idx][3]+':</span>';
+		return '<img src="'+img+'" class="emoji" '+title+'/>';
 	};
 	this.init_colons = function(){
 		if (self.inits.colons) return;
