@@ -21,15 +21,15 @@ var emoji = new function(){
 		});
 	};
 	this.replacement = function(idx){
-		var text_name = self.data[idx][4] || ':'+self.data[idx][3]+':';
+		var text_name = self.data[idx][4] || ':'+self.data[idx][3][0]+':';
 		if (self.text_mode) return text_name;
 		self.init_env();
 		if (self.replace_mode == 'unified'  && self.data[idx][0]) return self.data[idx][0];
 		if (self.replace_mode == 'softbank' && self.data[idx][1]) return self.data[idx][1];
 		if (self.replace_mode == 'google'   && self.data[idx][2]) return self.data[idx][2];
 		var img = self.img_path+idx+'.png';
-		var title = self.include_title ? ' title="'+self.data[idx][3]+'"' : '';
-		if (self.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+self.data[idx][3]+':</span>';
+		var title = self.include_title ? ' title="'+self.data[idx][3][0]+'"' : '';
+		if (self.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+self.data[idx][3][0]+':</span>';
 		return '<img src="'+img+'" class="emoji" '+title+'/>';
 	};
 	this.init_colons = function(){
@@ -38,7 +38,9 @@ var emoji = new function(){
 		self.rx_colons = new RegExp('\:[^\\s:]+\:', 'g');
 		self.map.colons = {};
 		for (var i in self.data){
-			self.map.colons[self.data[i][3]] = i;
+			for (var j=0; j<self.data[i][3].length; j++){
+				self.map.colons[self.data[i][3][j]] = i;
+			}
 		}
 	};
 	this.init_unified = function(){

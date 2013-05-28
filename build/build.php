@@ -15,7 +15,7 @@
 			calc_bytes($row['unified']),
 			calc_bytes($row['softbank']),
 			calc_bytes($row['google']),
-			$row['short_name'],
+			$row['short_names'],
 		);
 		if ($row['text']) $out[$key][] = $row['text'];
 	}
