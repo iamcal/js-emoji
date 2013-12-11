@@ -2,7 +2,7 @@
 
 Recent OSX and iOS versions allow display and input of emoji. It's nice to show them on 
 other devices too, and the browser is a good place to do it. This library converts emoji
-(either from character codes or colon-sequecnes like `:smile:`) into something that will
+(either from character codes or colon-sequences like `:smile:`) into something that will
 work on the host computer - either native character codes, a CSS styled span or a text
 representation.
 
