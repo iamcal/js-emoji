@@ -30,11 +30,8 @@ var emoji = new function(){
 		if (self.replace_mode == 'google'   && self.data[idx][2]) return self.data[idx][2];
 		var img = self.img_path+idx+'.png';
 		var title = self.include_title ? ' title="'+self.data[idx][3][0]+'"' : '';
-		if (self.supports_css && self.use_css_imgs) {
-			return '<span class="emoji emoji-'+idx+'">:'+self.data[idx][3][0]+':</span>';
-		} else if (self.supports_css) {
-			return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+self.data[idx][3][0]+':</span>';
-		}
+		if (self.supports_css && self.use_css_imgs) return '<span class="emoji emoji-'+idx+'">:'+self.data[idx][3][0]+':</span>';
+		if (self.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+self.data[idx][3][0]+':</span>';
 		return '<img src="'+img+'" class="emoji" '+title+'/>';
 	};
 	this.init_colons = function(){
