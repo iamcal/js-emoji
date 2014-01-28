@@ -1,101 +1,113 @@
-var emoji = new function(){
-	var self = this;
-	this.img_path = 'emoji/';
-	this.use_css_imgs = false;
-	this.inits = {};
-	this.map = {};
-	this.text_mode = false;
-	this.include_title = false;
-	this.replace_colons = function(str){
-		self.init_colons();
-		return str.replace(self.rx_colons, function(m){
+;(function() {
+
+function emoji(){}
+	emoji.img_path = 'emoji/';
+	emoji.use_css_imgs = false;
+	emoji.inits = {};
+	emoji.map = {};
+	emoji.text_mode = false;
+	emoji.include_title = false;
+	emoji.replace_colons = function(str){
+		emoji.init_colons();
+		return str.replace(emoji.rx_colons, function(m){
 			var idx = m.substr(1, m.length-2);
-			var val = self.map.colons[idx];
-			return val ? self.replacement(val) : m;
+			var val = emoji.map.colons[idx];
+			return val ? emoji.replacement(val) : m;
 		});
 	};
-	this.replace_unified = function(str){
-		self.init_unified();
-		return str.replace(self.rx_unified, function(m){
-			var val = self.map.unified[m];
-			return val ? self.replacement(val) : m;
+	emoji.replace_unified = function(str){
+		emoji.init_unified();
+		return str.replace(emoji.rx_unified, function(m){
+			var val = emoji.map.unified[m];
+			return val ? emoji.replacement(val) : m;
 		});
 	};
-	this.replacement = function(idx){
-		var text_name = self.data[idx][4] || ':'+self.data[idx][3][0]+':';
-		if (self.text_mode) return text_name;
-		self.init_env();
-		if (self.replace_mode == 'unified'  && self.data[idx][0]) return self.data[idx][0];
-		if (self.replace_mode == 'softbank' && self.data[idx][1]) return self.data[idx][1];
-		if (self.replace_mode == 'google'   && self.data[idx][2]) return self.data[idx][2];
-		var img = self.img_path+idx+'.png';
-		var title = self.include_title ? ' title="'+self.data[idx][3][0]+'"' : '';
-		if (self.supports_css && self.use_css_imgs) return '<span class="emoji emoji-'+idx+'">:'+self.data[idx][3][0]+':</span>';
-		if (self.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+self.data[idx][3][0]+':</span>';
+	emoji.replacement = function(idx){
+		var text_name = emoji.data[idx][4] || ':'+emoji.data[idx][3][0]+':';
+		if (emoji.text_mode) return text_name;
+		emoji.init_env();
+		if (emoji.replace_mode == 'unified'  && emoji.data[idx][0]) return emoji.data[idx][0];
+		if (emoji.replace_mode == 'softbank' && emoji.data[idx][1]) return emoji.data[idx][1];
+		if (emoji.replace_mode == 'google'   && emoji.data[idx][2]) return emoji.data[idx][2];
+		var img = emoji.img_path+idx+'.png';
+		var title = emoji.include_title ? ' title="'+emoji.data[idx][3][0]+'"' : '';
+		if (emoji.supports_css && emoji.use_css_imgs) return '<span class="emoji emoji-'+idx+'">:'+emoji.data[idx][3][0]+':</span>';
+		if (emoji.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+emoji.data[idx][3][0]+':</span>';
 		return '<img src="'+img+'" class="emoji" '+title+'/>';
 	};
-	this.init_colons = function(){
-		if (self.inits.colons) return;
-		self.inits.colons = 1;
-		self.rx_colons = new RegExp('\:[^\\s:]+\:', 'g');
-		self.map.colons = {};
-		for (var i in self.data){
-			for (var j=0; j<self.data[i][3].length; j++){
-				self.map.colons[self.data[i][3][j]] = i;
+	emoji.init_colons = function(){
+		if (emoji.inits.colons) return;
+		emoji.inits.colons = 1;
+		emoji.rx_colons = new RegExp('\:[^\\s:]+\:', 'g');
+		emoji.map.colons = {};
+		for (var i in emoji.data){
+			for (var j=0; j<emoji.data[i][3].length; j++){
+				emoji.map.colons[emoji.data[i][3][j]] = i;
 			}
 		}
 	};
-	this.init_unified = function(){
-		if (self.inits.unified) return;
-		self.inits.unified = 1;
+	emoji.init_unified = function(){
+		if (emoji.inits.unified) return;
+		emoji.inits.unified = 1;
 
 		var a = [];
-		for (var i in self.data) a.push(self.data[i][0]);
-		self.rx_unified = new RegExp('('+a.join('|')+')', "g");
+		for (var i in emoji.data) a.push(emoji.data[i][0]);
+		emoji.rx_unified = new RegExp('('+a.join('|')+')', "g");
 
-		self.map.unified = {};
-		for (var i in self.data){
-			self.map.unified[self.data[i][0]] = i;
+		emoji.map.unified = {};
+		for (var i in emoji.data){
+			emoji.map.unified[emoji.data[i][0]] = i;
 		}
 	};
-	this.init_env = function(){
-		if (self.inits.env) return;
-		self.inits.env = 1;
-		self.replace_mode = 'img';
-		self.supports_css = false;
+	emoji.init_env = function(){
+		if (emoji.inits.env) return;
+		emoji.inits.env = 1;
+		emoji.replace_mode = 'img';
+		emoji.supports_css = false;
 		var ua = navigator.userAgent;
 		if (window.getComputedStyle){
 			var st = window.getComputedStyle(document.body);
 			if (st['background-size'] || st['backgroundSize']){
-				self.supports_css = true;
+				emoji.supports_css = true;
 			}
 		}
 		if (ua.match(/(iPhone|iPod|iPad|iPhone\s+Simulator)/i)){
 			if (ua.match(/OS\s+[12345]/i)){
-				self.replace_mode = 'softbank';
+				emoji.replace_mode = 'softbank';
 				return;
 			}
 			if (ua.match(/OS\s+[6789]/i)){
-				self.replace_mode = 'unified';
+				emoji.replace_mode = 'unified';
 				return;
 			}
 		}
 		if (ua.match(/Mac OS X 10[._ ][789]/i)){
 			if (!ua.match(/Chrome/i)){
-				self.replace_mode = 'unified';
+				emoji.replace_mode = 'unified';
 				return;
 			}
 		}
 		// Need a better way to detect android devices that actually
 		// support emoji.
 		if (false && ua.match(/Android/i)){
-			self.replace_mode = 'google';
+			emoji.replace_mode = 'google';
 			return;
 		}
-		if (self.supports_css){
-			self.replace_mode = 'css';
+		if (emoji.supports_css){
+			emoji.replace_mode = 'css';
 		}
 		// nothing fancy detected - use images
 	};
-	this.data = #DATA#;
-};
+	emoji.data = #DATA#;
+
+if (typeof exports === 'object') {
+  module.exports = emoji;
+} else if (typeof define === 'function' && define.amd) {
+  define(function() { return emoji; });
+} else {
+  this.emoji = emoji;
+}
+
+}).call(function() {
+  return this || (typeof window !== 'undefined' ? window : global);
+}());
