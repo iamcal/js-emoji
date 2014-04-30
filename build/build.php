@@ -20,8 +20,7 @@
 		if ($row['text']) $out[$key][] = $row['text'];
 	}
 
-	$json = json_encode($out);
-	$json = str_replace('\\\\u', '\\u', $json);
+	$json = pretty_print_json($out);
 
 	$template = file_get_contents('emoji.js.template');
 	echo str_replace('#DATA#', $json, $template);
@@ -59,4 +58,21 @@
 		$byte2 = 0xDC00 | ($code & 0x3FF);
 
 		return "\\u".sprintf('%04X', $byte1)."\\u".sprintf('%04X', $byte2);
+	}
+
+
+	#
+	# print one emoji per line to make diffs easier
+	#
+
+	function pretty_print_json($obj){
+		$buffer = "{\n";
+		foreach ($obj as $k => $v){
+			$ve = json_encode($v);
+			$ve = str_replace('\\\\u', '\\u', $ve);
+
+			$buffer .= json_encode($k).':'.$ve.",\n";
+		}
+		$buffer = substr($buffer, 0, -2)."\n}";
+		return $buffer;
 	}
