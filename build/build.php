@@ -16,11 +16,28 @@
 			calc_bytes($row['softbank']),
 			calc_bytes($row['google']),
 			$row['short_names'],
+			$row['sheet_x'],
+			$row['sheet_y'],
 		);
 		if ($row['text']) $out[$key][] = $row['text'];
 	}
 
 	$json = pretty_print_json($out);
+
+
+	#
+	# calc sheet size
+	#
+
+	$max = 0;
+
+	foreach ($d as $row){
+
+		$max = max($max, $row['sheet_x']);
+		$max = max($max, $row['sheet_y']);
+	}
+
+	$sheet_size = $max + 1;;
 
 
 	#
@@ -45,7 +62,7 @@
 	#
 
 	$template = file_get_contents('emoji.js.template');
-	echo str_replace(array('#DATA#', '#DATA2#'), array($json, $json2), $template);
+	echo str_replace(array('#SHEET-SIZE#', '#DATA#', '#DATA2#'), array($sheet_size, $json, $json2), $template);
 
 
 	#

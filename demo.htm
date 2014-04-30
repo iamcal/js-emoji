@@ -46,6 +46,10 @@
 <script src="emoji.js" type="text/javascript"></script>
 <script>
 
+emoji.img_path = '/emoji-data/gemoji/images/emoji/unicode/';
+emoji.sheet_path = '/emoji-data/sheet_64.png';
+emoji.use_sheet = true;
+
 emoji.init_env();
 var auto_mode = emoji.replace_mode;
 document.getElementById('rm1').innerHTML = "Detected replace mode : "+emoji.replace_mode;

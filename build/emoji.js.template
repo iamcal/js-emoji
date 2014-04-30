@@ -3,11 +3,14 @@
 function emoji(){}
 	// settings
 	emoji.img_path = 'emoji/';
+	emoji.sheet_path = 'sheet_64.png';
+
 	emoji.use_css_imgs = false;
 	emoji.text_mode = false;
 	emoji.include_title = false;
 	emoji.allow_native = true;
-	
+	emoji.use_sheet = false;
+
 	emoji.inits = {};
 	emoji.map = {};
 
@@ -43,17 +46,26 @@ function emoji(){}
 
 	emoji.replacement = function(idx, actual, wrapper){
 		wrapper = wrapper || '';
-		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][4] || wrapper+emoji.data[idx][3][0]+wrapper;
+		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][6] || wrapper+emoji.data[idx][3][0]+wrapper;
 		if (emoji.text_mode) return text_name;
 		emoji.init_env();
 		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0]) return emoji.data[idx][0];
 		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1];
 		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2];
-		var img = emoji.data[idx][5] || emoji.img_path+idx+'.png';
+		var img = emoji.data[idx][7] || emoji.img_path+idx+'.png';
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
-		if (emoji.supports_css && emoji.use_css_imgs) return '<span class="emoji emoji-'+idx+'">:'+emoji.data[idx][3][0]+':</span>';
-		if (emoji.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+emoji.data[idx][3][0]+':</span>';
+		if (emoji.supports_css) {
+			if (emoji.use_sheet){
+				var px = emoji.data[idx][4];
+				var py = emoji.data[idx][5];
+				var mul = 100 / (emoji.sheet_size - 1);
+				var style = 'background: url('+emoji.sheet_path+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
+				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>';
+			}else{
+				return '<span class="emoji emoji-sizer" style="background-image:url('+img+')"'+title+'>'+text+'</span>';
+			}
+		}
 		return '<img src="'+img+'" class="emoji" '+title+'/>';
 	};
 
@@ -141,6 +153,7 @@ function emoji(){}
 	emoji.escape_rx = function(text) {
 		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 	};
+	emoji.sheet_size = #SHEET-SIZE#;
 	emoji.data = #DATA#;
 	emoji.emoticons_data = #DATA2#;
 
