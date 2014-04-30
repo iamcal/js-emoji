@@ -22,8 +22,30 @@
 
 	$json = pretty_print_json($out);
 
+
+	#
+	# build the emoticons mapping
+	#
+
+	$lines = file('emoji-data/build/catalog_text_toemoji.txt');
+	$text = array();
+	foreach ($lines as $line){
+		$line = trim($line);
+		if (strlen($line)){
+			$bits = preg_split('!\s+!', $line, 2);
+			$text[$bits[0]] = $bits[1];
+		}
+	}
+
+	$json2 = pretty_print_json($text);
+
+
+	#
+	# output
+	#
+
 	$template = file_get_contents('emoji.js.template');
-	echo str_replace('#DATA#', $json, $template);
+	echo str_replace(array('#DATA#', '#DATA2#'), array($json, $json2), $template);
 
 
 	#
@@ -65,14 +87,14 @@
 	# print one emoji per line to make diffs easier
 	#
 
-	function pretty_print_json($obj){
+	function pretty_print_json($obj, $pad="\t"){
 		$buffer = "{\n";
 		foreach ($obj as $k => $v){
 			$ve = json_encode($v);
 			$ve = str_replace('\\\\u', '\\u', $ve);
 
-			$buffer .= json_encode($k).':'.$ve.",\n";
+			$buffer .= $pad.$pad.json_encode("".$k).':'.$ve.",\n";
 		}
-		$buffer = substr($buffer, 0, -2)."\n}";
+		$buffer = substr($buffer, 0, -2)."\n{$pad}}";
 		return $buffer;
 	}

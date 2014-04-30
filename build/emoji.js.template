@@ -1,18 +1,36 @@
 ;(function() {
 
 function emoji(){}
+	// settings
 	emoji.img_path = 'emoji/';
 	emoji.use_css_imgs = false;
-	emoji.inits = {};
-	emoji.map = {};
 	emoji.text_mode = false;
 	emoji.include_title = false;
+	emoji.allow_native = true;
+	
+	emoji.inits = {};
+	emoji.map = {};
+
+	emoji.replace_emoticons = function(str){
+		emoji.init_emoticons();
+		return str.replace(emoji.rx_emoticons, function(m, $1, $2){
+			var val = emoji.map.emoticons[$2];
+			return val ? $1+emoji.replacement(val, $2) : m;
+		});
+	};
+	emoji.replace_emoticons_with_colons = function(str){
+		emoji.init_emoticons();
+		return str.replace(emoji.rx_emoticons, function(m, $1, $2){
+			var val = emoji.data[emoji.map.emoticons[$2]][3][0];
+			return val ? $1+':'+val+':' : m;
+		});
+	};
 	emoji.replace_colons = function(str){
 		emoji.init_colons();
 		return str.replace(emoji.rx_colons, function(m){
 			var idx = m.substr(1, m.length-2);
 			var val = emoji.map.colons[idx];
-			return val ? emoji.replacement(val) : m;
+			return val ? emoji.replacement(val, idx, ':') : m;
 		});
 	};
 	emoji.replace_unified = function(str){
@@ -22,18 +40,40 @@ function emoji(){}
 			return val ? emoji.replacement(val) : m;
 		});
 	};
-	emoji.replacement = function(idx){
-		var text_name = emoji.data[idx][4] || ':'+emoji.data[idx][3][0]+':';
+
+	emoji.replacement = function(idx, actual, wrapper){
+		wrapper = wrapper || '';
+		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][4] || wrapper+emoji.data[idx][3][0]+wrapper;
 		if (emoji.text_mode) return text_name;
 		emoji.init_env();
-		if (emoji.replace_mode == 'unified'  && emoji.data[idx][0]) return emoji.data[idx][0];
-		if (emoji.replace_mode == 'softbank' && emoji.data[idx][1]) return emoji.data[idx][1];
-		if (emoji.replace_mode == 'google'   && emoji.data[idx][2]) return emoji.data[idx][2];
-		var img = emoji.img_path+idx+'.png';
-		var title = emoji.include_title ? ' title="'+emoji.data[idx][3][0]+'"' : '';
+		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0]) return emoji.data[idx][0];
+		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1];
+		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2];
+		var img = emoji.data[idx][5] || emoji.img_path+idx+'.png';
+		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
+		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		if (emoji.supports_css && emoji.use_css_imgs) return '<span class="emoji emoji-'+idx+'">:'+emoji.data[idx][3][0]+':</span>';
 		if (emoji.supports_css) return '<span class="emoji" style="background-image:url('+img+')"'+title+'>:'+emoji.data[idx][3][0]+':</span>';
 		return '<img src="'+img+'" class="emoji" '+title+'/>';
+	};
+
+	emoji.init_emoticons = function(){
+		if (emoji.inits.emoticons) return;
+		emoji.init_colons(); // we require this for the emoticons map
+		emoji.inits.emoticons = 1;
+		
+		var a = [];
+		emoji.map.emoticons = {};
+		for (var i in emoji.emoticons_data){
+			// because we never see some characters in our text except as entities, we must do some replacing
+			var emoticon = i.replace(/\&/g, '&amp;').replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
+			
+			if (!emoji.map.colons[emoji.emoticons_data[i]]) continue;
+
+			emoji.map.emoticons[emoticon] = emoji.map.colons[emoji.emoticons_data[i]];
+			a.push(emoji.escape_rx(emoticon));
+		}
+		self.rx_emoticons = new RegExp(('(^|\\s)('+a.join('|')+')(?=$|[\\s|\\?\\.,!])'), 'g');
 	};
 	emoji.init_colons = function(){
 		if (emoji.inits.colons) return;
@@ -98,7 +138,11 @@ function emoji(){}
 		}
 		// nothing fancy detected - use images
 	};
+	emoji.escape_rx = function(text) {
+		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+	};
 	emoji.data = #DATA#;
+	emoji.emoticons_data = #DATA2#;
 
 if (typeof exports === 'object') {
   module.exports = emoji;
