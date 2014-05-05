@@ -62,6 +62,8 @@ function emoji(){}
 				var mul = 100 / (emoji.sheet_size - 1);
 				var style = 'background: url('+emoji.sheet_path+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
 				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>';
+			}else if (emoji.use_css_imgs){
+				return '<span class="emoji emoji-'+idx+'"'+title+'>'+text+'</span>';
 			}else{
 				return '<span class="emoji emoji-sizer" style="background-image:url('+img+')"'+title+'>'+text+'</span>';
 			}
