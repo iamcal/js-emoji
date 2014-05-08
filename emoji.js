@@ -56,9 +56,9 @@ function emoji(){}
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		if (emoji.supports_css) {
-			if (emoji.use_sheet){
-				var px = emoji.data[idx][4];
-				var py = emoji.data[idx][5];
+			var px = emoji.data[idx][4];
+			var py = emoji.data[idx][5];
+			if (emoji.use_sheet && px != null && py != null){
 				var mul = 100 / (emoji.sheet_size - 1);
 				var style = 'background: url('+emoji.sheet_path+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
 				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>';
