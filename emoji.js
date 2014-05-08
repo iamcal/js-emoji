@@ -87,7 +87,7 @@ function emoji(){}
 			emoji.map.emoticons[emoticon] = emoji.map.colons[emoji.emoticons_data[i]];
 			a.push(emoji.escape_rx(emoticon));
 		}
-		self.rx_emoticons = new RegExp(('(^|\\s)('+a.join('|')+')(?=$|[\\s|\\?\\.,!])'), 'g');
+		emoji.rx_emoticons = new RegExp(('(^|\\s)('+a.join('|')+')(?=$|[\\s|\\?\\.,!])'), 'g');
 	};
 	emoji.init_colons = function(){
 		if (emoji.inits.colons) return;
