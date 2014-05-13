@@ -6,6 +6,7 @@ function emoji(){}
 	emoji.sheet_path = 'sheet_64.png';
 
 	emoji.use_css_imgs = false;
+	emoji.colons_mode = false;
 	emoji.text_mode = false;
 	emoji.include_title = false;
 	emoji.allow_native = true;
@@ -46,6 +47,7 @@ function emoji(){}
 
 	emoji.replacement = function(idx, actual, wrapper){
 		wrapper = wrapper || '';
+		if (emoji.colons_mode) return ':'+emoji.data[idx][3][0]+':';
 		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][6] || wrapper+emoji.data[idx][3][0]+wrapper;
 		if (emoji.text_mode) return text_name;
 		emoji.init_env();
