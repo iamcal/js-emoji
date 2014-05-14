@@ -12,7 +12,7 @@
 	foreach ($d as $row){
 		list($key) = explode('.', $row['image']);
 		$out[$key] = array(
-			calc_bytes($row['unified']),
+			array(calc_bytes($row['unified'])),
 			calc_bytes($row['softbank']),
 			calc_bytes($row['google']),
 			$row['short_names'],
@@ -20,6 +20,11 @@
 			$row['sheet_y'],
 		);
 		if ($row['text']) $out[$key][] = $row['text'];
+		if (count($row['variations'])){
+			foreach ($row['variations'] as $var){
+				array_unshift($out[$key][0], calc_bytes($var));
+			}
+		}
 	}
 
 	$json = pretty_print_json($out);

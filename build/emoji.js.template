@@ -51,7 +51,7 @@ function emoji(){}
 		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][6] || wrapper+emoji.data[idx][3][0]+wrapper;
 		if (emoji.text_mode) return text_name;
 		emoji.init_env();
-		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0]) return emoji.data[idx][0];
+		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0][0]) return emoji.data[idx][0][0];
 		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1];
 		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2];
 		var img = emoji.data[idx][7] || emoji.img_path+idx+'.png';
@@ -107,13 +107,16 @@ function emoji(){}
 		emoji.inits.unified = 1;
 
 		var a = [];
-		for (var i in emoji.data) a.push(emoji.data[i][0]);
-		emoji.rx_unified = new RegExp('('+a.join('|')+')', "g");
-
 		emoji.map.unified = {};
+
 		for (var i in emoji.data){
-			emoji.map.unified[emoji.data[i][0]] = i;
+			for (var j=0; j<emoji.data[i][0].length; j++){
+				a.push(emoji.data[i][0][j]);
+				emoji.map.unified[emoji.data[i][0][j]] = i;
+			}
 		}
+
+		emoji.rx_unified = new RegExp('('+a.join('|')+')', "g");
 	};
 	emoji.init_env = function(){
 		if (emoji.inits.env) return;
