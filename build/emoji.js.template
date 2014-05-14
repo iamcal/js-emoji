@@ -4,6 +4,7 @@ function emoji(){}
 	// settings
 	emoji.img_path = 'emoji/';
 	emoji.sheet_path = 'sheet_64.png';
+	emoji.img_suffix = '';
 
 	emoji.use_css_imgs = false;
 	emoji.colons_mode = false;
@@ -54,7 +55,7 @@ function emoji(){}
 		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0][0]) return emoji.data[idx][0][0];
 		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1];
 		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2];
-		var img = emoji.data[idx][7] || emoji.img_path+idx+'.png';
+		var img = emoji.data[idx][7] || emoji.img_path+idx+'.png' + emoji.img_suffix;
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		if (emoji.supports_css) {
