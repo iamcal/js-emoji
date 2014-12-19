@@ -146,6 +146,12 @@ function emoji(){}
 				return;
 			}
 		}
+		if (ua.match(/Windows NT 6.[1-9]/i)){
+			if (!ua.match(/Chrome/i)){
+				emoji.replace_mode = 'unified';
+				return;
+			}
+		}
 		// Need a better way to detect android devices that actually
 		// support emoji.
 		if (false && ua.match(/Android/i)){
