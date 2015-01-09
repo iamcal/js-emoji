@@ -209,9 +209,8 @@ function emoji(){}
 		}
 	};
 
-	/**
-	 * @private initializes the unified unicode emoticon data
-	 */
+	// initializes the unified unicode emoticon data
+	/** @private */
 	emoji.init_unified = function(){
 		if (emoji.inits.unified) return;
 		emoji.inits.unified = 1;
@@ -229,10 +228,9 @@ function emoji(){}
 		emoji.rx_unified = new RegExp('('+a.join('|')+')', "g");
 	};
 
-	/**
-	 * @private initializes the environment, figuring out what representation
-	 * of emoticons is best.
-	 */
+	// initializes the environment, figuring out what representation
+	// of emoticons is best.
+	/** @private */
 	emoji.init_env = function(){
 		if (emoji.inits.env) return;
 		emoji.inits.env = 1;
@@ -278,16 +276,12 @@ function emoji(){}
 		}
 		// nothing fancy detected - use images
 	};
-	/**
-	 * @private
-	 */
+	/** @private */
 	emoji.escape_rx = function(text) {
 		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 	};
 	emoji.sheet_size = 30;
-	/**
-	 * @private
-	 */
+	/** @private */
 	emoji.data = {
 		"00a9":[["\u00A9"],"\uE24E","\uDBBA\uDF29",["copyright"],0,0],
 		"00ae":[["\u00AE"],"\uE24F","\uDBBA\uDF2D",["registered"],0,1],
@@ -1135,9 +1129,7 @@ function emoji(){}
 		"1f1f7-1f1fa":[["\uD83C\uDDF7\uD83C\uDDFA"],"\uE512","\uDBB9\uDCEC",["ru"],28,3],
 		"1f1fa-1f1f8":[["\uD83C\uDDFA\uD83C\uDDF8"],"\uE50C","\uDBB9\uDCE6",["us"],28,4]
 	};
-	/**
-	 * @private
-	 */
+	/** @private */
 	emoji.emoticons_data = {
 		"<3":"heart",
 		"<\/3":"broken_heart",
