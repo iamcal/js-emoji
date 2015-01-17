@@ -12,6 +12,8 @@ function emoji(){}
 	emoji.allow_native = true;
 	emoji.use_sheet = false;
 
+	emoji.unified_blacklist = {};
+
 	emoji.inits = {};
 	emoji.map = {};
 
@@ -111,8 +113,10 @@ function emoji(){}
 
 		for (var i in emoji.data){
 			for (var j=0; j<emoji.data[i][0].length; j++){
-				a.push(emoji.data[i][0][j]);
-				emoji.map.unified[emoji.data[i][0][j]] = i;
+				if (!emoji.unified_blacklist[emoji.data[i][0][j]]) {
+					a.push(emoji.data[i][0][j]);
+					emoji.map.unified[emoji.data[i][0][j]] = i;
+				}
 			}
 		}
 
