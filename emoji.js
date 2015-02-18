@@ -1,6 +1,10 @@
 ;(function() {
 
 function emoji(){}
+
+;(function() {
+
+function emoji(){}
 	// settings
 	emoji.img_path = 'emoji/';
 	emoji.sheet_path = 'sheet_64.png';
@@ -11,6 +15,7 @@ function emoji(){}
 	emoji.include_title = false;
 	emoji.allow_native = true;
 	emoji.use_sheet = false;
+	emoji.avoid_ms_emoji = true;
 
 	emoji.inits = {};
 	emoji.map = {};
@@ -141,17 +146,20 @@ function emoji(){}
 			}
 		}
 		if (ua.match(/Mac OS X 10[._ ](?:[789]|1\d)/i)){
-			if (!ua.match(/Chrome/i)){
-				emoji.replace_mode = 'unified';
-				return;
+		if (!ua.match(/Chrome/i) && !ua.match(/Firefox/i)){
+			emoji.replace_mode = 'unified';
+			return;
+		}
+		}
+		if (!emoji.avoid_ms_emoji) {
+			if (ua.match(/Windows NT 6.[1-9]/i) || ua.match(/Windows NT 10.[0-9]/i)){
+				if (!ua.match(/Chrome/i) && !ua.match(/MSIE 8/i)){
+					emoji.replace_mode = 'unified';
+					return;
+				}
 			}
 		}
-		if (ua.match(/Windows NT 6.[1-9]/i)){
-			if (!ua.match(/Chrome/i)){
-				emoji.replace_mode = 'unified';
-				return;
-			}
-		}
+
 		// Need a better way to detect android devices that actually
 		// support emoji.
 		if (false && ua.match(/Android/i)){
