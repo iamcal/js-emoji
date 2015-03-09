@@ -82,8 +82,21 @@ function go(){
 function go2(){
 	var s = document.getElementById('mode');
 	var mode = s.options[s.selectedIndex].value;
+
 	emoji.text_mode = mode == 'text';
-	emoji.replace_mode = mode;
+
+	if (mode == 'css'){
+		emoji.replace_mode = 'img';
+		emoji.supports_css = true;
+		
+	}else if (mode == 'img'){
+		emoji.replace_mode = 'img';
+		emoji.supports_css = false;
+
+	}else{
+		emoji.replace_mode = mode;
+	}
+
 	document.getElementById('out2').innerHTML = emoji.replace_colons("hello :smile: world");
 	return false;
 }
