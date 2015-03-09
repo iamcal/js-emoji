@@ -36,7 +36,7 @@
 	}
 
 	$json = pretty_print_json($out);
-	$json1 = pretty_print_json($text_out);
+	$json2 = pretty_print_json($text_out);
 
 
 	#
