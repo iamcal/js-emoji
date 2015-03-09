@@ -53,13 +53,13 @@ function emoji(){}
 	emoji.replacement = function(idx, actual, wrapper){
 		wrapper = wrapper || '';
 		if (emoji.colons_mode) return ':'+emoji.data[idx][3][0]+':';
-		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][6] || wrapper+emoji.data[idx][3][0]+wrapper;
+		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][8] || wrapper+emoji.data[idx][3][0]+wrapper;
 		if (emoji.text_mode) return text_name;
 		emoji.init_env();
 		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0][0]) return emoji.data[idx][0][0];
 		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1];
 		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2];
-		var img = emoji.data[idx][7] || emoji.img_sets[emoji.img_set].path+idx+'.png';
+		var img = emoji.data[idx][9] || emoji.img_sets[emoji.img_set].path+idx+'.png';
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		if (emoji.supports_css) {

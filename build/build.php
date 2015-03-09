@@ -11,6 +11,13 @@
 	$text_out = array();
 
 	foreach ($d as $row){
+		$has_imgs_bits = 0;
+		if ($row['apple_img_path']) $has_imgs_bits |= 1;
+		if ($row['google_img_path']) $has_imgs_bits |= 2;
+		if ($row['twitter_img_path']) $has_imgs_bits |= 4;
+		if ($row['emojione_img_path']) $has_imgs_bits |= 8;
+		$has_skins = count($row['skin_variations']) ? 1 : 0;
+
 		list($key) = explode('.', $row['image']);
 		$out[$key] = array(
 			array(calc_bytes($row['unified'])),
@@ -19,6 +26,8 @@
 			$row['short_names'],
 			$row['sheet_x'],
 			$row['sheet_y'],
+			$has_imgs_bits,
+			$has_skins,
 		);
 		if ($row['text']){
 			$out[$key][] = $row['text'];
