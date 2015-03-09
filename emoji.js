@@ -2,8 +2,13 @@
 
 function emoji(){}
 	// settings
-	emoji.img_path = 'emoji/';
-	emoji.sheet_path = 'sheet_64.png';
+	emoji.img_set = 'apple';
+	emoji.img_sets = {
+		'apple'    : {'path' : '/emoji-data/img-apple-64/'   , 'sheet' : '/emoji-data/sheet_apple_64.png'    },
+		'google'   : {'path' : '/emoji-data/img-google-64/'  , 'sheet' : '/emoji-data/sheet_google_64.png'   },
+		'twitter'  : {'path' : '/emoji-data/img-twitter-64/' , 'sheet' : '/emoji-data/sheet_twitter_64.png'  },
+		'emojione' : {'path' : '/emoji-data/img-emojione-64/', 'sheet' : '/emoji-data/sheet_emojione_64.png' }
+	};
 
 	emoji.use_css_imgs = false;
 	emoji.colons_mode = false;
@@ -54,7 +59,7 @@ function emoji(){}
 		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0][0]) return emoji.data[idx][0][0];
 		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1];
 		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2];
-		var img = emoji.data[idx][7] || emoji.img_path+idx+'.png';
+		var img = emoji.data[idx][7] || emoji.img_sets[emoji.img_set].path+idx+'.png';
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		if (emoji.supports_css) {
@@ -62,7 +67,7 @@ function emoji(){}
 			var py = emoji.data[idx][5];
 			if (emoji.use_sheet && px != null && py != null){
 				var mul = 100 / (emoji.sheet_size - 1);
-				var style = 'background: url('+emoji.sheet_path+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
+				var style = 'background: url('+emoji.img_sets[emoji.img_set].sheet+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
 				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>';
 			}else if (emoji.use_css_imgs){
 				return '<span class="emoji emoji-'+idx+'"'+title+'>'+text+'</span>';
