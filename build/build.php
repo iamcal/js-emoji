@@ -8,6 +8,7 @@
 	#
 
 	$out = array();
+	$text_out = array();
 
 	foreach ($d as $row){
 		list($key) = explode('.', $row['image']);
@@ -19,7 +20,14 @@
 			$row['sheet_x'],
 			$row['sheet_y'],
 		);
-		if ($row['text']) $out[$key][] = $row['text'];
+		if ($row['text']){
+			$out[$key][] = $row['text'];
+		}
+		if (count($row['texts'])){
+			foreach ($row['texts'] as $txt){
+				$text_out[$txt] = $row['short_name'];
+			}
+		}
 		if (count($row['variations'])){
 			foreach ($row['variations'] as $var){
 				array_unshift($out[$key][0], calc_bytes($var));
@@ -28,6 +36,7 @@
 	}
 
 	$json = pretty_print_json($out);
+	$json1 = pretty_print_json($text_out);
 
 
 	#
@@ -43,23 +52,6 @@
 	}
 
 	$sheet_size = $max + 1;;
-
-
-	#
-	# build the emoticons mapping
-	#
-
-	$lines = file('emoji-data/build/catalog_text_toemoji.txt');
-	$text = array();
-	foreach ($lines as $line){
-		$line = trim($line);
-		if (strlen($line)){
-			$bits = preg_split('!\s+!', $line, 2);
-			$text[$bits[0]] = $bits[1];
-		}
-	}
-
-	$json2 = pretty_print_json($text);
 
 
 	#
