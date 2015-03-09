@@ -1,8 +1,27 @@
 ;(function() {
 
+/**
+ * @global
+ * @namespace
+ */
 function emoji(){}
-	// settings
+	/**
+	 * The set of images to use got graphical emoji.
+	 *
+	 * @memberof emoji
+	 * @type {string}
+	 */
 	emoji.img_set = 'apple';
+
+	/**
+	 * Configuration details for different image sets. This includes a path to a directory containing the
+	 * individual images (`path`( and a URL to sprite sheets (`sheet`). All of these images can be found
+	 * in the [emoji-data repository]{@link https://github.com/iamcal/emoji-data}. Using a CDN for these
+	 * is not a bad idea.
+	 *
+	 * @memberof emoji
+	 * @type {
+	 */
 	emoji.img_sets = {
 		'apple'    : {'path' : '/emoji-data/img-apple-64/'   , 'sheet' : '/emoji-data/sheet_apple_64.png'    },
 		'google'   : {'path' : '/emoji-data/img-google-64/'  , 'sheet' : '/emoji-data/sheet_google_64.png'   },
@@ -10,16 +29,65 @@ function emoji(){}
 		'emojione' : {'path' : '/emoji-data/img-emojione-64/', 'sheet' : '/emoji-data/sheet_emojione_64.png' }
 	};
 
+	/**
+	 * Use a CSS class instead of specifying a sprite or background image for
+	 * the span representing the emoticon. This requires a CSS sheet with
+	 * emoticon data-uris.
+	 *
+	 * @memberof emoji
+	 * @type bool
+	 * @todo document how to build the CSS stylesheet this requires.
+	 */
 	emoji.use_css_imgs = false;
+
+	/**
+	 * Instead of replacing emoticons with the appropriate representations,
+	 * replace them with their colon string representation.
+	 * @memberof emoji
+	 * @type bool
+	 */
 	emoji.colons_mode = false;
 	emoji.text_mode = false;
+
+	/**
+	 * If true, sets the "title" property on the span or image that gets
+	 * inserted for the emoticon.
+	 * @memberof emoji
+	 * @type bool
+	 */
 	emoji.include_title = false;
+
+	/**
+	 * If the platform supports native emoticons, use those instead
+	 * of the fallbacks.
+	 * @memberof emoji
+	 * @type bool
+	 */
 	emoji.allow_native = true;
+
+	/**
+	 * Set to true to use CSS sprites instead of individual images on 
+	 * platforms that support it.
+	 *
+	 * @memberof emoji
+	 * @type bool
+	 */
 	emoji.use_sheet = false;
 
+	// Keeps track of what has been initialized.
+	/** @private */
 	emoji.inits = {};
 	emoji.map = {};
 
+	/**
+	 * @memberof emoji
+	 * @param {string} str A string potentially containing ascii emoticons
+	 * (ie. `:)`)
+	 *
+	 * @returns {string} A new string with all emoticons in `str`
+	 * replaced by a representatation that's supported by the current
+	 * environtment.
+	 */
 	emoji.replace_emoticons = function(str){
 		emoji.init_emoticons();
 		return str.replace(emoji.rx_emoticons, function(m, $1, $2){
@@ -27,6 +95,15 @@ function emoji(){}
 			return val ? $1+emoji.replacement(val, $2) : m;
 		});
 	};
+
+	/**
+	 * @memberof emoji
+	 * @param {string} str A string potentially containing ascii emoticons
+	 * (ie. `:)`)
+	 *
+	 * @returns {string} A new string with all emoticons in `str`
+	 * replaced by their colon string representations (ie. `:smile:`)
+	 */
 	emoji.replace_emoticons_with_colons = function(str){
 		emoji.init_emoticons();
 		return str.replace(emoji.rx_emoticons, function(m, $1, $2){
@@ -34,6 +111,15 @@ function emoji(){}
 			return val ? $1+':'+val+':' : m;
 		});
 	};
+
+	/**
+	 * @memberof emoji
+	 * @param {string} str A string potentially containing colon string
+	 * representations of emoticons (ie. `:smile:`)
+	 *
+	 * @returns {string} A new string with all colon string emoticons replaced
+	 * with the appropriate representation.
+	 */
 	emoji.replace_colons = function(str){
 		emoji.init_colons();
 		return str.replace(emoji.rx_colons, function(m){
@@ -42,6 +128,15 @@ function emoji(){}
 			return val ? emoji.replacement(val, idx, ':') : m;
 		});
 	};
+
+	/**
+	 * @memberof emoji
+	 * @param {string} str A string potentially containing unified unicode
+	 * emoticons. (ie. 😄)
+	 *
+	 * @returns {string} A new string with all unicode emoticons replaced with
+	 * the appropriate representation for the current environment.
+	 */
 	emoji.replace_unified = function(str){
 		emoji.init_unified();
 		return str.replace(emoji.rx_unified, function(m){
@@ -50,6 +145,8 @@ function emoji(){}
 		});
 	};
 
+	// Does the actual replacement of a character with the appropriate
+	/** @private */
 	emoji.replacement = function(idx, actual, wrapper){
 		wrapper = wrapper || '';
 		if (emoji.colons_mode) return ':'+emoji.data[idx][3][0]+':';
@@ -78,6 +175,8 @@ function emoji(){}
 		return '<img src="'+img+'" class="emoji" '+title+'/>';
 	};
 
+	// Initializes the text emoticon data
+	/** @private */
 	emoji.init_emoticons = function(){
 		if (emoji.inits.emoticons) return;
 		emoji.init_colons(); // we require this for the emoticons map
@@ -96,6 +195,9 @@ function emoji(){}
 		}
 		emoji.rx_emoticons = new RegExp(('(^|\\s)('+a.join('|')+')(?=$|[\\s|\\?\\.,!])'), 'g');
 	};
+
+	// Initializes the colon string data
+	/** @private */
 	emoji.init_colons = function(){
 		if (emoji.inits.colons) return;
 		emoji.inits.colons = 1;
@@ -107,6 +209,9 @@ function emoji(){}
 			}
 		}
 	};
+
+	// initializes the unified unicode emoticon data
+	/** @private */
 	emoji.init_unified = function(){
 		if (emoji.inits.unified) return;
 		emoji.inits.unified = 1;
@@ -123,6 +228,10 @@ function emoji(){}
 
 		emoji.rx_unified = new RegExp('('+a.join('|')+')', "g");
 	};
+
+	// initializes the environment, figuring out what representation
+	// of emoticons is best.
+	/** @private */
 	emoji.init_env = function(){
 		if (emoji.inits.env) return;
 		emoji.inits.env = 1;
@@ -145,7 +254,7 @@ function emoji(){}
 				return;
 			}
 		}
-		if (ua.match(/Mac OS X 10[._ ][789]/i)){
+		if (ua.match(/Mac OS X 10[._ ](?:[789]|1\d)/i)){
 			if (!ua.match(/Chrome/i)){
 				emoji.replace_mode = 'unified';
 				return;
@@ -168,10 +277,12 @@ function emoji(){}
 		}
 		// nothing fancy detected - use images
 	};
-	emoji.escape_rx = function(text) {
+	/** @private */
+	emoji.escape_rx = function(text){
 		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 	};
 	emoji.sheet_size = 35;
+	/** @private */
 	emoji.data = {
 		"00a9":[["\u00A9\uFE0F","\u00A9"],"\uE24E","\uDBBA\uDF29",["copyright"],0,0,11,0],
 		"00ae":[["\u00AE\uFE0F","\u00AE"],"\uE24F","\uDBBA\uDF2D",["registered"],0,1,11,0],
@@ -1074,6 +1185,7 @@ function emoji(){}
 		"1f469-2764-fe0f-1f469":[["\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC69"],"","",["woman-heart-woman"],33,28,1,0],
 		"1f469-2764-fe0f-1f48b-1f469":[["\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC8B\u200D\uD83D\uDC69"],"","",["woman-kiss-woman"],33,29,1,0]
 	};
+	/** @private */
 	emoji.emoticons_data = {
 		"<3":"heart",
 		":o)":"monkey_face",
@@ -1123,14 +1235,14 @@ function emoji(){}
 		":-o":"open_mouth"
 	};
 
-if (typeof exports === 'object') {
-  module.exports = emoji;
-} else if (typeof define === 'function' && define.amd) {
-  define(function() { return emoji; });
-} else {
-  this.emoji = emoji;
-}
+	if (typeof exports === 'object'){
+		module.exports = emoji;
+	}else if (typeof define === 'function' && define.amd){
+		define(function() { return emoji; });
+	}else{
+		this.emoji = emoji;
+	}
 
-}).call(function() {
-  return this || (typeof window !== 'undefined' ? window : global);
+}).call(function(){
+	return this || (typeof window !== 'undefined' ? window : global);
 }());
