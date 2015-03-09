@@ -201,7 +201,7 @@ function emoji(){}
 	emoji.init_colons = function(){
 		if (emoji.inits.colons) return;
 		emoji.inits.colons = 1;
-		emoji.rx_colons = new RegExp('\:[a-zA-Z0-9-_]+\:', 'g');
+		emoji.rx_colons = new RegExp('\:[a-zA-Z0-9-_+]+\:', 'g');
 		emoji.map.colons = {};
 		for (var i in emoji.data){
 			for (var j=0; j<emoji.data[i][3].length; j++){
