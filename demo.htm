@@ -18,15 +18,28 @@
 <h2>Manual mode selection</h2>
 
 <select id="mode" onchange="return go2();">
-<option value="unified">Unified (iOS 6, OSX 7)</option>
+<option value="unified">Unified (iOS 6+, OS X 7+, New Android)</option>
 <option value="softbank">Softbank (iOS 5)</option>
-<option value="google">Google (Android)</option>
+<option value="google">Google (Old Android)</option>
 <option value="css">CSS (Modern browsers)</option>
 <option value="img">Image (fallback)</option>
 <option value="text">Text mode</option>
 </select>
 
 <div id="out2"></div>
+
+<hr />
+
+<h2>Image set selection</h2>
+
+<select id="imgset" onchange="return go4();">
+<option value="apple">Apple (iOS, OS X)</option>
+<option value="google">Google (Android, Hangouts)</option>
+<option value="twitter">Twitter</option>
+<option value="emojione">EmojiOne</option>
+</select>
+
+<div id="out4"></div>
 
 <hr />
 
@@ -67,11 +80,15 @@ document.getElementById('out1').innerHTML = emoji.replace_colons("hello :smile: 
 go();
 go2();
 go3();
+go4();
 
 function go(){
 
-	var text = document.getElementById('input').value;
+	emoji.img_set = 'apple';
 	emoji.replace_mode = auto_mode;
+	emoji.text_mode = false;
+
+	var text = document.getElementById('input').value;
 	var out = emoji.replace_colons(text);
 
 	document.getElementById('out3').innerHTML = out;
@@ -83,6 +100,7 @@ function go2(){
 	var s = document.getElementById('mode');
 	var mode = s.options[s.selectedIndex].value;
 
+	emoji.img_set = 'apple';
 	emoji.text_mode = mode == 'text';
 
 	if (mode == 'css'){
@@ -102,8 +120,23 @@ function go2(){
 }
 
 function go3(){
+	emoji.img_set = 'apple';
 	emoji.replace_mode = auto_mode;
+	emoji.text_mode = false;
+
 	$("#jout1").emoji();	
+}
+
+function go4(){
+	var s = document.getElementById('imgset');
+	var imgset = s.options[s.selectedIndex].value;
+
+	emoji.img_set = imgset;
+	emoji.replace_mode = auto_mode;
+	emoji.text_mode = false;
+
+	document.getElementById('out4').innerHTML = emoji.replace_colons("hello :smile: world :flag-ca:");
+	return false;
 }
 
 </script>
