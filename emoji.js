@@ -74,6 +74,15 @@ function emoji(){}
 	 */
 	emoji.use_sheet = false;
 
+	/**
+	 *
+	 * Set to true to avoid black & white native Windows emoji being used.
+	 *
+	 * @memberof emoji
+	 * @type bool
+	 */
+	emoji.avoid_ms_emoji = true;
+
 	// Keeps track of what has been initialized.
 	/** @private */
 	emoji.inits = {};
@@ -260,12 +269,15 @@ function emoji(){}
 				return;
 			}
 		}
-		if (ua.match(/Windows NT 6.[1-9]/i)){
-			if (!ua.match(/Chrome/i)){
-				emoji.replace_mode = 'unified';
-				return;
+		if (!emoji.avoid_ms_emoji){
+			if (ua.match(/Windows NT 6.[1-9]/i)){
+				if (!ua.match(/Chrome/i)){
+					emoji.replace_mode = 'unified';
+					return;
+				}
 			}
 		}
+
 		// Need a better way to detect android devices that actually
 		// support emoji.
 		if (false && ua.match(/Android/i)){
