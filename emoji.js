@@ -264,7 +264,7 @@ function emoji(){}
 			}
 		}
 		if (ua.match(/Mac OS X 10[._ ](?:[789]|1\d)/i)){
-			if (!ua.match(/Chrome/i)){
+			if (!ua.match(/Chrome/i) && !ua.match(/Firefox/i)){
 				emoji.replace_mode = 'unified';
 				return;
 			}
