@@ -11,6 +11,8 @@ span.emoji {
 	background-size: 1em;
 	background-repeat: no-repeat;
 	text-indent: -9999px;
+	background-position: 50%, 50%;
+	background-size: contain;
 }
 
 span.emoji-sizer {
