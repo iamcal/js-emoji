@@ -1,0 +1,16 @@
+{
+  "name": "js-emoji",
+  "version": "1.0.0",
+  "main": "emoji.js",
+  "keywords": ["emoji", "emoticon", "mobile", "browser"],
+  "ignore": [
+    ".jshintrc",
+    "bench.htm",
+    "demo.htm",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "jquery": ""
+  }
+}
