@@ -270,8 +270,8 @@ function emoji(){}
 			}
 		}
 		if (!emoji.avoid_ms_emoji){
-			if (ua.match(/Windows NT 6.[1-9]/i)){
-				if (!ua.match(/Chrome/i)){
+			if (ua.match(/Windows NT 6.[1-9]/i) || ua.match(/Windows NT 10.[0-9]/i)){
+				if (!ua.match(/Chrome/i) && !ua.match(/MSIE 8/i)){
 					emoji.replace_mode = 'unified';
 					return;
 				}
