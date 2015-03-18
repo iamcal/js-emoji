@@ -1,16 +1,25 @@
 {
   "name": "js-emoji",
+  "description": "A JS Emoji conversion library",
   "version": "1.0.0",
-  "main": "emoji.js",
+  "authors": ["Cal Henderson <cal@iamcal.com>"],
   "keywords": ["emoji", "emoticon", "mobile", "browser"],
+  "main": "emoji.js",
   "ignore": [
+    "build",
     ".jshintrc",
     "bench.htm",
     "demo.htm",
-    "**/*.txt"
+    "**/*.txt",
+    "bower_components"
   ],
   "dependencies": {},
   "devDependencies": {
     "jquery": ""
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamcal/js-emoji.git"
+  },
+  "license": "MIT"
 }
