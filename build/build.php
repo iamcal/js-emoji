@@ -11,11 +11,7 @@
 	$text_out = array();
 
 	foreach ($d as $row){
-		$has_imgs_bits = 0;
-		if ($row['apple_img_path']) $has_imgs_bits |= 1;
-		if ($row['google_img_path']) $has_imgs_bits |= 2;
-		if ($row['twitter_img_path']) $has_imgs_bits |= 4;
-		if ($row['emojione_img_path']) $has_imgs_bits |= 8;
+		$has_imgs_bits = calc_img_has($row);
 		$has_skins = count($row['skin_variations']) ? 1 : 0;
 
 		list($key) = explode('.', $row['image']);
@@ -127,4 +123,13 @@
 		}
 		$buffer = substr($buffer, 0, -2)."\n{$pad}}";
 		return $buffer;
+	}
+
+	function calc_img_has($row){
+		$has_imgs_bits = 0;
+		if ($row['has_img_apple']) $has_imgs_bits |= 1;
+		if ($row['has_img_google']) $has_imgs_bits |= 2;
+		if ($row['has_img_twitter']) $has_imgs_bits |= 4;
+		if ($row['has_img_emojione']) $has_imgs_bits |= 8;
+		return $has_imgs_bits;
 	}
