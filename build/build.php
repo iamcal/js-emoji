@@ -8,11 +8,10 @@
 	#
 
 	$out = array();
+	$vars_out = array();
 	$text_out = array();
 
 	foreach ($d as $row){
-		$has_imgs_bits = calc_img_has($row);
-		$has_skins = count($row['skin_variations']) ? 1 : 0;
 
 		list($key) = explode('.', $row['image']);
 		$out[$key] = array(
@@ -22,8 +21,8 @@
 			$row['short_names'],
 			$row['sheet_x'],
 			$row['sheet_y'],
-			$has_imgs_bits,
-			$has_skins,
+			calc_img_has($row),
+			0,
 		);
 		if ($row['text']){
 			$out[$key][] = $row['text'];
@@ -38,10 +37,23 @@
 				array_unshift($out[$key][0], calc_bytes($var));
 			}
 		}
+		if (count($row['skin_variations'])){
+			foreach ($row['skin_variations'] as $row2){
+
+				list($key) = explode('.', $row2['image']);
+
+				$vars_out[$key] = array(
+					$row2['sheet_x'],
+					$row2['sheet_y'],
+					calc_img_has($row2),
+				);
+			}
+		}
 	}
 
 	$json = pretty_print_json($out);
-	$json2 = pretty_print_json($text_out);
+	$json_vars = pretty_print_json($vars_out);
+	$json_text = pretty_print_json($text_out);
 
 
 	#
@@ -71,7 +83,7 @@
 	#
 
 	$template = file_get_contents('emoji.js.template');
-	echo str_replace(array('#SHEET-SIZE#', '#DATA#', '#DATA2#'), array($sheet_size, $json, $json2), $template);
+	echo str_replace(array('#SHEET-SIZE#', '#DATA#', '#DATA-TEXT#', '#DATA-VARS#'), array($sheet_size, $json, $json_text, $json_vars), $template);
 
 
 	#
