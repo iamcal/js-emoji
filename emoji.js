@@ -15,7 +15,7 @@ function emoji(){}
 
 	/**
 	 * Configuration details for different image sets. This includes a path to a directory containing the
-	 * individual images (`path`( and a URL to sprite sheets (`sheet`). All of these images can be found
+	 * individual images (`path`) and a URL to sprite sheets (`sheet`). All of these images can be found
 	 * in the [emoji-data repository]{@link https://github.com/iamcal/emoji-data}. Using a CDN for these
 	 * is not a bad idea.
 	 *
@@ -23,10 +23,10 @@ function emoji(){}
 	 * @type {
 	 */
 	emoji.img_sets = {
-		'apple'    : {'path' : '/emoji-data/img-apple-64/'   , 'sheet' : '/emoji-data/sheet_apple_64.png'    },
-		'google'   : {'path' : '/emoji-data/img-google-64/'  , 'sheet' : '/emoji-data/sheet_google_64.png'   },
-		'twitter'  : {'path' : '/emoji-data/img-twitter-64/' , 'sheet' : '/emoji-data/sheet_twitter_64.png'  },
-		'emojione' : {'path' : '/emoji-data/img-emojione-64/', 'sheet' : '/emoji-data/sheet_emojione_64.png' }
+		'apple'    : {'path' : '/emoji-data/img-apple-64/'   , 'sheet' : '/emoji-data/sheet_apple_64.png',    'mask' : 1 },
+		'google'   : {'path' : '/emoji-data/img-google-64/'  , 'sheet' : '/emoji-data/sheet_google_64.png',   'mask' : 2 },
+		'twitter'  : {'path' : '/emoji-data/img-twitter-64/' , 'sheet' : '/emoji-data/sheet_twitter_64.png',  'mask' : 4 },
+		'emojione' : {'path' : '/emoji-data/img-emojione-64/', 'sheet' : '/emoji-data/sheet_emojione_64.png', 'mask' : 8 }
 	};
 
 	/**
@@ -131,10 +131,33 @@ function emoji(){}
 	 */
 	emoji.replace_colons = function(str){
 		emoji.init_colons();
+
 		return str.replace(emoji.rx_colons, function(m){
 			var idx = m.substr(1, m.length-2);
-			var val = emoji.map.colons[idx];
-			return val ? emoji.replacement(val, idx, ':') : m;
+
+			// special case - an emoji with a skintone modified
+			if (idx.indexOf('::skin-tone-') > -1){
+
+				var skin_tone = idx.substr(-1, 1);
+				var skin_idx = 'skin-tone-'+skin_tone;
+				var skin_val = emoji.map.colons[skin_idx];
+
+				idx = idx.substr(0, idx.length - 13);
+
+				var val = emoji.map.colons[idx];
+				if (val){
+					return emoji.replacement(val, idx, ':', {
+						'idx'		: skin_val,
+						'actual'	: skin_idx,
+						'wrapper'	: ':'
+					});
+				}else{
+					return ':' + idx + ':' + emoji.replacement(skin_val, skin_idx, ':');
+				}
+			}else{
+				var val = emoji.map.colons[idx];
+				return val ? emoji.replacement(val, idx, ':') : m;
+			}
 		});
 	};
 
@@ -156,32 +179,69 @@ function emoji(){}
 
 	// Does the actual replacement of a character with the appropriate
 	/** @private */
-	emoji.replacement = function(idx, actual, wrapper){
+	emoji.replacement = function(idx, actual, wrapper, variation){
+
+		// for emoji with variation modifiers, set `etxra` to the standalone output for the
+		// modifier (used if we can't combine the glyph) and set variation_idx to key of the
+		// variation modifier (used below)
+		var extra = '';
+		var variation_idx = 0;
+		if (typeof variation === 'object'){
+			extra = emoji.replacement(variation.idx, variation.actual, variation.wrapper);
+			variation_idx = idx + '-' + variation.idx;
+		}
+
+		// deal with simple modes (colons and text) first
 		wrapper = wrapper || '';
-		if (emoji.colons_mode) return ':'+emoji.data[idx][3][0]+':';
+		if (emoji.colons_mode) return ':'+emoji.data[idx][3][0]+':'+extra;
 		var text_name = (actual) ? wrapper+actual+wrapper : emoji.data[idx][8] || wrapper+emoji.data[idx][3][0]+wrapper;
-		if (emoji.text_mode) return text_name;
+		if (emoji.text_mode) return text_name + extra;
+
+		// native modes next.
+		// for variations selectors, we just need to output them raw, which `extra` will contain.
 		emoji.init_env();
-		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0][0]) return emoji.data[idx][0][0];
-		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1];
-		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2];
+		if (emoji.replace_mode == 'unified'  && emoji.allow_native && emoji.data[idx][0][0]) return emoji.data[idx][0][0] + extra;
+		if (emoji.replace_mode == 'softbank' && emoji.allow_native && emoji.data[idx][1]) return emoji.data[idx][1] + extra;
+		if (emoji.replace_mode == 'google'   && emoji.allow_native && emoji.data[idx][2]) return emoji.data[idx][2] + extra;
+
+		// finally deal with image modes.
+		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
+		// use the variation image. otherwise, return it as a separate image (already calculated in `extra`).
+		// first we set up the params we'll use if we can't use a variation.
 		var img = emoji.data[idx][9] || emoji.img_sets[emoji.img_set].path+idx+'.png';
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
+		var px = emoji.data[idx][4];
+		var py = emoji.data[idx][5];
+
+		// now we'll see if we can use a varition. if we can, we can override the params above and blank
+		// out `extra` so we output a sinlge glyph.
+		// we need to check that:
+		//  * we requested a variation
+		//  * such a variation exists in `emoji.variations_data`
+		//  * we're not using a custom image for this glyph
+		//  * the variation has an image defined for the current image set
+		if (variation_idx && emoji.variations_data[variation_idx] && emoji.variations_data[variation_idx][2] && !emoji.data[idx][9]){
+			if (emoji.variations_data[variation_idx][2] & emoji.img_sets[emoji.img_set].mask){
+				img = emoji.img_sets[emoji.img_set].path+variation_idx+'.png';
+				px = emoji.variations_data[variation_idx][0];
+				py = emoji.variations_data[variation_idx][1];
+				extra = '';
+			}
+		}
+
 		if (emoji.supports_css) {
-			var px = emoji.data[idx][4];
-			var py = emoji.data[idx][5];
 			if (emoji.use_sheet && px != null && py != null){
 				var mul = 100 / (emoji.sheet_size - 1);
 				var style = 'background: url('+emoji.img_sets[emoji.img_set].sheet+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
-				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>';
+				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>'+extra;
 			}else if (emoji.use_css_imgs){
-				return '<span class="emoji emoji-'+idx+'"'+title+'>'+text+'</span>';
+				return '<span class="emoji emoji-'+idx+'"'+title+'>'+text+'</span>'+extra;
 			}else{
-				return '<span class="emoji emoji-sizer" style="background-image:url('+img+')"'+title+'>'+text+'</span>';
+				return '<span class="emoji emoji-sizer" style="background-image:url('+img+')"'+title+'>'+text+'</span>'+extra;
 			}
 		}
-		return '<img src="'+img+'" class="emoji" '+title+'/>';
+		return '<img src="'+img+'" class="emoji" '+title+'/>'+extra;
 	};
 
 	// Initializes the text emoticon data
@@ -210,7 +270,7 @@ function emoji(){}
 	emoji.init_colons = function(){
 		if (emoji.inits.colons) return;
 		emoji.inits.colons = 1;
-		emoji.rx_colons = new RegExp('\:[a-zA-Z0-9-_+]+\:', 'g');
+		emoji.rx_colons = new RegExp('\:[a-zA-Z0-9-_+]+\:(\:skin-tone-[2-6]\:)?', 'g');
 		emoji.map.colons = {};
 		for (var i in emoji.data){
 			for (var j=0; j<emoji.data[i][3].length; j++){
@@ -333,7 +393,7 @@ function emoji(){}
 		"2611":[["\u2611\uFE0F","\u2611"],"","\uDBBA\uDF8B",["ballot_box_with_check"],0,34,15,0],
 		"2614":[["\u2614\uFE0F","\u2614"],"\uE04B","\uDBB8\uDC02",["umbrella"],1,0,15,0],
 		"2615":[["\u2615\uFE0F","\u2615"],"\uE045","\uDBBA\uDD81",["coffee"],1,1,15,0],
-		"261d":[["\u261D\uFE0F","\u261D"],"\uE00F","\uDBBA\uDF98",["point_up"],1,2,15,1],
+		"261d":[["\u261D\uFE0F","\u261D"],"\uE00F","\uDBBA\uDF98",["point_up"],1,2,15,0],
 		"263a":[["\u263A\uFE0F","\u263A"],"\uE414","\uDBB8\uDF36",["relaxed"],1,8,15,0],
 		"2648":[["\u2648\uFE0F","\u2648"],"\uE23F","\uDBB8\uDC2B",["aries"],1,9,15,0],
 		"2649":[["\u2649\uFE0F","\u2649"],"\uE240","\uDBB8\uDC2C",["taurus"],1,10,15,0],
@@ -375,9 +435,9 @@ function emoji(){}
 		"2705":[["\u2705"],"","\uDBBA\uDF4A",["white_check_mark"],2,11,15,0],
 		"2708":[["\u2708\uFE0F","\u2708"],"\uE01D","\uDBB9\uDFE9",["airplane"],2,12,15,0],
 		"2709":[["\u2709\uFE0F","\u2709"],"\uE103","\uDBB9\uDD29",["email","envelope"],2,13,15,0],
-		"270a":[["\u270A"],"\uE010","\uDBBA\uDF93",["fist"],2,14,15,1],
-		"270b":[["\u270B"],"\uE012","\uDBBA\uDF95",["hand","raised_hand"],2,20,15,1],
-		"270c":[["\u270C\uFE0F","\u270C"],"\uE011","\uDBBA\uDF94",["v"],2,26,15,1],
+		"270a":[["\u270A"],"\uE010","\uDBBA\uDF93",["fist"],2,14,15,0],
+		"270b":[["\u270B"],"\uE012","\uDBBA\uDF95",["hand","raised_hand"],2,20,15,0],
+		"270c":[["\u270C\uFE0F","\u270C"],"\uE011","\uDBBA\uDF94",["v"],2,26,15,0],
 		"270f":[["\u270F\uFE0F","\u270F"],"\uE301","\uDBB9\uDD39",["pencil2"],2,32,15,0],
 		"2712":[["\u2712\uFE0F","\u2712"],"","\uDBB9\uDD36",["black_nib"],2,33,15,0],
 		"2714":[["\u2714\uFE0F","\u2714"],"","\uDBBA\uDF49",["heavy_check_mark"],2,34,15,0],
@@ -559,7 +619,7 @@ function emoji(){}
 		"1f382":[["\uD83C\uDF82"],"\uE34B","\uDBB9\uDD11",["birthday"],8,0,15,0],
 		"1f383":[["\uD83C\uDF83"],"\uE445","\uDBB9\uDD1F",["jack_o_lantern"],8,1,15,0],
 		"1f384":[["\uD83C\uDF84"],"\uE033","\uDBB9\uDD12",["christmas_tree"],8,2,15,0],
-		"1f385":[["\uD83C\uDF85"],"\uE448","\uDBB9\uDD13",["santa"],8,3,15,1],
+		"1f385":[["\uD83C\uDF85"],"\uE448","\uDBB9\uDD13",["santa"],8,3,15,0],
 		"1f386":[["\uD83C\uDF86"],"\uE117","\uDBB9\uDD15",["fireworks"],8,9,15,0],
 		"1f387":[["\uD83C\uDF87"],"\uE440","\uDBB9\uDD1D",["sparkler"],8,10,15,0],
 		"1f388":[["\uD83C\uDF88"],"\uE310","\uDBB9\uDD16",["balloon"],8,11,15,0],
@@ -609,13 +669,13 @@ function emoji(){}
 		"1f3c0":[["\uD83C\uDFC0"],"\uE42A","\uDBB9\uDFD6",["basketball"],9,20,15,0],
 		"1f3c1":[["\uD83C\uDFC1"],"\uE132","\uDBB9\uDFD7",["checkered_flag"],9,21,15,0],
 		"1f3c2":[["\uD83C\uDFC2"],"","\uDBB9\uDFD8",["snowboarder"],9,22,15,0],
-		"1f3c3":[["\uD83C\uDFC3"],"\uE115","\uDBB9\uDFD9",["runner","running"],9,23,15,1],
-		"1f3c4":[["\uD83C\uDFC4"],"\uE017","\uDBB9\uDFDA",["surfer"],9,29,15,1],
+		"1f3c3":[["\uD83C\uDFC3"],"\uE115","\uDBB9\uDFD9",["runner","running"],9,23,15,0],
+		"1f3c4":[["\uD83C\uDFC4"],"\uE017","\uDBB9\uDFDA",["surfer"],9,29,15,0],
 		"1f3c6":[["\uD83C\uDFC6"],"\uE131","\uDBB9\uDFDB",["trophy"],10,0,15,0],
-		"1f3c7":[["\uD83C\uDFC7"],"","",["horse_racing"],10,1,15,1],
+		"1f3c7":[["\uD83C\uDFC7"],"","",["horse_racing"],10,1,15,0],
 		"1f3c8":[["\uD83C\uDFC8"],"\uE42B","\uDBB9\uDFDD",["football"],10,7,15,0],
 		"1f3c9":[["\uD83C\uDFC9"],"","",["rugby_football"],10,8,15,0],
-		"1f3ca":[["\uD83C\uDFCA"],"\uE42D","\uDBB9\uDFDE",["swimmer"],10,9,15,1],
+		"1f3ca":[["\uD83C\uDFCA"],"\uE42D","\uDBB9\uDFDE",["swimmer"],10,9,15,0],
 		"1f3e0":[["\uD83C\uDFE0"],"\uE036","\uDBB9\uDCB0",["house"],10,15,15,0],
 		"1f3e1":[["\uD83C\uDFE1"],"\uE036","\uDBB9\uDCB1",["house_with_garden"],10,16,15,0],
 		"1f3e2":[["\uD83C\uDFE2"],"\uE038","\uDBB9\uDCB2",["office"],10,17,15,0],
@@ -702,21 +762,21 @@ function emoji(){}
 		"1f43d":[["\uD83D\uDC3D"],"\uE10B","\uDBB8\uDDE0",["pig_nose"],12,28,15,0],
 		"1f43e":[["\uD83D\uDC3E"],"\uE536","\uDBB8\uDDDB",["feet","paw_prints"],12,29,15,0],
 		"1f440":[["\uD83D\uDC40"],"\uE419","\uDBB8\uDD90",["eyes"],12,30,15,0],
-		"1f442":[["\uD83D\uDC42"],"\uE41B","\uDBB8\uDD91",["ear"],12,31,15,1],
-		"1f443":[["\uD83D\uDC43"],"\uE41A","\uDBB8\uDD92",["nose"],13,2,15,1],
+		"1f442":[["\uD83D\uDC42"],"\uE41B","\uDBB8\uDD91",["ear"],12,31,15,0],
+		"1f443":[["\uD83D\uDC43"],"\uE41A","\uDBB8\uDD92",["nose"],13,2,15,0],
 		"1f444":[["\uD83D\uDC44"],"\uE41C","\uDBB8\uDD93",["lips"],13,8,15,0],
 		"1f445":[["\uD83D\uDC45"],"\uE409","\uDBB8\uDD94",["tongue"],13,9,15,0],
-		"1f446":[["\uD83D\uDC46"],"\uE22E","\uDBBA\uDF99",["point_up_2"],13,10,15,1],
-		"1f447":[["\uD83D\uDC47"],"\uE22F","\uDBBA\uDF9A",["point_down"],13,16,15,1],
-		"1f448":[["\uD83D\uDC48"],"\uE230","\uDBBA\uDF9B",["point_left"],13,22,15,1],
-		"1f449":[["\uD83D\uDC49"],"\uE231","\uDBBA\uDF9C",["point_right"],13,28,15,1],
-		"1f44a":[["\uD83D\uDC4A"],"\uE00D","\uDBBA\uDF96",["facepunch","punch"],13,34,15,1],
-		"1f44b":[["\uD83D\uDC4B"],"\uE41E","\uDBBA\uDF9D",["wave"],14,5,15,1],
-		"1f44c":[["\uD83D\uDC4C"],"\uE420","\uDBBA\uDF9F",["ok_hand"],14,11,15,1],
-		"1f44d":[["\uD83D\uDC4D"],"\uE00E","\uDBBA\uDF97",["+1","thumbsup"],14,17,15,1],
-		"1f44e":[["\uD83D\uDC4E"],"\uE421","\uDBBA\uDFA0",["-1","thumbsdown"],14,23,15,1],
-		"1f44f":[["\uD83D\uDC4F"],"\uE41F","\uDBBA\uDF9E",["clap"],14,29,15,1],
-		"1f450":[["\uD83D\uDC50"],"\uE422","\uDBBA\uDFA1",["open_hands"],15,0,15,1],
+		"1f446":[["\uD83D\uDC46"],"\uE22E","\uDBBA\uDF99",["point_up_2"],13,10,15,0],
+		"1f447":[["\uD83D\uDC47"],"\uE22F","\uDBBA\uDF9A",["point_down"],13,16,15,0],
+		"1f448":[["\uD83D\uDC48"],"\uE230","\uDBBA\uDF9B",["point_left"],13,22,15,0],
+		"1f449":[["\uD83D\uDC49"],"\uE231","\uDBBA\uDF9C",["point_right"],13,28,15,0],
+		"1f44a":[["\uD83D\uDC4A"],"\uE00D","\uDBBA\uDF96",["facepunch","punch"],13,34,15,0],
+		"1f44b":[["\uD83D\uDC4B"],"\uE41E","\uDBBA\uDF9D",["wave"],14,5,15,0],
+		"1f44c":[["\uD83D\uDC4C"],"\uE420","\uDBBA\uDF9F",["ok_hand"],14,11,15,0],
+		"1f44d":[["\uD83D\uDC4D"],"\uE00E","\uDBBA\uDF97",["+1","thumbsup"],14,17,15,0],
+		"1f44e":[["\uD83D\uDC4E"],"\uE421","\uDBBA\uDFA0",["-1","thumbsdown"],14,23,15,0],
+		"1f44f":[["\uD83D\uDC4F"],"\uE41F","\uDBBA\uDF9E",["clap"],14,29,15,0],
+		"1f450":[["\uD83D\uDC50"],"\uE422","\uDBBA\uDFA1",["open_hands"],15,0,15,0],
 		"1f451":[["\uD83D\uDC51"],"\uE10E","\uDBB9\uDCD1",["crown"],15,6,15,0],
 		"1f452":[["\uD83D\uDC52"],"\uE318","\uDBB9\uDCD4",["womans_hat"],15,7,15,0],
 		"1f453":[["\uD83D\uDC53"],"","\uDBB9\uDCCE",["eyeglasses"],15,8,15,0],
@@ -738,40 +798,40 @@ function emoji(){}
 		"1f463":[["\uD83D\uDC63"],"\uE536","\uDBB9\uDD53",["footprints"],15,24,15,0],
 		"1f464":[["\uD83D\uDC64"],"","\uDBB8\uDD9A",["bust_in_silhouette"],15,25,15,0],
 		"1f465":[["\uD83D\uDC65"],"","",["busts_in_silhouette"],15,26,15,0],
-		"1f466":[["\uD83D\uDC66"],"\uE001","\uDBB8\uDD9B",["boy"],15,27,15,1],
-		"1f467":[["\uD83D\uDC67"],"\uE002","\uDBB8\uDD9C",["girl"],15,33,15,1],
-		"1f468":[["\uD83D\uDC68"],"\uE004","\uDBB8\uDD9D",["man"],16,4,15,1],
-		"1f469":[["\uD83D\uDC69"],"\uE005","\uDBB8\uDD9E",["woman"],16,10,15,1],
+		"1f466":[["\uD83D\uDC66"],"\uE001","\uDBB8\uDD9B",["boy"],15,27,15,0],
+		"1f467":[["\uD83D\uDC67"],"\uE002","\uDBB8\uDD9C",["girl"],15,33,15,0],
+		"1f468":[["\uD83D\uDC68"],"\uE004","\uDBB8\uDD9D",["man"],16,4,15,0],
+		"1f469":[["\uD83D\uDC69"],"\uE005","\uDBB8\uDD9E",["woman"],16,10,15,0],
 		"1f46a":[["\uD83D\uDC6A"],"","\uDBB8\uDD9F",["family"],16,16,15,0],
 		"1f46b":[["\uD83D\uDC6B"],"\uE428","\uDBB8\uDDA0",["couple"],16,17,15,0],
 		"1f46c":[["\uD83D\uDC6C"],"","",["two_men_holding_hands"],16,18,15,0],
 		"1f46d":[["\uD83D\uDC6D"],"","",["two_women_holding_hands"],16,19,15,0],
-		"1f46e":[["\uD83D\uDC6E"],"\uE152","\uDBB8\uDDA1",["cop"],16,20,15,1],
+		"1f46e":[["\uD83D\uDC6E"],"\uE152","\uDBB8\uDDA1",["cop"],16,20,15,0],
 		"1f46f":[["\uD83D\uDC6F"],"\uE429","\uDBB8\uDDA2",["dancers"],16,26,15,0],
-		"1f470":[["\uD83D\uDC70"],"","\uDBB8\uDDA3",["bride_with_veil"],16,27,15,1],
-		"1f471":[["\uD83D\uDC71"],"\uE515","\uDBB8\uDDA4",["person_with_blond_hair"],16,33,15,1],
-		"1f472":[["\uD83D\uDC72"],"\uE516","\uDBB8\uDDA5",["man_with_gua_pi_mao"],17,4,15,1],
-		"1f473":[["\uD83D\uDC73"],"\uE517","\uDBB8\uDDA6",["man_with_turban"],17,10,15,1],
-		"1f474":[["\uD83D\uDC74"],"\uE518","\uDBB8\uDDA7",["older_man"],17,16,15,1],
-		"1f475":[["\uD83D\uDC75"],"\uE519","\uDBB8\uDDA8",["older_woman"],17,22,15,1],
-		"1f476":[["\uD83D\uDC76"],"\uE51A","\uDBB8\uDDA9",["baby"],17,28,15,1],
-		"1f477":[["\uD83D\uDC77"],"\uE51B","\uDBB8\uDDAA",["construction_worker"],17,34,15,1],
-		"1f478":[["\uD83D\uDC78"],"\uE51C","\uDBB8\uDDAB",["princess"],18,5,15,1],
+		"1f470":[["\uD83D\uDC70"],"","\uDBB8\uDDA3",["bride_with_veil"],16,27,15,0],
+		"1f471":[["\uD83D\uDC71"],"\uE515","\uDBB8\uDDA4",["person_with_blond_hair"],16,33,15,0],
+		"1f472":[["\uD83D\uDC72"],"\uE516","\uDBB8\uDDA5",["man_with_gua_pi_mao"],17,4,15,0],
+		"1f473":[["\uD83D\uDC73"],"\uE517","\uDBB8\uDDA6",["man_with_turban"],17,10,15,0],
+		"1f474":[["\uD83D\uDC74"],"\uE518","\uDBB8\uDDA7",["older_man"],17,16,15,0],
+		"1f475":[["\uD83D\uDC75"],"\uE519","\uDBB8\uDDA8",["older_woman"],17,22,15,0],
+		"1f476":[["\uD83D\uDC76"],"\uE51A","\uDBB8\uDDA9",["baby"],17,28,15,0],
+		"1f477":[["\uD83D\uDC77"],"\uE51B","\uDBB8\uDDAA",["construction_worker"],17,34,15,0],
+		"1f478":[["\uD83D\uDC78"],"\uE51C","\uDBB8\uDDAB",["princess"],18,5,15,0],
 		"1f479":[["\uD83D\uDC79"],"","\uDBB8\uDDAC",["japanese_ogre"],18,11,15,0],
 		"1f47a":[["\uD83D\uDC7A"],"","\uDBB8\uDDAD",["japanese_goblin"],18,12,15,0],
 		"1f47b":[["\uD83D\uDC7B"],"\uE11B","\uDBB8\uDDAE",["ghost"],18,13,15,0],
-		"1f47c":[["\uD83D\uDC7C"],"\uE04E","\uDBB8\uDDAF",["angel"],18,14,15,1],
+		"1f47c":[["\uD83D\uDC7C"],"\uE04E","\uDBB8\uDDAF",["angel"],18,14,15,0],
 		"1f47d":[["\uD83D\uDC7D"],"\uE10C","\uDBB8\uDDB0",["alien"],18,20,15,0],
 		"1f47e":[["\uD83D\uDC7E"],"\uE12B","\uDBB8\uDDB1",["space_invader"],18,21,15,0],
 		"1f47f":[["\uD83D\uDC7F"],"\uE11A","\uDBB8\uDDB2",["imp"],18,22,15,0],
 		"1f480":[["\uD83D\uDC80"],"\uE11C","\uDBB8\uDDB3",["skull"],18,23,15,0],
-		"1f481":[["\uD83D\uDC81"],"\uE253","\uDBB8\uDDB4",["information_desk_person"],18,24,15,1],
-		"1f482":[["\uD83D\uDC82"],"\uE51E","\uDBB8\uDDB5",["guardsman"],18,30,15,1],
-		"1f483":[["\uD83D\uDC83"],"\uE51F","\uDBB8\uDDB6",["dancer"],19,1,15,1],
+		"1f481":[["\uD83D\uDC81"],"\uE253","\uDBB8\uDDB4",["information_desk_person"],18,24,15,0],
+		"1f482":[["\uD83D\uDC82"],"\uE51E","\uDBB8\uDDB5",["guardsman"],18,30,15,0],
+		"1f483":[["\uD83D\uDC83"],"\uE51F","\uDBB8\uDDB6",["dancer"],19,1,15,0],
 		"1f484":[["\uD83D\uDC84"],"\uE31C","\uDBB8\uDD95",["lipstick"],19,7,15,0],
-		"1f485":[["\uD83D\uDC85"],"\uE31D","\uDBB8\uDD96",["nail_care"],19,8,15,1],
-		"1f486":[["\uD83D\uDC86"],"\uE31E","\uDBB8\uDD97",["massage"],19,14,15,1],
-		"1f487":[["\uD83D\uDC87"],"\uE31F","\uDBB8\uDD98",["haircut"],19,20,15,1],
+		"1f485":[["\uD83D\uDC85"],"\uE31D","\uDBB8\uDD96",["nail_care"],19,8,15,0],
+		"1f486":[["\uD83D\uDC86"],"\uE31E","\uDBB8\uDD97",["massage"],19,14,15,0],
+		"1f487":[["\uD83D\uDC87"],"\uE31F","\uDBB8\uDD98",["haircut"],19,20,15,0],
 		"1f488":[["\uD83D\uDC88"],"\uE320","\uDBB8\uDD99",["barber"],19,26,15,0],
 		"1f489":[["\uD83D\uDC89"],"\uE13B","\uDBB9\uDD09",["syringe"],19,27,15,0],
 		"1f48a":[["\uD83D\uDC8A"],"\uE30F","\uDBB9\uDD0A",["pill"],19,28,15,0],
@@ -806,7 +866,7 @@ function emoji(){}
 		"1f4a7":[["\uD83D\uDCA7"],"\uE331","\uDBBA\uDF5C",["droplet"],20,22,15,0],
 		"1f4a8":[["\uD83D\uDCA8"],"\uE330","\uDBBA\uDF5D",["dash"],20,23,15,0],
 		"1f4a9":[["\uD83D\uDCA9"],"\uE05A","\uDBB9\uDCF4",["hankey","poop","shit"],20,24,15,0],
-		"1f4aa":[["\uD83D\uDCAA"],"\uE14C","\uDBBA\uDF5E",["muscle"],20,25,15,1],
+		"1f4aa":[["\uD83D\uDCAA"],"\uE14C","\uDBBA\uDF5E",["muscle"],20,25,15,0],
 		"1f4ab":[["\uD83D\uDCAB"],"\uE407","\uDBBA\uDF5F",["dizzy"],20,31,15,0],
 		"1f4ac":[["\uD83D\uDCAC"],"","\uDBB9\uDD32",["speech_balloon"],20,32,15,0],
 		"1f4ad":[["\uD83D\uDCAD"],"","",["thought_balloon"],20,33,15,0],
@@ -1044,17 +1104,17 @@ function emoji(){}
 		"1f63e":[["\uD83D\uDE3E"],"\uE416","\uDBB8\uDF4E",["pouting_cat"],27,20,15,0],
 		"1f63f":[["\uD83D\uDE3F"],"\uE413","\uDBB8\uDF4D",["crying_cat_face"],27,21,15,0],
 		"1f640":[["\uD83D\uDE40"],"\uE403","\uDBB8\uDF50",["scream_cat"],27,22,15,0],
-		"1f645":[["\uD83D\uDE45"],"\uE423","\uDBB8\uDF51",["no_good"],27,23,15,1],
-		"1f646":[["\uD83D\uDE46"],"\uE424","\uDBB8\uDF52",["ok_woman"],27,29,15,1],
-		"1f647":[["\uD83D\uDE47"],"\uE426","\uDBB8\uDF53",["bow"],28,0,15,1],
+		"1f645":[["\uD83D\uDE45"],"\uE423","\uDBB8\uDF51",["no_good"],27,23,15,0],
+		"1f646":[["\uD83D\uDE46"],"\uE424","\uDBB8\uDF52",["ok_woman"],27,29,15,0],
+		"1f647":[["\uD83D\uDE47"],"\uE426","\uDBB8\uDF53",["bow"],28,0,15,0],
 		"1f648":[["\uD83D\uDE48"],"","\uDBB8\uDF54",["see_no_evil"],28,6,15,0],
 		"1f649":[["\uD83D\uDE49"],"","\uDBB8\uDF56",["hear_no_evil"],28,7,15,0],
 		"1f64a":[["\uD83D\uDE4A"],"","\uDBB8\uDF55",["speak_no_evil"],28,8,15,0],
-		"1f64b":[["\uD83D\uDE4B"],"\uE012","\uDBB8\uDF57",["raising_hand"],28,9,15,1],
-		"1f64c":[["\uD83D\uDE4C"],"\uE427","\uDBB8\uDF58",["raised_hands"],28,15,15,1],
-		"1f64d":[["\uD83D\uDE4D"],"\uE403","\uDBB8\uDF59",["person_frowning"],28,21,15,1],
-		"1f64e":[["\uD83D\uDE4E"],"\uE416","\uDBB8\uDF5A",["person_with_pouting_face"],28,27,15,1],
-		"1f64f":[["\uD83D\uDE4F"],"\uE41D","\uDBB8\uDF5B",["pray"],28,33,15,1],
+		"1f64b":[["\uD83D\uDE4B"],"\uE012","\uDBB8\uDF57",["raising_hand"],28,9,15,0],
+		"1f64c":[["\uD83D\uDE4C"],"\uE427","\uDBB8\uDF58",["raised_hands"],28,15,15,0],
+		"1f64d":[["\uD83D\uDE4D"],"\uE403","\uDBB8\uDF59",["person_frowning"],28,21,15,0],
+		"1f64e":[["\uD83D\uDE4E"],"\uE416","\uDBB8\uDF5A",["person_with_pouting_face"],28,27,15,0],
+		"1f64f":[["\uD83D\uDE4F"],"\uE41D","\uDBB8\uDF5B",["pray"],28,33,15,0],
 		"1f680":[["\uD83D\uDE80"],"\uE10D","\uDBB9\uDFED",["rocket"],29,4,15,0],
 		"1f681":[["\uD83D\uDE81"],"","",["helicopter"],29,5,15,0],
 		"1f682":[["\uD83D\uDE82"],"","",["steam_locomotive"],29,6,15,0],
@@ -1090,7 +1150,7 @@ function emoji(){}
 		"1f6a0":[["\uD83D\uDEA0"],"","",["mountain_cableway"],30,1,15,0],
 		"1f6a1":[["\uD83D\uDEA1"],"","",["aerial_tramway"],30,2,15,0],
 		"1f6a2":[["\uD83D\uDEA2"],"\uE202","\uDBB9\uDFE8",["ship"],30,3,15,0],
-		"1f6a3":[["\uD83D\uDEA3"],"","",["rowboat"],30,4,15,1],
+		"1f6a3":[["\uD83D\uDEA3"],"","",["rowboat"],30,4,15,0],
 		"1f6a4":[["\uD83D\uDEA4"],"\uE135","\uDBB9\uDFEE",["speedboat"],30,10,15,0],
 		"1f6a5":[["\uD83D\uDEA5"],"\uE14E","\uDBB9\uDFF7",["traffic_light"],30,11,15,0],
 		"1f6a6":[["\uD83D\uDEA6"],"","",["vertical_traffic_light"],30,12,15,0],
@@ -1107,9 +1167,9 @@ function emoji(){}
 		"1f6b1":[["\uD83D\uDEB1"],"","",["non-potable_water"],30,23,15,0],
 		"1f6b2":[["\uD83D\uDEB2"],"\uE136","\uDBB9\uDFEB",["bike"],30,24,15,0],
 		"1f6b3":[["\uD83D\uDEB3"],"","",["no_bicycles"],30,25,15,0],
-		"1f6b4":[["\uD83D\uDEB4"],"","",["bicyclist"],30,26,15,1],
-		"1f6b5":[["\uD83D\uDEB5"],"","",["mountain_bicyclist"],30,32,15,1],
-		"1f6b6":[["\uD83D\uDEB6"],"\uE201","\uDBB9\uDFF0",["walking"],31,3,15,1],
+		"1f6b4":[["\uD83D\uDEB4"],"","",["bicyclist"],30,26,15,0],
+		"1f6b5":[["\uD83D\uDEB5"],"","",["mountain_bicyclist"],30,32,15,0],
+		"1f6b6":[["\uD83D\uDEB6"],"\uE201","\uDBB9\uDFF0",["walking"],31,3,15,0],
 		"1f6b7":[["\uD83D\uDEB7"],"","",["no_pedestrians"],31,9,15,0],
 		"1f6b8":[["\uD83D\uDEB8"],"","",["children_crossing"],31,10,15,0],
 		"1f6b9":[["\uD83D\uDEB9"],"\uE138","\uDBBA\uDF33",["mens"],31,11,15,0],
@@ -1119,7 +1179,7 @@ function emoji(){}
 		"1f6bd":[["\uD83D\uDEBD"],"\uE140","\uDBB9\uDD07",["toilet"],31,15,15,0],
 		"1f6be":[["\uD83D\uDEBE"],"\uE309","\uDBB9\uDD08",["wc"],31,16,15,0],
 		"1f6bf":[["\uD83D\uDEBF"],"","",["shower"],31,17,15,0],
-		"1f6c0":[["\uD83D\uDEC0"],"\uE13F","\uDBB9\uDD05",["bath"],31,18,15,1],
+		"1f6c0":[["\uD83D\uDEC0"],"\uE13F","\uDBB9\uDD05",["bath"],31,18,15,0],
 		"1f6c1":[["\uD83D\uDEC1"],"","",["bathtub"],31,24,15,0],
 		"1f6c2":[["\uD83D\uDEC2"],"","",["passport_control"],31,25,15,0],
 		"1f6c3":[["\uD83D\uDEC3"],"","",["customs"],31,26,15,0],
@@ -1178,24 +1238,24 @@ function emoji(){}
 		"1f1fa-1f1f8":[["\uD83C\uDDFA\uD83C\uDDF8"],"\uE50C","\uDBB9\uDCE6",["flag-us","us"],33,9,15,0],
 		"1f1fb-1f1f3":[["\uD83C\uDDFB\uD83C\uDDF3"],"","",["flag-vn"],33,10,10,0],
 		"1f1ff-1f1e6":[["\uD83C\uDDFF\uD83C\uDDE6"],"","",["flag-za"],33,11,10,0],
-		"1f468-1f468-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC66"],"","",["man-man-boy"],33,12,1,0],
-		"1f468-1f468-1f466-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC66\u200D\uD83D\uDC66"],"","",["man-man-boy-boy"],33,13,1,0],
-		"1f468-1f468-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67"],"","",["man-man-girl"],33,14,1,0],
-		"1f468-1f468-1f467-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66"],"","",["man-man-girl-boy"],33,15,1,0],
-		"1f468-1f468-1f467-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC67"],"","",["man-man-girl-girl"],33,16,1,0],
-		"1f468-1f469-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66"],"","",["man-woman-boy"],33,17,1,0],
-		"1f468-1f469-1f466-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66"],"","",["man-woman-boy-boy"],33,18,1,0],
-		"1f468-1f469-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67"],"","",["man-woman-girl"],33,19,1,0],
-		"1f468-1f469-1f467-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC67"],"","",["man-woman-girl-girl"],33,20,1,0],
-		"1f468-2764-fe0f-1f468":[["\uD83D\uDC68\u200D\u2764\uFE0F\u200D\uD83D\uDC68"],"","",["man-heart-man"],33,21,1,0],
-		"1f468-2764-fe0f-1f48b-1f468":[["\uD83D\uDC68\u200D\u2764\uFE0F\u200D\uD83D\uDC8B\u200D\uD83D\uDC68"],"","",["man-kiss-man"],33,22,1,0],
-		"1f469-1f469-1f466":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC66"],"","",["woman-woman-boy"],33,23,1,0],
-		"1f469-1f469-1f466-1f466":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66"],"","",["woman-woman-boy-boy"],33,24,1,0],
-		"1f469-1f469-1f467":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67"],"","",["woman-woman-girl"],33,25,1,0],
-		"1f469-1f469-1f467-1f466":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66"],"","",["woman-woman-girl-boy"],33,26,1,0],
-		"1f469-1f469-1f467-1f467":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC67"],"","",["woman-woman-girl-girl"],33,27,1,0],
-		"1f469-2764-fe0f-1f469":[["\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC69"],"","",["woman-heart-woman"],33,28,1,0],
-		"1f469-2764-fe0f-1f48b-1f469":[["\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC8B\u200D\uD83D\uDC69"],"","",["woman-kiss-woman"],33,29,1,0]
+		"1f468-200d-1f468-200d-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC66"],"","",["man-man-boy"],33,12,1,0],
+		"1f468-200d-1f468-200d-1f466-200d-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC66\u200D\uD83D\uDC66"],"","",["man-man-boy-boy"],33,13,1,0],
+		"1f468-200d-1f468-200d-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67"],"","",["man-man-girl"],33,14,1,0],
+		"1f468-200d-1f468-200d-1f467-200d-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66"],"","",["man-man-girl-boy"],33,15,1,0],
+		"1f468-200d-1f468-200d-1f467-200d-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC67"],"","",["man-man-girl-girl"],33,16,1,0],
+		"1f468-200d-1f469-200d-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66"],"","",["man-woman-boy"],33,17,1,0],
+		"1f468-200d-1f469-200d-1f466-200d-1f466":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66"],"","",["man-woman-boy-boy"],33,18,1,0],
+		"1f468-200d-1f469-200d-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67"],"","",["man-woman-girl"],33,19,1,0],
+		"1f468-200d-1f469-200d-1f467-200d-1f467":[["\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC67"],"","",["man-woman-girl-girl"],33,20,1,0],
+		"1f468-200d-2764-fe0f-200d-1f468":[["\uD83D\uDC68\u200D\u2764\uFE0F\u200D\uD83D\uDC68"],"","",["man-heart-man"],33,21,1,0],
+		"1f468-200d-2764-fe0f-200d-1f48b-200d-1f468":[["\uD83D\uDC68\u200D\u2764\uFE0F\u200D\uD83D\uDC8B\u200D\uD83D\uDC68"],"","",["man-kiss-man"],33,22,1,0],
+		"1f469-200d-1f469-200d-1f466":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC66"],"","",["woman-woman-boy"],33,23,1,0],
+		"1f469-200d-1f469-200d-1f466-200d-1f466":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66"],"","",["woman-woman-boy-boy"],33,24,1,0],
+		"1f469-200d-1f469-200d-1f467":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67"],"","",["woman-woman-girl"],33,25,1,0],
+		"1f469-200d-1f469-200d-1f467-200d-1f466":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66"],"","",["woman-woman-girl-boy"],33,26,1,0],
+		"1f469-200d-1f469-200d-1f467-200d-1f467":[["\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC67"],"","",["woman-woman-girl-girl"],33,27,1,0],
+		"1f469-200d-2764-fe0f-200d-1f469":[["\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC69"],"","",["woman-heart-woman"],33,28,1,0],
+		"1f469-200d-2764-fe0f-200d-1f48b-200d-1f469":[["\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC8B\u200D\uD83D\uDC69"],"","",["woman-kiss-woman"],33,29,1,0]
 	};
 	/** @private */
 	emoji.emoticons_data = {
@@ -1245,6 +1305,294 @@ function emoji(){}
 		"D:":"anguished",
 		":o":"open_mouth",
 		":-o":"open_mouth"
+	};
+	/** @private */
+	emoji.variations_data = {
+		"261d-1f3fb":[1,3,1],
+		"261d-1f3fc":[1,4,1],
+		"261d-1f3fd":[1,5,1],
+		"261d-1f3fe":[1,6,1],
+		"261d-1f3ff":[1,7,1],
+		"270a-1f3fb":[2,15,1],
+		"270a-1f3fc":[2,16,1],
+		"270a-1f3fd":[2,17,1],
+		"270a-1f3fe":[2,18,1],
+		"270a-1f3ff":[2,19,1],
+		"270b-1f3fb":[2,21,1],
+		"270b-1f3fc":[2,22,1],
+		"270b-1f3fd":[2,23,1],
+		"270b-1f3fe":[2,24,1],
+		"270b-1f3ff":[2,25,1],
+		"270c-1f3fb":[2,27,1],
+		"270c-1f3fc":[2,28,1],
+		"270c-1f3fd":[2,29,1],
+		"270c-1f3fe":[2,30,1],
+		"270c-1f3ff":[2,31,1],
+		"1f385-1f3fb":[8,4,1],
+		"1f385-1f3fc":[8,5,1],
+		"1f385-1f3fd":[8,6,1],
+		"1f385-1f3fe":[8,7,1],
+		"1f385-1f3ff":[8,8,1],
+		"1f3c3-1f3fb":[9,24,1],
+		"1f3c3-1f3fc":[9,25,1],
+		"1f3c3-1f3fd":[9,26,1],
+		"1f3c3-1f3fe":[9,27,1],
+		"1f3c3-1f3ff":[9,28,1],
+		"1f3c4-1f3fb":[9,30,1],
+		"1f3c4-1f3fc":[9,31,1],
+		"1f3c4-1f3fd":[9,32,1],
+		"1f3c4-1f3fe":[9,33,1],
+		"1f3c4-1f3ff":[9,34,1],
+		"1f3c7-1f3fb":[10,2,1],
+		"1f3c7-1f3fc":[10,3,1],
+		"1f3c7-1f3fd":[10,4,1],
+		"1f3c7-1f3fe":[10,5,1],
+		"1f3c7-1f3ff":[10,6,1],
+		"1f3ca-1f3fb":[10,10,1],
+		"1f3ca-1f3fc":[10,11,1],
+		"1f3ca-1f3fd":[10,12,1],
+		"1f3ca-1f3fe":[10,13,1],
+		"1f3ca-1f3ff":[10,14,1],
+		"1f442-1f3fb":[12,32,1],
+		"1f442-1f3fc":[12,33,1],
+		"1f442-1f3fd":[12,34,1],
+		"1f442-1f3fe":[13,0,1],
+		"1f442-1f3ff":[13,1,1],
+		"1f443-1f3fb":[13,3,1],
+		"1f443-1f3fc":[13,4,1],
+		"1f443-1f3fd":[13,5,1],
+		"1f443-1f3fe":[13,6,1],
+		"1f443-1f3ff":[13,7,1],
+		"1f446-1f3fb":[13,11,1],
+		"1f446-1f3fc":[13,12,1],
+		"1f446-1f3fd":[13,13,1],
+		"1f446-1f3fe":[13,14,1],
+		"1f446-1f3ff":[13,15,1],
+		"1f447-1f3fb":[13,17,1],
+		"1f447-1f3fc":[13,18,1],
+		"1f447-1f3fd":[13,19,1],
+		"1f447-1f3fe":[13,20,1],
+		"1f447-1f3ff":[13,21,1],
+		"1f448-1f3fb":[13,23,1],
+		"1f448-1f3fc":[13,24,1],
+		"1f448-1f3fd":[13,25,1],
+		"1f448-1f3fe":[13,26,1],
+		"1f448-1f3ff":[13,27,1],
+		"1f449-1f3fb":[13,29,1],
+		"1f449-1f3fc":[13,30,1],
+		"1f449-1f3fd":[13,31,1],
+		"1f449-1f3fe":[13,32,1],
+		"1f449-1f3ff":[13,33,1],
+		"1f44a-1f3fb":[14,0,1],
+		"1f44a-1f3fc":[14,1,1],
+		"1f44a-1f3fd":[14,2,1],
+		"1f44a-1f3fe":[14,3,1],
+		"1f44a-1f3ff":[14,4,1],
+		"1f44b-1f3fb":[14,6,1],
+		"1f44b-1f3fc":[14,7,1],
+		"1f44b-1f3fd":[14,8,1],
+		"1f44b-1f3fe":[14,9,1],
+		"1f44b-1f3ff":[14,10,1],
+		"1f44c-1f3fb":[14,12,1],
+		"1f44c-1f3fc":[14,13,1],
+		"1f44c-1f3fd":[14,14,1],
+		"1f44c-1f3fe":[14,15,1],
+		"1f44c-1f3ff":[14,16,1],
+		"1f44d-1f3fb":[14,18,1],
+		"1f44d-1f3fc":[14,19,1],
+		"1f44d-1f3fd":[14,20,1],
+		"1f44d-1f3fe":[14,21,1],
+		"1f44d-1f3ff":[14,22,1],
+		"1f44e-1f3fb":[14,24,1],
+		"1f44e-1f3fc":[14,25,1],
+		"1f44e-1f3fd":[14,26,1],
+		"1f44e-1f3fe":[14,27,1],
+		"1f44e-1f3ff":[14,28,1],
+		"1f44f-1f3fb":[14,30,1],
+		"1f44f-1f3fc":[14,31,1],
+		"1f44f-1f3fd":[14,32,1],
+		"1f44f-1f3fe":[14,33,1],
+		"1f44f-1f3ff":[14,34,1],
+		"1f450-1f3fb":[15,1,1],
+		"1f450-1f3fc":[15,2,1],
+		"1f450-1f3fd":[15,3,1],
+		"1f450-1f3fe":[15,4,1],
+		"1f450-1f3ff":[15,5,1],
+		"1f466-1f3fb":[15,28,1],
+		"1f466-1f3fc":[15,29,1],
+		"1f466-1f3fd":[15,30,1],
+		"1f466-1f3fe":[15,31,1],
+		"1f466-1f3ff":[15,32,1],
+		"1f467-1f3fb":[15,34,1],
+		"1f467-1f3fc":[16,0,1],
+		"1f467-1f3fd":[16,1,1],
+		"1f467-1f3fe":[16,2,1],
+		"1f467-1f3ff":[16,3,1],
+		"1f468-1f3fb":[16,5,1],
+		"1f468-1f3fc":[16,6,1],
+		"1f468-1f3fd":[16,7,1],
+		"1f468-1f3fe":[16,8,1],
+		"1f468-1f3ff":[16,9,1],
+		"1f469-1f3fb":[16,11,1],
+		"1f469-1f3fc":[16,12,1],
+		"1f469-1f3fd":[16,13,1],
+		"1f469-1f3fe":[16,14,1],
+		"1f469-1f3ff":[16,15,1],
+		"1f46e-1f3fb":[16,21,1],
+		"1f46e-1f3fc":[16,22,1],
+		"1f46e-1f3fd":[16,23,1],
+		"1f46e-1f3fe":[16,24,1],
+		"1f46e-1f3ff":[16,25,1],
+		"1f470-1f3fb":[16,28,1],
+		"1f470-1f3fc":[16,29,1],
+		"1f470-1f3fd":[16,30,1],
+		"1f470-1f3fe":[16,31,1],
+		"1f470-1f3ff":[16,32,1],
+		"1f471-1f3fb":[16,34,1],
+		"1f471-1f3fc":[17,0,1],
+		"1f471-1f3fd":[17,1,1],
+		"1f471-1f3fe":[17,2,1],
+		"1f471-1f3ff":[17,3,1],
+		"1f472-1f3fb":[17,5,1],
+		"1f472-1f3fc":[17,6,1],
+		"1f472-1f3fd":[17,7,1],
+		"1f472-1f3fe":[17,8,1],
+		"1f472-1f3ff":[17,9,1],
+		"1f473-1f3fb":[17,11,1],
+		"1f473-1f3fc":[17,12,1],
+		"1f473-1f3fd":[17,13,1],
+		"1f473-1f3fe":[17,14,1],
+		"1f473-1f3ff":[17,15,1],
+		"1f474-1f3fb":[17,17,1],
+		"1f474-1f3fc":[17,18,1],
+		"1f474-1f3fd":[17,19,1],
+		"1f474-1f3fe":[17,20,1],
+		"1f474-1f3ff":[17,21,1],
+		"1f475-1f3fb":[17,23,1],
+		"1f475-1f3fc":[17,24,1],
+		"1f475-1f3fd":[17,25,1],
+		"1f475-1f3fe":[17,26,1],
+		"1f475-1f3ff":[17,27,1],
+		"1f476-1f3fb":[17,29,1],
+		"1f476-1f3fc":[17,30,1],
+		"1f476-1f3fd":[17,31,1],
+		"1f476-1f3fe":[17,32,1],
+		"1f476-1f3ff":[17,33,1],
+		"1f477-1f3fb":[18,0,1],
+		"1f477-1f3fc":[18,1,1],
+		"1f477-1f3fd":[18,2,1],
+		"1f477-1f3fe":[18,3,1],
+		"1f477-1f3ff":[18,4,1],
+		"1f478-1f3fb":[18,6,1],
+		"1f478-1f3fc":[18,7,1],
+		"1f478-1f3fd":[18,8,1],
+		"1f478-1f3fe":[18,9,1],
+		"1f478-1f3ff":[18,10,1],
+		"1f47c-1f3fb":[18,15,1],
+		"1f47c-1f3fc":[18,16,1],
+		"1f47c-1f3fd":[18,17,1],
+		"1f47c-1f3fe":[18,18,1],
+		"1f47c-1f3ff":[18,19,1],
+		"1f481-1f3fb":[18,25,1],
+		"1f481-1f3fc":[18,26,1],
+		"1f481-1f3fd":[18,27,1],
+		"1f481-1f3fe":[18,28,1],
+		"1f481-1f3ff":[18,29,1],
+		"1f482-1f3fb":[18,31,1],
+		"1f482-1f3fc":[18,32,1],
+		"1f482-1f3fd":[18,33,1],
+		"1f482-1f3fe":[18,34,1],
+		"1f482-1f3ff":[19,0,1],
+		"1f483-1f3fb":[19,2,1],
+		"1f483-1f3fc":[19,3,1],
+		"1f483-1f3fd":[19,4,1],
+		"1f483-1f3fe":[19,5,1],
+		"1f483-1f3ff":[19,6,1],
+		"1f485-1f3fb":[19,9,1],
+		"1f485-1f3fc":[19,10,1],
+		"1f485-1f3fd":[19,11,1],
+		"1f485-1f3fe":[19,12,1],
+		"1f485-1f3ff":[19,13,1],
+		"1f486-1f3fb":[19,15,1],
+		"1f486-1f3fc":[19,16,1],
+		"1f486-1f3fd":[19,17,1],
+		"1f486-1f3fe":[19,18,1],
+		"1f486-1f3ff":[19,19,1],
+		"1f487-1f3fb":[19,21,1],
+		"1f487-1f3fc":[19,22,1],
+		"1f487-1f3fd":[19,23,1],
+		"1f487-1f3fe":[19,24,1],
+		"1f487-1f3ff":[19,25,1],
+		"1f4aa-1f3fb":[20,26,1],
+		"1f4aa-1f3fc":[20,27,1],
+		"1f4aa-1f3fd":[20,28,1],
+		"1f4aa-1f3fe":[20,29,1],
+		"1f4aa-1f3ff":[20,30,1],
+		"1f645-1f3fb":[27,24,1],
+		"1f645-1f3fc":[27,25,1],
+		"1f645-1f3fd":[27,26,1],
+		"1f645-1f3fe":[27,27,1],
+		"1f645-1f3ff":[27,28,1],
+		"1f646-1f3fb":[27,30,1],
+		"1f646-1f3fc":[27,31,1],
+		"1f646-1f3fd":[27,32,1],
+		"1f646-1f3fe":[27,33,1],
+		"1f646-1f3ff":[27,34,1],
+		"1f647-1f3fb":[28,1,1],
+		"1f647-1f3fc":[28,2,1],
+		"1f647-1f3fd":[28,3,1],
+		"1f647-1f3fe":[28,4,1],
+		"1f647-1f3ff":[28,5,1],
+		"1f64b-1f3fb":[28,10,1],
+		"1f64b-1f3fc":[28,11,1],
+		"1f64b-1f3fd":[28,12,1],
+		"1f64b-1f3fe":[28,13,1],
+		"1f64b-1f3ff":[28,14,1],
+		"1f64c-1f3fb":[28,16,1],
+		"1f64c-1f3fc":[28,17,1],
+		"1f64c-1f3fd":[28,18,1],
+		"1f64c-1f3fe":[28,19,1],
+		"1f64c-1f3ff":[28,20,1],
+		"1f64d-1f3fb":[28,22,1],
+		"1f64d-1f3fc":[28,23,1],
+		"1f64d-1f3fd":[28,24,1],
+		"1f64d-1f3fe":[28,25,1],
+		"1f64d-1f3ff":[28,26,1],
+		"1f64e-1f3fb":[28,28,1],
+		"1f64e-1f3fc":[28,29,1],
+		"1f64e-1f3fd":[28,30,1],
+		"1f64e-1f3fe":[28,31,1],
+		"1f64e-1f3ff":[28,32,1],
+		"1f64f-1f3fb":[28,34,1],
+		"1f64f-1f3fc":[29,0,1],
+		"1f64f-1f3fd":[29,1,1],
+		"1f64f-1f3fe":[29,2,1],
+		"1f64f-1f3ff":[29,3,1],
+		"1f6a3-1f3fb":[30,5,1],
+		"1f6a3-1f3fc":[30,6,1],
+		"1f6a3-1f3fd":[30,7,1],
+		"1f6a3-1f3fe":[30,8,1],
+		"1f6a3-1f3ff":[30,9,1],
+		"1f6b4-1f3fb":[30,27,1],
+		"1f6b4-1f3fc":[30,28,1],
+		"1f6b4-1f3fd":[30,29,1],
+		"1f6b4-1f3fe":[30,30,1],
+		"1f6b4-1f3ff":[30,31,1],
+		"1f6b5-1f3fb":[30,33,1],
+		"1f6b5-1f3fc":[30,34,1],
+		"1f6b5-1f3fd":[31,0,1],
+		"1f6b5-1f3fe":[31,1,1],
+		"1f6b5-1f3ff":[31,2,1],
+		"1f6b6-1f3fb":[31,4,1],
+		"1f6b6-1f3fc":[31,5,1],
+		"1f6b6-1f3fd":[31,6,1],
+		"1f6b6-1f3fe":[31,7,1],
+		"1f6b6-1f3ff":[31,8,1],
+		"1f6c0-1f3fb":[31,19,1],
+		"1f6c0-1f3fc":[31,20,1],
+		"1f6c0-1f3fd":[31,21,1],
+		"1f6c0-1f3fe":[31,22,1],
+		"1f6c0-1f3ff":[31,23,1]
 	};
 
 	if (typeof exports === 'object'){
