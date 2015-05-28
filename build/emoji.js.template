@@ -6,7 +6,7 @@
  */
 function emoji(){}
 	/**
-	 * The set of images to use got graphical emoji.
+	 * The set of images to use for graphical emoji.
 	 *
 	 * @memberof emoji
 	 * @type {string}
