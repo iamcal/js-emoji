@@ -260,7 +260,8 @@ function emoji(){}
 			if (!emoji.map.colons[emoji.emoticons_data[i]]) continue;
 
 			emoji.map.emoticons[emoticon] = emoji.map.colons[emoji.emoticons_data[i]];
-			a.push(emoji.escape_rx(emoticon));
+			emoji.map.emoticons[i] = emoji.map.colons[emoji.emoticons_data[i]];
+			a.push(emoji.escape_rx(emoticon), emoji.escape_rx(i));
 		}
 		emoji.rx_emoticons = new RegExp(('(^|\\s)('+a.join('|')+')(?=$|[\\s|\\?\\.,!])'), 'g');
 	};
