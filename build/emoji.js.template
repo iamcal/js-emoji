@@ -1,4 +1,4 @@
-;(function() {
+;(function(local_setup) {
 
 /**
  * @global
@@ -208,7 +208,7 @@ function emoji(){}
 		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
 		// use the variation image. otherwise, return it as a separate image (already calculated in `extra`).
 		// first we set up the params we'll use if we can't use a variation.
-		var img = emoji.data[idx][9] || emoji.img_sets[emoji.img_set].path+idx+'.png';
+		var img = emoji.data[idx][7] || emoji.img_sets[emoji.img_set].path+idx+'.png';
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		var px = emoji.data[idx][4];
@@ -368,7 +368,36 @@ function emoji(){}
 	}else{
 		this.emoji = emoji;
 	}
-
+	
+	if (local_setup) local_setup(emoji);
 }).call(function(){
 	return this || (typeof window !== 'undefined' ? window : global);
-}());
+}(), function(emoji) {
+	
+	// Set up emoji for your environment here!
+	// For instance, you might want to always
+	// convert to always render emoji as HTML
+	// and include the name as the title of
+	// the emoji HTML elements:
+
+	/*
+	emoji.include_title = true;
+	emoji.allow_native = false;
+	*/
+
+	// And you might want to always use the
+	// google's emoji images:
+
+	/*
+	emoji.img_set = 'google';
+	*/
+
+	// And you might want have want to point
+	// to a CDN for your sheets and img files
+
+	/*
+	emoji.img_sets['google']['path'] = 'http://cdn.example.com/emoji/';
+	emoji.img_sets['google']['sheet'] = 'http://cdn.example.com/emoji/sheet_google_64.png';
+	*/
+
+});
