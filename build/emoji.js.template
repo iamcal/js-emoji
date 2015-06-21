@@ -1,4 +1,4 @@
-;(function() {
+;(function(local_setup) {
 
 /**
  * @global
@@ -368,7 +368,36 @@ function emoji(){}
 	}else{
 		this.emoji = emoji;
 	}
-
+	
+	if (local_setup) local_setup(emoji);
 }).call(function(){
 	return this || (typeof window !== 'undefined' ? window : global);
-}());
+}(), function(emoji) {
+	
+	// Set up emoji for your environment here!
+	// For instance, you might want to always
+	// convert to always render emoji as HTML
+	// and include the name as the title of
+	// the emoji HTML elements:
+
+	/*
+	emoji.include_title = true;
+	emoji.allow_native = false;
+	*/
+
+	// And you might want to always use the
+	// google's emoji images:
+
+	/*
+	emoji.img_set = 'google';
+	*/
+
+	// And you might want have want to point
+	// to a CDN for your sheets and img files
+
+	/*
+	emoji.img_sets['google']['path'] = 'http://cdn.example.com/emoji/';
+	emoji.img_sets['google']['sheet'] = 'http://cdn.example.com/emoji/sheet_google_64.png';
+	*/
+
+});
