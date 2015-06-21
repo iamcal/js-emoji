@@ -208,7 +208,7 @@ function emoji(){}
 		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
 		// use the variation image. otherwise, return it as a separate image (already calculated in `extra`).
 		// first we set up the params we'll use if we can't use a variation.
-		var img = emoji.data[idx][9] || emoji.img_sets[emoji.img_set].path+idx+'.png';
+		var img = emoji.data[idx][7] || emoji.img_sets[emoji.img_set].path+idx+'.png';
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		var px = emoji.data[idx][4];
