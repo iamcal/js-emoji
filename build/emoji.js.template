@@ -376,9 +376,8 @@ function emoji(){}
 	
 	// Set up emoji for your environment here!
 	// For instance, you might want to always
-	// convert to always render emoji as HTML
-	// and include the name as the title of
-	// the emoji HTML elements:
+	// render emoji as HTML, and include the
+	// name as the title of the HTML elements:
 
 	/*
 	emoji.include_title = true;
@@ -386,7 +385,7 @@ function emoji(){}
 	*/
 
 	// And you might want to always use
-	// google's emoji images:
+	// Google's emoji images:
 
 	/*
 	emoji.img_set = 'google';
