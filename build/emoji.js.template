@@ -385,15 +385,15 @@ function emoji(){}
 	emoji.allow_native = false;
 	*/
 
-	// And you might want to always use the
+	// And you might want to always use
 	// google's emoji images:
 
 	/*
 	emoji.img_set = 'google';
 	*/
 
-	// And you might want have want to point
-	// to a CDN for your sheets and img files
+	// And you might want want to point to
+	// a CDN for your sheets and img files
 
 	/*
 	emoji.img_sets['google']['path'] = 'http://cdn.example.com/emoji/';
