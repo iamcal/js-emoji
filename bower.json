@@ -11,7 +11,7 @@
     "mobile",
     "browser"
   ],
-  "main": "emoji.js",
+  "main": "lib/emoji.js",
   "ignore": [
     "build",
     ".jshintrc",
