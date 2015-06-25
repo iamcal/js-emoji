@@ -16,7 +16,9 @@
     "karma-phantomjs-launcher": "~0.2.0",
     "phantomjs": "~1.9.17"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt-contrib-uglify": "^0.9.1"
+  },
   "scripts": {
     "test": "grunt karma"
   },
