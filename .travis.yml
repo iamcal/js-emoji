@@ -2,6 +2,11 @@ language: node_js
 node_js:
   - '0.8'
   - '0.10'
+git:
+  submodules: false
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
 before_script:
   - npm install -g bower
   - bower install
