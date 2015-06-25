@@ -13,4 +13,6 @@ before_script:
   - npm install
   - npm install -g bower
   - bower install
-script: grunt karma
+script:
+  - grunt karma
+  - grunt coveralls
