@@ -1,0 +1,45 @@
+{
+  "name": "js-emoji",
+  "version": "1.0.0",
+  "description": "A JS Emoji conversion library",
+  "main": "emoji.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "grunt": "~0.4.5",
+    "grunt-karma": "~0.11.1",
+    "jasmine-core": "~2.3.4",
+    "karma": "~0.12.37",
+    "karma-chrome-launcher": "~0.2.0",
+    "karma-jasmine": "~0.3.5",
+    "karma-phantomjs-launcher": "~0.2.0",
+    "phantomjs": "~1.9.17"
+  },
+  "devDependencies": {
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-karma": "^0.11.1",
+    "grunt-karma-coveralls": "^2.5.3",
+    "karma-coverage": "^0.4.2",
+    "karma": "^0.12.37"
+  },
+  "scripts": {
+    "test": "grunt karma"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/iamcal/js-emoji.git"
+  },
+  "keywords": [
+    "emoji",
+    "emoticon",
+    "mobile",
+    "browser"
+  ],
+  "author": "Cal Henderson <cal@iamcal.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iamcal/js-emoji/issues"
+  },
+  "homepage": "https://github.com/iamcal/js-emoji"
+}
