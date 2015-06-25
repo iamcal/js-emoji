@@ -18,7 +18,10 @@
   },
   "devDependencies": {
     "grunt-contrib-uglify": "^0.9.1",
-    "grunt-karma": "^0.11.1"
+    "grunt-karma": "^0.11.1",
+    "grunt-karma-coveralls": "^2.5.3",
+    "karma-coverage": "^0.4.2",
+    "karma": "^0.12.37"
   },
   "scripts": {
     "test": "grunt karma"
