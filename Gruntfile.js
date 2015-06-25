@@ -11,13 +11,20 @@ module.exports = function(grunt) {
         src: 'lib/emoji.js',
         dest: 'lib/emoji.min.js'
       }
+    },
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js',
+        singleRun: true,
+        browsers: ['PhantomJS'],
+        logLevel: 'ERROR'
+      }
     }
   });
 
-  // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-karma');
 
-  // Default task(s).
   grunt.registerTask('default', ['uglify']);
-
+  
 };
