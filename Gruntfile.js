@@ -19,11 +19,21 @@ module.exports = function(grunt) {
         browsers: ['PhantomJS'],
         logLevel: 'ERROR'
       }
+    },
+    coveralls: {
+      options: {
+        debug: true,
+        coverageDir: 'coverage/',
+        dryRun: true,
+        force: true,
+        recursive: true
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-karma-coveralls');
 
   grunt.registerTask('default', ['uglify']);
   
