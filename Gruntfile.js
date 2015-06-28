@@ -41,6 +41,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma-coveralls');
   grunt.loadNpmTasks('grunt-shell');
 
-  grunt.registerTask('default', ['shell:compile']);
+  grunt.registerTask('default', ['shell:compile', 'uglify', 'karma']);
   
 };
