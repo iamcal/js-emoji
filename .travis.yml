@@ -1,4 +1,4 @@
-language: php
+language: node
 node_js:
   - '0.10'
 git:
@@ -13,6 +13,7 @@ before_script:
   - npm install
   - npm install -g bower
   - bower install
+  - sudo apt-get install -y php-cli
 script:
   - grunt
   - grunt coveralls
