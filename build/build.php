@@ -1,4 +1,6 @@
 <?
+	error_reporting(E_ALL & ~E_NOTICE);
+
 	$dir = dirname(__FILE__);
 	$in = file_get_contents($dir.'/emoji-data/emoji.json');
 	$d = json_decode($in, true);
