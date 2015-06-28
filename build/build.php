@@ -1,5 +1,6 @@
 <?
-	$in = file_get_contents('emoji-data/emoji.json');
+	$dir = dirname(__FILE__);
+	$in = file_get_contents($dir.'/emoji-data/emoji.json');
 	$d = json_decode($in, true);
 
 
@@ -82,7 +83,7 @@
 	# output
 	#
 
-	$template = file_get_contents('emoji.js.template');
+	$template = file_get_contents($dir.'/emoji.js.template');
 	echo str_replace(array('#SHEET-SIZE#', '#DATA#', '#DATA-TEXT#', '#DATA-VARS#'), array($sheet_size, $json, $json_text, $json_vars), $template);
 
 
