@@ -28,13 +28,19 @@ module.exports = function(grunt) {
         force: true,
         recursive: true
       }
+    },
+    shell: {
+      compile: {
+        command: 'php build/build.php > lib/emoji.js'
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-karma-coveralls');
+  grunt.loadNpmTasks('grunt-shell');
 
-  grunt.registerTask('default', ['uglify']);
+  grunt.registerTask('default', ['shell:compile']);
   
 };
