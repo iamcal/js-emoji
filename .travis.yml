@@ -1,6 +1,4 @@
-language:
-  - node_js
-  - php
+language: php
 node_js:
   - '0.10'
 git:
