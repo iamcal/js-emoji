@@ -171,9 +171,23 @@ function emoji(){}
 	 */
 	emoji.replace_unified = function(str){
 		emoji.init_unified();
-		return str.replace(emoji.rx_unified, function(m){
-			var val = emoji.map.unified[m];
-			return val ? emoji.replacement(val) : m;
+		return str.replace(emoji.rx_unified, function(m, p1, p2){
+			var val = emoji.map.unified[p1];
+			if (!val) return m;
+			var idx = null;
+			if (p2 == '\uD83C\uDFFB') idx = '1f3fb';
+			if (p2 == '\uD83C\uDFFC') idx = '1f3fc';
+			if (p2 == '\uD83C\uDFFD') idx = '1f3fd';
+			if (p2 == '\uD83C\uDFFE') idx = '1f3fe';
+			if (p2 == '\uD83C\uDFFF') idx = '1f3ff';
+			if (idx){
+				return emoji.replacement(val, null, null, {
+					idx	: idx,
+					actual	: p2,
+					wrapper	: '',
+				});
+			}
+			return emoji.replacement(val);
 		});
 	};
 
@@ -295,7 +309,7 @@ function emoji(){}
 			}
 		}
 
-		emoji.rx_unified = new RegExp('('+a.join('|')+')', "g");
+		emoji.rx_unified = new RegExp('('+a.join('|')+')(\uD83C[\uDFFB-\uDFFF])?', "g");
 	};
 
 	// initializes the environment, figuring out what representation
