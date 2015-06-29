@@ -1,9 +1,3 @@
-describe("A suite", function() {
-  it("contains spec with an expectation", function() {
-    expect(true).toBe(true);
-  });
-});
-
 
 function emoji_span(codepoint){
 	return '<span class="emoji emoji-sizer" style="background-image:url(/'+codepoint+'.png)"></span>';
@@ -50,6 +44,48 @@ describe("Skin variations", function(){
 		// multiple skins in a row work correctly
 		expect(emoji.replace_colons(':ok_woman::skin-tone-3::skin-tone-3:')).toBe(emoji_span('1f646-1f3fc')+emoji_span('1f3fc'));
 		expect(emoji.replace_colons(':zap::skin-tone-3::skin-tone-3:')).toBe(emoji_span('26a1')+emoji_span('1f3fc')+emoji_span('1f3fc'));
+		
+	});
+
+	it("replaces unified sequences correctly", function(){
+
+		var skin1	= String.fromCharCode(0x1f3fa); // invalid
+		var skin2	= String.fromCharCode(0x1f3fb);
+		var skin3	= String.fromCharCode(0x1f3fc);
+		var skin4	= String.fromCharCode(0x1f3fd);
+		var skin5	= String.fromCharCode(0x1f3fe);
+		var skin6	= String.fromCharCode(0x1f3ff);
+		var skin7	= String.fromCharCode(0x1f400); // unicode rat
+		var ok_woman	= String.fromCharCode(0x1f646);
+		var zap		= String.fromCharCode(0x26a1);
+
+		// this emoji has skin tone variations
+		expect(emoji.replace_unified('a '+ok_woman+skin2+' b')).toBe('a '+emoji_span('1f646-1f3fb')+' b');
+
+		// this one doesn't
+		expect(emoji.replace_unified('a '+zap+skin2+' b')).toBe('a '+emoji_span('26a1')+emoji_span('1f3fb')+' b');
+
+		// test all the skin tones with a skin-varying emoji
+		expect(emoji.replace_unified(ok_woman+skin1)).toBe(emoji_span('1f646')+skin1);
+		expect(emoji.replace_unified(ok_woman+skin2)).toBe(emoji_span('1f646-1f3fb'));
+		expect(emoji.replace_unified(ok_woman+skin3)).toBe(emoji_span('1f646-1f3fc'));
+		expect(emoji.replace_unified(ok_woman+skin4)).toBe(emoji_span('1f646-1f3fd'));
+		expect(emoji.replace_unified(ok_woman+skin5)).toBe(emoji_span('1f646-1f3fe'));
+		expect(emoji.replace_unified(ok_woman+skin6)).toBe(emoji_span('1f646-1f3ff'));
+		expect(emoji.replace_unified(ok_woman+skin7)).toBe(emoji_span('1f646')+skin7);
+
+		// test all the skin tones with a non-skin-varying emoji
+		expect(emoji.replace_unified(zap+skin1)).toBe(emoji_span('26a1')+skin1);
+		expect(emoji.replace_unified(zap+skin2)).toBe(emoji_span('26a1')+emoji_span('1f3fb'));
+		expect(emoji.replace_unified(zap+skin3)).toBe(emoji_span('26a1')+emoji_span('1f3fc'));
+		expect(emoji.replace_unified(zap+skin4)).toBe(emoji_span('26a1')+emoji_span('1f3fd'));
+		expect(emoji.replace_unified(zap+skin5)).toBe(emoji_span('26a1')+emoji_span('1f3fe'));
+		expect(emoji.replace_unified(zap+skin6)).toBe(emoji_span('26a1')+emoji_span('1f3ff'));
+		expect(emoji.replace_unified(zap+skin7)).toBe(emoji_span('26a1')+skin7);
+
+		// multiple skins in a row work correctly
+		expect(emoji.replace_unified(ok_woman+skin3+skin3)).toBe(emoji_span('1f646-1f3fc')+emoji_span('1f3fc'));
+		expect(emoji.replace_unified(zap     +skin3+skin3)).toBe(emoji_span('26a1')+emoji_span('1f3fc')+emoji_span('1f3fc'));
 		
 	});
 
