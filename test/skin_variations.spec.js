@@ -1,3 +1,9 @@
+function emoji_unified(cp){
+	if (cp < 0x10000) return String.fromCharCode(cp);
+	var h = Math.floor((cp - 0x10000) / 0x400) + 0xD800;
+	var l = ((cp - 0x10000) % 0x400) + 0xDC00;
+	return String.fromCharCode(h) + String.fromCharCode(l);
+}
 
 function emoji_span(codepoint){
 	return '<span class="emoji emoji-sizer" style="background-image:url(/'+codepoint+'.png)"></span>';
@@ -49,15 +55,15 @@ describe("Skin variations", function(){
 
 	it("replaces unified sequences correctly", function(){
 
-		var skin1	= String.fromCharCode(0x1f3fa); // invalid
-		var skin2	= String.fromCharCode(0x1f3fb);
-		var skin3	= String.fromCharCode(0x1f3fc);
-		var skin4	= String.fromCharCode(0x1f3fd);
-		var skin5	= String.fromCharCode(0x1f3fe);
-		var skin6	= String.fromCharCode(0x1f3ff);
-		var skin7	= String.fromCharCode(0x1f400); // unicode rat
-		var ok_woman	= String.fromCharCode(0x1f646);
-		var zap		= String.fromCharCode(0x26a1);
+		var skin1	= emoji_unified(0x1f3fa); // invalid
+		var skin2	= emoji_unified(0x1f3fb);
+		var skin3	= emoji_unified(0x1f3fc);
+		var skin4	= emoji_unified(0x1f3fd);
+		var skin5	= emoji_unified(0x1f3fe);
+		var skin6	= emoji_unified(0x1f3ff);
+		var skin7	= emoji_unified(0x1f3f9); // also invalid
+		var ok_woman	= emoji_unified(0x1f646);
+		var zap		= emoji_unified(0x26a1);
 
 		// this emoji has skin tone variations
 		expect(emoji.replace_unified('a '+ok_woman+skin2+' b')).toBe('a '+emoji_span('1f646-1f3fb')+' b');
