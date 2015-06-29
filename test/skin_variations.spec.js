@@ -50,7 +50,12 @@ describe("Skin variations", function(){
 		// multiple skins in a row work correctly
 		expect(emoji.replace_colons(':ok_woman::skin-tone-3::skin-tone-3:')).toBe(emoji_span('1f646-1f3fc')+emoji_span('1f3fc'));
 		expect(emoji.replace_colons(':zap::skin-tone-3::skin-tone-3:')).toBe(emoji_span('26a1')+emoji_span('1f3fc')+emoji_span('1f3fc'));
-		
+
+		// multiple prefixes in a row work correctly
+		expect(emoji.replace_colons(':ok_woman::ok_woman::skin-tone-5:')).toBe(emoji_span('1f646')+emoji_span('1f646-1f3fe'));
+
+		// fails as expected if they're not contiguous
+		expect(emoji.replace_colons(':ok_woman: :skin-tone-4:')).toBe(emoji_span('1f646')+' '+emoji_span('1f3fd'));	
 	});
 
 	it("replaces unified sequences correctly", function(){
@@ -92,7 +97,12 @@ describe("Skin variations", function(){
 		// multiple skins in a row work correctly
 		expect(emoji.replace_unified(ok_woman+skin3+skin3)).toBe(emoji_span('1f646-1f3fc')+emoji_span('1f3fc'));
 		expect(emoji.replace_unified(zap     +skin3+skin3)).toBe(emoji_span('26a1')+emoji_span('1f3fc')+emoji_span('1f3fc'));
-		
+
+		// multiple prefixes in a row work correctly
+		expect(emoji.replace_unified(ok_woman+ok_woman+skin5)).toBe(emoji_span('1f646')+emoji_span('1f646-1f3fe'));
+
+		// fails as expected if they're not contiguous
+		expect(emoji.replace_unified(ok_woman+' '+skin4)).toBe(emoji_span('1f646')+' '+emoji_span('1f3fd'));
 	});
 
 });
