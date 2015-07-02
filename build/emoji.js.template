@@ -205,6 +205,18 @@ function emoji(){}
 			variation_idx = idx + '-' + variation.idx;
 		}
 
+		var img_set = emoji.img_set;
+		var use_sheet = emoji.use_sheet;
+
+		// Make sure we use an img_set that contains this emoji.
+		// For now, we assume set "apple" contains all emoji.
+		// And if we have to fallback to the apple set, don't
+		// use a sheet, to avoid having to load multiple sheets
+		if (!(emoji.data[idx][6] & emoji.img_sets[emoji.img_set].mask)) {
+			img_set = 'apple';
+			use_sheet = false;
+		}
+
 		// deal with simple modes (colons and text) first
 		wrapper = wrapper || '';
 		if (emoji.colons_mode) return ':'+emoji.data[idx][3][0]+':'+extra;
@@ -222,7 +234,7 @@ function emoji(){}
 		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
 		// use the variation image. otherwise, return it as a separate image (already calculated in `extra`).
 		// first we set up the params we'll use if we can't use a variation.
-		var img = emoji.data[idx][7] || emoji.img_sets[emoji.img_set].path+idx+'.png';
+		var img = emoji.data[idx][7] || emoji.img_sets[img_set].path+idx+'.png';
 		var title = emoji.include_title ? ' title="'+(actual || emoji.data[idx][3][0])+'"' : '';
 		var text  = emoji.include_text  ? wrapper+(actual || emoji.data[idx][3][0])+wrapper : '';
 		var px = emoji.data[idx][4];
@@ -235,7 +247,7 @@ function emoji(){}
 		//  * such a variation exists in `emoji.variations_data`
 		//  * we're not using a custom image for this glyph
 		//  * the variation has an image defined for the current image set
-		if (variation_idx && emoji.variations_data[variation_idx] && emoji.variations_data[variation_idx][2] && !emoji.data[idx][9]){
+		if (variation_idx && emoji.variations_data[variation_idx] && emoji.variations_data[variation_idx][2] && !emoji.data[idx][7]){
 			if (emoji.variations_data[variation_idx][2] & emoji.img_sets[emoji.img_set].mask){
 				img = emoji.img_sets[emoji.img_set].path+variation_idx+'.png';
 				px = emoji.variations_data[variation_idx][0];
@@ -245,9 +257,9 @@ function emoji(){}
 		}
 
 		if (emoji.supports_css) {
-			if (emoji.use_sheet && px != null && py != null){
+			if (use_sheet && px != null && py != null){
 				var mul = 100 / (emoji.sheet_size - 1);
-				var style = 'background: url('+emoji.img_sets[emoji.img_set].sheet+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
+				var style = 'background: url('+emoji.img_sets[img_set].sheet+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
 				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>'+extra;
 			}else if (emoji.use_css_imgs){
 				return '<span class="emoji emoji-'+idx+'"'+title+'>'+text+'</span>'+extra;
