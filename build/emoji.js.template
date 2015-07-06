@@ -206,15 +206,12 @@ function emoji(){}
 		}
 
 		var img_set = emoji.img_set;
-		var use_sheet = emoji.use_sheet;
 
+		// When not using sheets (which contain all emoji)
 		// Make sure we use an img_set that contains this emoji.
 		// For now, we assume set "apple" contains all emoji.
-		// And if we have to fallback to the apple set, don't
-		// use a sheet, to avoid having to load multiple sheets
-		if (!(emoji.data[idx][6] & emoji.img_sets[emoji.img_set].mask)) {
+		if (!emoji.use_sheet && !(emoji.data[idx][6] & emoji.img_sets[emoji.img_set].mask)) {
 			img_set = 'apple';
-			use_sheet = false;
 		}
 
 		// deal with simple modes (colons and text) first
@@ -257,7 +254,7 @@ function emoji(){}
 		}
 
 		if (emoji.supports_css) {
-			if (use_sheet && px != null && py != null){
+			if (emoji.use_sheet && px != null && py != null){
 				var mul = 100 / (emoji.sheet_size - 1);
 				var style = 'background: url('+emoji.img_sets[img_set].sheet+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+emoji.sheet_size+'00%';
 				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>'+extra;
