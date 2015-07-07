@@ -184,7 +184,7 @@ function emoji(){}
 				return emoji.replacement(val, null, null, {
 					idx	: idx,
 					actual	: p2,
-					wrapper	: '',
+					wrapper	: ''
 				});
 			}
 			return emoji.replacement(val);
