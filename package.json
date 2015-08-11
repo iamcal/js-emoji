@@ -2,7 +2,7 @@
   "name": "js-emoji",
   "version": "1.0.0",
   "description": "A JS Emoji conversion library",
-  "main": "emoji.js",
+  "main": "lib/emoji.js",
   "directories": {
     "test": "test"
   },
