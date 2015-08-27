@@ -51,5 +51,27 @@ describe("Unified replacer", function(){
 		expect(emoji.replace_unified('5 '+cap)).toBe('5 '+cap);
 	});
 
+	it("multi-codepoint ligatures roundtrip correctly", function(){
+
+		var src = ":man-kiss-man:";
+		var uni = emoji_unified(0x1f468)
+			+ emoji_unified(0x200d)
+			+ emoji_unified(0x2764)
+			+ emoji_unified(0xfe0f)
+			+ emoji_unified(0x200d)
+			+ emoji_unified(0x1f48b)
+			+ emoji_unified(0x200d)
+			+ emoji_unified(0x1f468);
+		var spn = emoji_span('1f468-200d-2764-fe0f-200d-1f48b-200d-1f468');
+
+		emoji.allow_native = true;
+		emoji.replace_mode = 'unified';
+		expect(emoji.replace_colons(src)).toBe(uni);
+
+		emoji.allow_native = false;
+		emoji.replace_mode = 'css';
+		expect(emoji.replace_unified(uni)).toBe(spn);
+	});
+
 });
 
