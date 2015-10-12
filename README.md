@@ -38,7 +38,7 @@ representation.
 
     </script>
 
-You can view a live demo <a href="http://unicodey.com/js-emoji/demo.htm">here</a>.
+You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
 
 
 ## Lifecycle
