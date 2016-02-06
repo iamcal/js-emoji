@@ -336,7 +336,7 @@ function emoji(){}
 		if (typeof(navigator) !== 'undefined') {
 			var ua = navigator.userAgent;
 			if (window.getComputedStyle){
-				var st = window.getComputedStyle(document.body);
+				var st = window.getComputedStyle(document.createElement('div'));
 				if (st['background-size'] || st['backgroundSize']){
 					emoji.supports_css = true;
 				}
