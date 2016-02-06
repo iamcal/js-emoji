@@ -258,7 +258,7 @@ function emoji(){}
 		// When not using sheets (which all contain all emoji),
 		// make sure we use an img_set that contains this emoji.
 		// For now, assume set "apple" has all individual images.
-		if (!emoji.use_sheet && !(emoji.data[idx][6] & emoji.img_sets[emoji.img_set].mask)) {
+		if ((!emoji.use_sheet || !emoji.supports_css) && !(emoji.data[idx][6] & emoji.img_sets[emoji.img_set].mask)) {
 			img_set = 'apple';
 		}
 
