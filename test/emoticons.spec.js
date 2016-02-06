@@ -26,6 +26,9 @@ describe("Emoticons replacer", function(){
 		expect(emoji.replace_emoticons(':-P')).toBe(emoji_span('1f61b'));
 		expect(emoji.replace_emoticons(':b' )).toBe(emoji_span('1f61b'));
 		expect(emoji.replace_emoticons(':-b')).toBe(emoji_span('1f61b'));
+
+		// over-escaped emoticons
+		expect(emoji.replace_emoticons(':\\')).toBe(emoji_span('1f615'));
 	});
 
 	it("replaces emoticons with colons", function(){

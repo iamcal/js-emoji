@@ -60,13 +60,13 @@ describe("Skin variations", function(){
 
 	it("replaces unified sequences correctly", function(){
 
-		var skin1	= emoji_unified(0x1f3fa); // invalid
+		var skin1	= emoji_unified(0x1f3f6); // invalid (0x1f3f6a is now real)
 		var skin2	= emoji_unified(0x1f3fb);
 		var skin3	= emoji_unified(0x1f3fc);
 		var skin4	= emoji_unified(0x1f3fd);
 		var skin5	= emoji_unified(0x1f3fe);
 		var skin6	= emoji_unified(0x1f3ff);
-		var skin7	= emoji_unified(0x1f3f9); // also invalid
+		var skin7	= emoji_unified(0x1f3f2); // also invalid
 		var ok_woman	= emoji_unified(0x1f646);
 		var zap		= emoji_unified(0x26a1);
 

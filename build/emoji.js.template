@@ -184,7 +184,7 @@ function emoji(){}
 				return emoji.replacement(val, null, null, {
 					idx	: idx,
 					actual	: p2,
-					wrapper	: '',
+					wrapper	: ''
 				});
 			}
 			return emoji.replacement(val);
@@ -313,10 +313,14 @@ function emoji(){}
 
 		for (var i in emoji.data){
 			for (var j=0; j<emoji.data[i][0].length; j++){
-				a.push(emoji.data[i][0][j]);
+				a.push(emoji.data[i][0][j].replace('*', '\\*'));
 				emoji.map.unified[emoji.data[i][0][j]] = i;
 			}
 		}
+
+		a = a.sort(function(a,b){
+			 return b.length - a.length;
+		});
 
 		emoji.rx_unified = new RegExp('('+a.join('|')+')(\uD83C[\uDFFB-\uDFFF])?', "g");
 	};
@@ -329,34 +333,36 @@ function emoji(){}
 		emoji.inits.env = 1;
 		emoji.replace_mode = 'img';
 		emoji.supports_css = false;
-		var ua = navigator.userAgent;
-		if (window.getComputedStyle){
-			var st = window.getComputedStyle(document.body);
-			if (st['background-size'] || st['backgroundSize']){
-				emoji.supports_css = true;
+		if (typeof(navigator) !== 'undefined') {
+			var ua = navigator.userAgent;
+			if (window.getComputedStyle){
+				var st = window.getComputedStyle(document.body);
+				if (st['background-size'] || st['backgroundSize']){
+					emoji.supports_css = true;
+				}
 			}
-		}
-		if (ua.match(/(iPhone|iPod|iPad|iPhone\s+Simulator)/i)){
-			if (ua.match(/OS\s+[12345]/i)){
-				emoji.replace_mode = 'softbank';
-				return;
-			}
-			if (ua.match(/OS\s+[6789]/i)){
-				emoji.replace_mode = 'unified';
-				return;
-			}
-		}
-		if (ua.match(/Mac OS X 10[._ ](?:[789]|1\d)/i)){
-			if (!ua.match(/Chrome/i) && !ua.match(/Firefox/i)){
-				emoji.replace_mode = 'unified';
-				return;
-			}
-		}
-		if (!emoji.avoid_ms_emoji){
-			if (ua.match(/Windows NT 6.[1-9]/i) || ua.match(/Windows NT 10.[0-9]/i)){
-				if (!ua.match(/Chrome/i) && !ua.match(/MSIE 8/i)){
+			if (ua.match(/(iPhone|iPod|iPad|iPhone\s+Simulator)/i)){
+				if (ua.match(/OS\s+[12345]/i)){
+					emoji.replace_mode = 'softbank';
+					return;
+				}
+				if (ua.match(/OS\s+[6789]/i)){
 					emoji.replace_mode = 'unified';
 					return;
+				}
+			}
+			if (ua.match(/Mac OS X 10[._ ](?:[789]|1\d)/i)){
+				if (!ua.match(/Chrome/i) && !ua.match(/Firefox/i)){
+					emoji.replace_mode = 'unified';
+					return;
+				}
+			}
+			if (!emoji.avoid_ms_emoji){
+				if (ua.match(/Windows NT 6.[1-9]/i) || ua.match(/Windows NT 10.[0-9]/i)){
+					if (!ua.match(/Chrome/i) && !ua.match(/MSIE 8/i)){
+						emoji.replace_mode = 'unified';
+						return;
+					}
 				}
 			}
 		}
