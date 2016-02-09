@@ -74,3 +74,10 @@ You can modify a database and table using a statement like:
 You will also need to modify your connection character set.
 
 You don't need to worry about this if you translate to colon syntax before storage.
+
+
+## Version History
+
+* 1.0.0 - 2014-12-19 - First release
+* 2.0.0 - 2015-03-09 - New build process with tests. Skin tone support. Dropped external CSS
+
