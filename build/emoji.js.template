@@ -98,11 +98,8 @@ function emoji(){}
 	 * environtment.
 	 */
 	emoji.replace_emoticons = function(str){
-		emoji.init_emoticons();
-		return _replace_emoticons(str, function(m, $1, emoticon, $2) {
-			var val = emoji.map.emoticons[emoticon];
-			return val ? $1+emoji.replacement(val, emoticon)+$2 : m;
-		});
+		var colonized = emoji.replace_emoticons_with_colons(str);
+		return emoji.replace_colons(colonized);
 	};
 
 	/**
