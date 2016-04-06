@@ -42,6 +42,7 @@ describe("Emoticons replacer", function(){
 			expect(emoji.replace_emoticons('8) () 8)')).toBe(sunglasses+' () '+sunglasses);
 			expect(emoji.replace_emoticons('8) ) 8)')).toBe(sunglasses+' ) '+sunglasses);
 			expect(emoji.replace_emoticons('8) ( 8)')).toBe(sunglasses+' ( 8)');
+			expect(emoji.replace_emoticons('8) :) (foo 8) 8)')).toBe(sunglasses+' '+blush+' (foo 8) '+sunglasses);
 			expect(emoji.replace_emoticons('(foo :) )')).toBe('(foo '+blush+' )');
 			expect(emoji.replace_emoticons('(foo 8) ) (foo :) )')).toBe('(foo '+sunglasses+' ) (foo '+blush+' )');
 
