@@ -73,6 +73,7 @@ function emoji(){}
 	 * @type bool
 	 */
 	emoji.use_sheet = false;
+	emoji.colon_aliases = {};
 
 	/**
 	 *
@@ -335,8 +336,12 @@ function emoji(){}
 		emoji.rx_colons = new RegExp('\:[a-zA-Z0-9-_+]+\:(\:skin-tone-[2-6]\:)?', 'g');
 		emoji.map.colons = {};
 		for (var i in emoji.data){
-			for (var j=0; j<emoji.data[i][3].length; j++){
-				emoji.map.colons[emoji.data[i][3][j]] = i;
+			names = emoji.data[i][3];
+			if (emoji.colon_aliases[i]) {
+				names = names.concat(emoji.colon_aliases[i]);
+			}
+			for (var j=0; j<names.length; j++){
+				emoji.map.colons[names[j].toLowerCase()] = i;
 			}
 		}
 	};
