@@ -32,5 +32,18 @@ describe("Colons replacer", function(){
 		expect(emoji.replace_colons(':five:')).toBe(emoji_span('0035-20e3'));
 	});
 
+	it("supports the capitalization flag", function(){
+
+		emoji.allow_caps = false;
+		expect(emoji.replace_colons(':cloud:')).toBe(emoji_span('2601'));
+		expect(emoji.replace_colons(':CLOUD:')).toBe(':CLOUD:');
+		expect(emoji.replace_colons(':ClOuD:')).toBe(':ClOuD:');
+
+		emoji.allow_caps = true;
+		expect(emoji.replace_colons(':cloud:')).toBe(emoji_span('2601'));
+		expect(emoji.replace_colons(':CLOUD:')).toBe(emoji_span('2601'));
+		expect(emoji.replace_colons(':ClOuD:')).toBe(emoji_span('2601'));
+	});
+
 });
 
