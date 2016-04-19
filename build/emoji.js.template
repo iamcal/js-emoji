@@ -212,7 +212,7 @@
 
 		return str.replace(self.rx_colons, function(m){
 			var idx = m.substr(1, m.length-2);
-			if (emoji.allow_caps) idx = idx.toLowerCase();
+			if (self.allow_caps) idx = idx.toLowerCase();
 
 			// special case - an emoji with a skintone modified
 			if (idx.indexOf('::skin-tone-') > -1){
@@ -286,12 +286,12 @@
 			variation_idx = idx + '-' + variation.idx;
 		}
 
-		var img_set = emoji.img_set;
+		var img_set = self.img_set;
 
 		// When not using sheets (which all contain all emoji),
 		// make sure we use an img_set that contains this emoji.
 		// For now, assume set "apple" has all individual images.
-		if ((!emoji.use_sheet || !emoji.supports_css) && !(emoji.data[idx][6] & emoji.img_sets[emoji.img_set].mask)) {
+		if ((!self.use_sheet || !self.supports_css) && !(self.data[idx][6] & self.img_sets[self.img_set].mask)) {
 			img_set = 'apple';
 		}
 
