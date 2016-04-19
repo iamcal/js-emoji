@@ -11,6 +11,8 @@ function emoji_span(codepoint){
 
 describe("Unified replacer", function(){
 
+	var emoji = new EmojiConvertor();
+
 	emoji.img_set = 'apple';
 	emoji.img_sets.apple.path = '/';
 	emoji.use_css_imgs = false;
