@@ -16,6 +16,8 @@ representation.
     <script src="emoji.js" type="text/javascript"></script>
     <script type="text/javascript">
 
+    var emoji = new EmojiConvertor();
+
     // replaces \u{1F604} with platform appropriate content
     var output1 = emoji.replace_unified(input);
 
@@ -80,4 +82,4 @@ You don't need to worry about this if you translate to colon syntax before stora
 
 * 1.0.0 - 2014-12-19 - First release
 * 2.0.0 - 2015-03-09 - New build process with tests. Skin tone support. Dropped external CSS
-
+* 3.0.0 - 2016-04-19 - Switched to exporting a constructor class
