@@ -21,7 +21,8 @@ long += " Quisque erat sapien, aliquam et porta non, hendrerit eget dolor.";
 
 var e_unified = "\uD83C\uDFA6";
 var e_colon = ":cinema:";
-var e_replace = '<span class="emoji" style="background-image:url(emoji/1f3a6.png)">:cinema:</span>';
+var e_replace = '<span class="emoji emoji-sizer" style="background-image:url(/emoji-data/img-apple-64/1f3a6.png)">cinema</span>';
+var e_replace_c = '<span class="emoji emoji-sizer" style="background-image:url(/emoji-data/img-apple-64/1f3a6.png)">:cinema:</span>';
 
 var tests = [
 	["hello", "hello"],
@@ -32,15 +33,18 @@ var tests = [
 
 var tests2 = [
 	["hello", "hello"],
-	["a"+e_colon+"b", "a"+e_replace+"b"],
+	["a"+e_colon+"b", "a"+e_replace_c+"b"],
 	[long, long],
-	[long+'a '+e_colon+' b', long+"a "+e_replace+" b"]
+	[long+'a '+e_colon+' b', long+"a "+e_replace_c+" b"]
 ];
 
 function test(){
 
+	var emoji = new EmojiConvertor();
+
 	emoji.init_env();
 	emoji.replace_mode = 'css';
+	emoji.include_text = true;
 
 	var loops = 1000;
 
