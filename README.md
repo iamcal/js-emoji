@@ -43,6 +43,15 @@ representation.
 You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
 
 
+## Upgrading from 1.x or 2.x
+
+Prior to version 3.0, the `emoji.js` library would instantiate a global object called `emoji`, which you would call methods on.
+In versions 3.0 and later, the library exposes a single class called `EmojiConvertor` which needs to be instantiated manually.
+To upgrade old code, simply add this line in a global context:
+
+    var emoji = new EmojiConvertor();
+
+
 ## Lifecycle
 
 The library is designed to be used with the following flow:
