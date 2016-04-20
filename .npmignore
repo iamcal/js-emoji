@@ -1,0 +1,8 @@
+.gitignore
+.gitmodules
+.travis.yml
+build/emoji-data/emojione
+build/emoji-data/build
+build/emoji-data/img-apple-160
+build/emoji-data/img-google-136
+build/emoji-data/img-twitter-72

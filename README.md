@@ -16,6 +16,8 @@ representation.
     <script src="emoji.js" type="text/javascript"></script>
     <script type="text/javascript">
 
+    var emoji = new EmojiConvertor();
+
     // replaces \u{1F604} with platform appropriate content
     var output1 = emoji.replace_unified(input);
 
@@ -39,6 +41,15 @@ representation.
     </script>
 
 You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
+
+
+## Upgrading from 1.x or 2.x
+
+Prior to version 3.0, the `emoji.js` library would instantiate a global object called `emoji`, which you would call methods on.
+In versions 3.0 and later, the library exposes a single class called `EmojiConvertor` which needs to be instantiated manually.
+To upgrade old code, simply add this line in a global context:
+
+    var emoji = new EmojiConvertor();
 
 
 ## Lifecycle
@@ -74,3 +85,10 @@ You can modify a database and table using a statement like:
 You will also need to modify your connection character set.
 
 You don't need to worry about this if you translate to colon syntax before storage.
+
+
+## Version History
+
+* 1.0.0 - 2014-12-19 - First release
+* 2.0.0 - 2015-03-09 - New build process with tests. Skin tone support. Dropped external CSS
+* 3.0.0 - 2016-04-19 - Switched to exporting a constructor class
