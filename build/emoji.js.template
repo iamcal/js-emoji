@@ -102,6 +102,17 @@
 		 */
 		self.allow_caps = false;
 
+
+		/**
+		 *
+		 * Suffix to allow for individual image cache busting
+		 *
+		 * @memberof emoji
+		 * @type string
+		 */
+		self.img_suffix = '';
+
+
 		// Keeps track of what has been initialized.
 		/** @private */
 		self.inits = {};
@@ -345,7 +356,7 @@
 		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
 		// use the variation image. otherwise, return it as a separate image (already calculated in `extra`).
 		// first we set up the params we'll use if we can't use a variation.
-		var img = self.data[idx][7] || self.img_sets[img_set].path+idx+'.png';
+		var img = self.data[idx][7] || self.img_sets[img_set].path+idx+'.png' + self.img_suffix;
 		var title = self.include_title ? ' title="'+(actual || self.data[idx][3][0])+'"' : '';
 		var text  = self.include_text  ? wrapper+(actual || self.data[idx][3][0])+wrapper : '';
 		var px = self.data[idx][4];
