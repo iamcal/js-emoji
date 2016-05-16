@@ -18,13 +18,24 @@ describe("Aliases", function(){
 
 	it("resolves aliases correctly", function(){
 
+		expect(emoji.replace_colons(':doge:')).toBe(':doge:');
+		expect(emoji.replace_colons(':aubergine:')).toBe(':aubergine:');
+
 		emoji.addAliases({
-			'1f415': 'doge',
-			'1f346': 'aubergine'
+			'doge'		: '1f415',
+			'aubergine'	: '1f346'
 		});
 
 		expect(emoji.replace_colons(':doge:')).toBe(emoji_span('1f415'));
 		expect(emoji.replace_colons(':aubergine:')).toBe(emoji_span('1f346'));
+
+		emoji.removeAliases([
+			'doge',
+			'aubergine'
+		]);
+
+		expect(emoji.replace_colons(':doge:')).toBe(':doge:');
+		expect(emoji.replace_colons(':aubergine:')).toBe(':aubergine:');
 	});
 
 	it("allows aliases to override builtins", function(){
@@ -33,12 +44,20 @@ describe("Aliases", function(){
 		expect(emoji.replace_colons(':dog:')).toBe(emoji_span('1f436'));
 
 		emoji.addAliases({
-			'1f431': 'dog',
-			'1f436': 'cat'
+			'dog'	: '1f431',
+			'cat'	: '1f436'
 		});
 
 		expect(emoji.replace_colons(':cat:')).toBe(emoji_span('1f436'));
 		expect(emoji.replace_colons(':dog:')).toBe(emoji_span('1f431'));
+
+		emoji.removeAliases([
+			'dog',
+			'cat'
+		]);
+
+		expect(emoji.replace_colons(':cat:')).toBe(emoji_span('1f431'));
+		expect(emoji.replace_colons(':dog:')).toBe(emoji_span('1f436'));
 	});
 });
 
