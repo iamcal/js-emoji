@@ -38,6 +38,18 @@ representation.
     // find out the auto-detected mode
     alert(emoji.replace_mode);
 
+    // add some aliases of your own - you can override builtins too
+    emoji.addAliases({
+      'doge' : '1f415',
+      'cat'  : '1f346'
+    });
+
+    // remove your custom aliases - this will reset builtins
+    emoji.removeAliases([
+      'doge',
+      'cat',
+    ]);
+
     </script>
 
 You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
