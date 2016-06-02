@@ -23,7 +23,7 @@ describe("Correctly supports different modes", function(){
 		emoji.use_sheet = true;
 		emoji.use_css_imgs = false;
 
-		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="background: url(/sheet.png);background-position:2.5% 0%;background-size:4100%"></span></span>');
+		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="background: url(/sheet.png);background-position:2.5% 2.5%;background-size:4100%"></span></span>');
 	});
 
 	it("Uses CSS classes with CSS background-sizing support", function(){
