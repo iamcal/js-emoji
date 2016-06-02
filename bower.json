@@ -1,7 +1,7 @@
 {
   "name": "js-emoji",
   "description": "A JS Emoji conversion library",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "authors": [
     "Cal Henderson <cal@iamcal.com>"
   ],

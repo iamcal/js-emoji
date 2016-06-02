@@ -104,4 +104,4 @@ You don't need to worry about this if you translate to colon syntax before stora
 * 1.0.0 - 2014-12-19 - First release
 * 2.0.0 - 2015-03-09 - New build process with tests. Skin tone support. Dropped external CSS
 * 3.0.0 - 2016-04-19 - Switched to exporting a constructor class
-* 3.0.1 - ????-??-?? - Added support for aliases, img_suffix, ...
+* 3.0.1 - 2016-06-02 - Added support for aliases, img_suffix, fixed minification of regexes, updated emoji-data to 2.4.3
