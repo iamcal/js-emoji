@@ -12,45 +12,66 @@ representation.
 
 ## Usage
 
-    <link href="emoji.css" rel="stylesheet" type="text/css" />
-    <script src="emoji.js" type="text/javascript"></script>
-    <script type="text/javascript">
+```html
+<link href="emoji.css" rel="stylesheet" type="text/css" />
+<script src="emoji.js" type="text/javascript"></script>
+<script type="text/javascript">
 
-    var emoji = new EmojiConvertor();
+var emoji = new EmojiConvertor();
 
-    // replaces \u{1F604} with platform appropriate content
-    var output1 = emoji.replace_unified(input);
+// replaces \u{1F604} with platform appropriate content
+var output1 = emoji.replace_unified(input);
 
-    // replaces :smile: with platform appropriate content
-    var output2 = emoji.replace_colons(input);
+// replaces :smile: with platform appropriate content
+var output2 = emoji.replace_colons(input);
 
-    // force text output mode
-    emoji.text_mode = true;
+// force text output mode
+emoji.text_mode = true;
 
-    // show the short-name as a `title` attribute for css/img emoji
-    emoji.include_title = true;
+// show the short-name as a `title` attribute for css/img emoji
+emoji.include_title = true;
 
-    // change the path to your emoji images (requires trailing slash)
-    // you can grab the images from here:
-    // https://github.com/github/gemoji/tree/master/images/emoji/unicode
-    emoji.img_path = "http://my-cdn.com/images/emoji/";
+// change the path to your emoji images (requires trailing slash)
+// you can grab the images from here:
+// https://github.com/github/gemoji/tree/master/images/emoji/unicode
+emoji.img_path = "http://my-cdn.com/images/emoji/";
 
-    // find out the auto-detected mode
-    alert(emoji.replace_mode);
+// An alernative to using individual images is to use sheets. Specify an object
+// like the below to set up where the sheets can be found. Then set the `use_sheet`
+// property to true (as demonstrated below)
+emoji.img_sets = {
+	apple: {
+	    path: '/js-emoji/build/emoji-data/img-apple-64/',
+	    sheet: '/js-emoji/build/emoji-data/sheet_apple_64.png',
+	    mask: 1
+	},
+	google: {
+	    path: '/js-emoji/build/emoji-data/img-google-64/',
+	    sheet: '/js-emoji/build/emoji-data/sheet_google_64.png',
+	    mask: 2
+	}
+};
 
-    // add some aliases of your own - you can override builtins too
-    emoji.addAliases({
-      'doge' : '1f415',
-      'cat'  : '1f346'
-    });
+// Configure this library to use the sheets defined in `img_sets` (see above)
+emoji.use_sheet = true;
 
-    // remove your custom aliases - this will reset builtins
-    emoji.removeAliases([
-      'doge',
-      'cat',
-    ]);
+// find out the auto-detected mode
+alert(emoji.replace_mode);
 
-    </script>
+// add some aliases of your own - you can override builtins too
+emoji.addAliases({
+  'doge' : '1f415',
+  'cat'  : '1f346'
+});
+
+// remove your custom aliases - this will reset builtins
+emoji.removeAliases([
+  'doge',
+  'cat',
+]);
+
+</script>
+```
 
 You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
 
