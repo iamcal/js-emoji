@@ -32,25 +32,10 @@ emoji.text_mode = true;
 emoji.include_title = true;
 
 // change the path to your emoji images (requires trailing slash)
-// you can grab the images from here:
-// https://github.com/github/gemoji/tree/master/images/emoji/unicode
-emoji.img_path = "http://my-cdn.com/images/emoji/";
-
-// An alernative to using individual images is to use sheets. Specify an object
-// like the below to set up where the sheets can be found. Then set the `use_sheet`
-// property to true (as demonstrated below)
-emoji.img_sets = {
-	apple: {
-	    path: '/js-emoji/build/emoji-data/img-apple-64/',
-	    sheet: '/js-emoji/build/emoji-data/sheet_apple_64.png',
-	    mask: 1
-	},
-	google: {
-	    path: '/js-emoji/build/emoji-data/img-google-64/',
-	    sheet: '/js-emoji/build/emoji-data/sheet_google_64.png',
-	    mask: 2
-	}
-};
+// you can grab the images from the emoji-data link here:
+// https://github.com/iamcal/js-emoji/tree/master/build
+emoji.img_sets.apple.path = 'http://my-cdn.com/emoji-apple-64/';
+emoji.img_sets.apple.sheet = 'http://my-cdn.com/emoji-apple-sheet-64.png';
 
 // Configure this library to use the sheets defined in `img_sets` (see above)
 emoji.use_sheet = true;
