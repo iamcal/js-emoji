@@ -19,7 +19,13 @@ module.exports = function(grunt) {
         singleRun: true,
         browsers: ['PhantomJS'],
         logLevel: 'ERROR'
-      }
+      },
+      coverage: {
+        configFile: 'karma-cover.conf.js',
+        singleRun: true,
+        browsers: ['PhantomJS'],
+        logLevel: 'OFF'
+      },
     },
     coveralls: {
       options: {
@@ -42,6 +48,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma-coveralls');
   grunt.loadNpmTasks('grunt-shell');
 
-  grunt.registerTask('default', ['shell:compile', 'uglify', 'karma']);
+  grunt.registerTask('default', ['shell:compile', 'uglify', 'karma:unit', 'karma:coverage']);
   
 };
