@@ -11,7 +11,6 @@ describe("Allows cache-busting suffixes", function(){
 	emoji.allow_native = false;
 	emoji.avoid_ms_emoji = true;
 
-	emoji.init_env();
 	emoji.supports_css = false;
 	emoji.use_sheet = false;
 	emoji.use_css_imgs = false;

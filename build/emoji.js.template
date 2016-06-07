@@ -118,6 +118,9 @@
 		self.inits = {};
 		self.map = {};
 
+		// discover the environment settings
+		self.init_env();
+
 		return self;
 	}
 

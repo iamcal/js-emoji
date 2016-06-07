@@ -14,9 +14,6 @@ describe("Correctly supports different modes", function(){
 	emoji.allow_native = false;
 	emoji.avoid_ms_emoji = true;
 
-	//emoji.init_env();
-	//console.log("modes2", emoji.inits, emoji.supports_css, emoji.replace_mode);
-
 	it("Uses spritesheets with CSS background-sizing support", function(){
 
 		emoji.supports_css = true;
