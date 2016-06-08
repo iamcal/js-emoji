@@ -15,6 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'test/preamble.js',
       'lib/emoji.min.js',
       'test/*.js'
     ],
