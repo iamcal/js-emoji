@@ -1,5 +1,9 @@
 # Version History
 
+## 3.0.3 - ????-??-??
+
+* Use native emoji in Chrome and Firefox on OS X (thanks @CharlieHess)
+
 ## 3.0.2 - 2016-06-17
 
 * Fixed test coverage output
