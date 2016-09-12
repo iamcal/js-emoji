@@ -3,6 +3,7 @@
 ## 3.0.3 - ????-??-??
 
 * Use native emoji in Chrome and Firefox on OS X (thanks @CharlieHess)
+* Handle being in a hidden iframe on Firefox - https://github.com/iamcal/js-emoji/issues/73
 
 ## 3.0.2 - 2016-06-17
 
