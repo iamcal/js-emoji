@@ -6,7 +6,7 @@ function emoji_unified(cp){
 }
 
 function emoji_span(codepoint){
-	return '<span class="emoji emoji-sizer" style="background-image:url(/'+codepoint+'.png)"></span>';
+	return '<span class="emoji emoji-sizer" style="background-image:url(/'+codepoint+'.png)" data-codepoints="'+codepoint+'"></span>';
 }
 
 describe("Unified replacer", function(){

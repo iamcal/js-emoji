@@ -18,10 +18,10 @@ describe("Allows cache-busting suffixes", function(){
 	it("For individual images", function(){
 
 		emoji.img_suffix = '';
-		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601.png" class="emoji" />');
+		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601.png" class="emoji" data-codepoints="2601" />');
 
 		emoji.img_suffix = '?FOO';
-		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601.png?FOO" class="emoji" />');
+		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601.png?FOO" class="emoji" data-codepoints="2601" />');
 	});
 
 });

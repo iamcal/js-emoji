@@ -323,7 +323,9 @@
 	emoji.prototype.replacement = function(idx, actual, wrapper, variation){
 		var self = this;
 
-		// for emoji with variation modifiers, set `etxra` to the standalone output for the
+		var full_idx = idx;
+
+		// for emoji with variation modifiers, set `extra` to the standalone output for the
 		// modifier (used if we can't combine the glyph) and set variation_idx to key of the
 		// variation modifier (used below)
 		var extra = '';
@@ -378,6 +380,7 @@
 				px = self.variations_data[variation_idx][0];
 				py = self.variations_data[variation_idx][1];
 				extra = '';
+				full_idx = variation_idx;
 			}
 		}
 
@@ -385,14 +388,14 @@
 			if (self.use_sheet && px != null && py != null){
 				var mul = 100 / (self.sheet_size - 1);
 				var style = 'background: url('+self.img_sets[img_set].sheet+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+self.sheet_size+'00%';
-				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+'>'+text+'</span></span>'+extra;
+				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+' data-codepoints="'+full_idx+'">'+text+'</span></span>'+extra;
 			}else if (self.use_css_imgs){
-				return '<span class="emoji emoji-'+idx+'"'+title+'>'+text+'</span>'+extra;
+				return '<span class="emoji emoji-'+idx+'"'+title+' data-codepoints="'+full_idx+'">'+text+'</span>'+extra;
 			}else{
-				return '<span class="emoji emoji-sizer" style="background-image:url('+img+')"'+title+'>'+text+'</span>'+extra;
+				return '<span class="emoji emoji-sizer" style="background-image:url('+img+')"'+title+' data-codepoints="'+full_idx+'">'+text+'</span>'+extra;
 			}
 		}
-		return '<img src="'+img+'" class="emoji" '+title+'/>'+extra;
+		return '<img src="'+img+'" class="emoji" data-codepoints="'+full_idx+'" '+title+'/>'+extra;
 	};
 
 	// Initializes the text emoticon data
