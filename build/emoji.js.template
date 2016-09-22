@@ -340,7 +340,7 @@
 		// When not using sheets (which all contain all emoji),
 		// make sure we use an img_set that contains this emoji.
 		// For now, assume set "apple" has all individual images.
-		if ((!self.use_sheet || !self.supports_css) && !(self.data[idx][6] & self.img_sets[self.img_set].mask)) {
+		if ((!self.use_sheet || !self.supports_css) && !(self.data[idx][6] && self.img_sets[self.img_set].mask)) {
 			img_set = 'apple';
 		}
 
@@ -375,7 +375,7 @@
 		//  * we're not using a custom image for self glyph
 		//  * the variation has an image defined for the current image set
 		if (variation_idx && self.variations_data[variation_idx] && self.variations_data[variation_idx][2] && !self.data[idx][7]){
-			if (self.variations_data[variation_idx][2] & self.img_sets[self.img_set].mask){
+			if (self.variations_data[variation_idx][2] && self.img_sets[self.img_set].mask){
 				img = self.img_sets[self.img_set].path+variation_idx+'.png';
 				px = self.variations_data[variation_idx][0];
 				py = self.variations_data[variation_idx][1];
