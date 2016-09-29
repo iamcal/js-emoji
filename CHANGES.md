@@ -1,5 +1,9 @@
 # Version History
 
+## 3.1.0 - 2016-09-29
+
+* Added variation text to emoji text when `include_text` is set
+
 ## 3.0.3 - ????-??-??
 
 * Use native emoji in Chrome and Firefox on OS X (thanks @CharlieHess)
