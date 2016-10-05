@@ -1,10 +1,12 @@
 # Version History
 
-## 3.0.3 - ????-??-??
+## 3.1.0 - 2016-09-29
 
+* Added variation text to emoji text when `include_text` is set
 * Use native emoji in Chrome and Firefox on OS X (thanks @CharlieHess)
 * Handle being in a hidden iframe on Firefox - https://github.com/iamcal/js-emoji/issues/73
 * Added `data-codepoints` attribute to all output modes
+
 
 ## 3.0.2 - 2016-06-17
 

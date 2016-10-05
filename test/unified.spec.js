@@ -5,10 +5,6 @@ function emoji_unified(cp){
 	return String.fromCharCode(h) + String.fromCharCode(l);
 }
 
-function emoji_span(codepoint){
-	return '<span class="emoji emoji-sizer" style="background-image:url(/'+codepoint+'.png)" data-codepoints="'+codepoint+'"></span>';
-}
-
 describe("Unified replacer", function(){
 
 	var emoji = new EmojiConvertor();

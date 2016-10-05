@@ -5,10 +5,6 @@ function emoji_unified(cp){
 	return String.fromCharCode(h) + String.fromCharCode(l);
 }
 
-function emoji_span(codepoint){
-	return '<span class="emoji emoji-sizer" style="background-image:url(/'+codepoint+'.png)" data-codepoints="'+codepoint+'"></span>';
-}
-
 describe("Skin variations", function(){
 
 	var emoji = new EmojiConvertor();
@@ -58,6 +54,11 @@ describe("Skin variations", function(){
 
 		// fails as expected if they're not contiguous
 		expect(emoji.replace_colons(':ok_woman: :skin-tone-4:')).toBe(emoji_span('1f646')+' '+emoji_span('1f3fd'));	
+
+		// test skin tone variation text
+		emoji.include_text = true;
+		expect(emoji.replace_colons('a :+1::skin-tone-2: b')).toBe('a '+emoji_span('1f44d-1f3fb', ':+1::skin-tone-2:')+' b');
+		emoji.include_text = false;
 	});
 
 	it("replaces unified sequences correctly", function(){

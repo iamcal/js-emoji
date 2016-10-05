@@ -1,7 +1,3 @@
-function emoji_span(codepoint){
-	return '<span class="emoji emoji-sizer" style="background-image:url(/'+codepoint+'.png)" data-codepoints="'+codepoint+'"></span>';
-}
-
 describe("Aliases", function(){
 
 	var emoji = new EmojiConvertor();

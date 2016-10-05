@@ -68,6 +68,14 @@
 		self.include_title = false;
 
 		/**
+		 * If true, sets the text of the span or image that gets inserted for the
+		 * emoticon.
+		 * @memberof emoji
+		 * @type bool
+		 */
+		self.include_text = false;
+
+		/**
 		 * If the platform supports native emoticons, use those instead
 		 * of the fallbacks.
 		 * @memberof emoji
@@ -381,6 +389,11 @@
 				py = self.variations_data[variation_idx][1];
 				extra = '';
 				full_idx = variation_idx;
+
+				// add variation text
+				if (self.include_text && variation && variation.actual && variation.wrapper) {
+					text += variation.wrapper+variation.actual+variation.wrapper;
+				}
 			}
 		}
 
