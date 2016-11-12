@@ -1,5 +1,10 @@
 # Version History
 
+## 3.1.1 - 2016-11-11
+
+# Updated to emoji-data 2.4.5, including Android skin tones from Nougat
+
+
 ## 3.1.0 - 2016-09-29
 
 * Added variation text to emoji text when `include_text` is set
