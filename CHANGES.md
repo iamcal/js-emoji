@@ -1,5 +1,11 @@
 # Version History
 
+## 3.2.0 - 2017-??-??
+
+* Updated to emoji-data 2.5.0, with Unicode 9 and Emoji 4 codepoints
+* Support for non-appended skin tone modified, e.g. `:woman-swimming:`
+
+
 ## 3.1.1 - 2016-11-11
 
 * Updated to emoji-data 2.4.5, including Android skin tones from Nougat
