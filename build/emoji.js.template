@@ -274,22 +274,35 @@
 		var self = this;
 		self.init_unified();
 		return str.replace(self.rx_unified, function(m, p1, p2){
+
 			var val = self.map.unified[p1];
-			if (!val) return m;
-			var idx = null;
-			if (p2 == '\uD83C\uDFFB') idx = '1f3fb';
-			if (p2 == '\uD83C\uDFFC') idx = '1f3fc';
-			if (p2 == '\uD83C\uDFFD') idx = '1f3fd';
-			if (p2 == '\uD83C\uDFFE') idx = '1f3fe';
-			if (p2 == '\uD83C\uDFFF') idx = '1f3ff';
-			if (idx){
-				return self.replacement(val, null, null, {
-					idx	: idx,
-					actual	: p2,
-					wrapper	: ''
+			if (val){
+				var idx = null;
+				if (p2 == '\uD83C\uDFFB') idx = '1f3fb';
+				if (p2 == '\uD83C\uDFFC') idx = '1f3fc';
+				if (p2 == '\uD83C\uDFFD') idx = '1f3fd';
+				if (p2 == '\uD83C\uDFFE') idx = '1f3fe';
+				if (p2 == '\uD83C\uDFFF') idx = '1f3ff';
+				if (idx){
+					return self.replacement(val, null, null, {
+						idx	: idx,
+						actual	: p2,
+						wrapper	: ''
+					});
+					}
+				return self.replacement(val);
+			}
+
+			val = self.map.unified_vars[p1];
+			if (val){
+				return self.replacement(val[0], null, null, {
+					'idx'		: val[1],
+					'actual'	: '',
+					'wrapper'	: '',
 				});
 			}
-			return self.replacement(val);
+
+			return m;
 		});
 	};
 
@@ -337,10 +350,12 @@
 		// modifier (used if we can't combine the glyph) and set variation_idx to key of the
 		// variation modifier (used below)
 		var extra = '';
-		var variation_idx = 0;
+		var variation_data = [];
 		if (typeof variation === 'object'){
 			extra = self.replacement(variation.idx, variation.actual, variation.wrapper);
-			variation_idx = idx + '-' + variation.idx;
+			if (self.variations_data[idx] && self.variations_data[idx][variation.idx]){
+				variation_data = self.variations_data[idx][variation.idx];
+			}
 		}
 
 		var img_set = self.img_set;
@@ -379,16 +394,16 @@
 		// out `extra` so we output a sinlge glyph.
 		// we need to check that:
 		//  * we requested a variation
-		//  * such a variation exists in `emoji.variations_data`
+		//  * such a variation exists in `emoji.variations_data` (which sets `variation_data` above)
 		//  * we're not using a custom image for self glyph
 		//  * the variation has an image defined for the current image set
-		if (variation_idx && self.variations_data[variation_idx] && self.variations_data[variation_idx][2] && !self.data[idx][7]){
-			if (self.variations_data[variation_idx][2] & self.img_sets[self.img_set].mask){
-				img = self.img_sets[self.img_set].path+variation_idx+'.png';
-				px = self.variations_data[variation_idx][0];
-				py = self.variations_data[variation_idx][1];
+		if (variation_data.length && variation_data[3] && !self.data[idx][7]){
+			if (variation_data[3] & self.img_sets[self.img_set].mask){
+				full_idx = variation_data[0];
+				img = self.img_sets[self.img_set].path+full_idx+'.png';
+				px = variation_data[1];
+				py = variation_data[2];
 				extra = '';
-				full_idx = variation_idx;
 
 				// add variation text
 				if (self.include_text && variation && variation.actual && variation.wrapper) {
@@ -457,11 +472,21 @@
 
 		var a = [];
 		self.map.unified = {};
+		self.map.unified_vars = {};
 
 		for (var i in self.data){
 			for (var j=0; j<self.data[i][0].length; j++){
 				a.push(self.data[i][0][j].replace('*', '\\*'));
 				self.map.unified[self.data[i][0][j]] = i;
+			}
+		}
+		for (var i in self.variations_data){
+			// skip simple append-style skin tones
+			if (self.variations_data[i]['1f3fb'][0] == i+'-1f3fb') continue;
+
+			for (var k in self.variations_data[i]){
+				a.push(self.variations_data[i][k][4].replace('*', '\\*'));
+				self.map.unified_vars[self.variations_data[i][k][4]] = [i, k];
 			}
 		}
 

@@ -41,14 +41,18 @@
 			}
 		}
 		if (count($row['skin_variations'])){
-			foreach ($row['skin_variations'] as $row2){
+			list($root_key) = explode('.', $row['image']);
+
+			foreach ($row['skin_variations'] as $k2 => $row2){
 
 				list($key) = explode('.', $row2['image']);
 
-				$vars_out[$key] = array(
+				$vars_out[$root_key][StrToLower($k2)] = array(
+					$key,
 					$row2['sheet_x'],
 					$row2['sheet_y'],
 					calc_img_has($row2),
+					calc_bytes($row2['unified']),
 				);
 			}
 		}
