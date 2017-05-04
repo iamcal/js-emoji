@@ -59,6 +59,9 @@ describe("Skin variations", function(){
 		emoji.include_text = true;
 		expect(emoji.replace_colons('a :+1::skin-tone-2: b')).toBe('a '+emoji_span('1f44d-1f3fb', ':+1::skin-tone-2:')+' b');
 		emoji.include_text = false;
+
+		// test new gender skin tones
+		expect(emoji.replace_colons(':woman-swimming::skin-tone-3:')).toBe(emoji_span('1f3ca-1f3fc-200d-2640-fe0f'));
 	});
 
 	it("replaces unified sequences correctly", function(){
@@ -106,6 +109,14 @@ describe("Skin variations", function(){
 
 		// fails as expected if they're not contiguous
 		expect(emoji.replace_unified(ok_woman+' '+skin4)).toBe(emoji_span('1f646')+' '+emoji_span('1f3fd'));
+
+		// test new gender skin tones
+		var woman_swimming_skin3 = emoji_unified(0x1f3ca)	// swimming
+					+ emoji_unified(0x1f3fc)	// skin tone 3
+					+ emoji_unified(0x200d)		// zero-width joiner
+					+ emoji_unified(0x2640)		// woman
+					+ emoji_unified(0xfe0f);	// image-mode
+		expect(emoji.replace_unified(woman_swimming_skin3)).toBe(emoji_span('1f3ca-1f3fc-200d-2640-fe0f'));
 	});
 
 });
