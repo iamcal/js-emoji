@@ -360,15 +360,11 @@
 			}
 		}
 
+
+		// img_set is the set we have chosen to use, while
+		// use_set is the one we'll need to use in single-image mode
 		var img_set = self.img_set;
-
-		// When not using sheets (which all contain all emoji),
-		// make sure we use an img_set that contains this emoji.
-		if ((!self.use_sheet || !self.supports_css)){
-
-			img_set = self.choose_image_set(img_set, self.data[idx][6]);
-		}
-
+		var use_set = self.choose_image_set(img_set, self.data[idx][6]);
 
 		// deal with simple modes (colons and text) first
 		wrapper = wrapper || '';
@@ -387,7 +383,7 @@
 		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
 		// use the variation image. otherwise, return it as a separate image (already calculated in `extra`).
 		// first we set up the params we'll use if we can't use a variation.
-		var img = self.data[idx][7] || self.img_sets[img_set].path+idx+'.png' + self.img_suffix;
+		var img = self.data[idx][7] || self.img_sets[use_set].path+idx+'.png' + self.img_suffix;
 		var title = self.include_title ? ' title="'+(actual || self.data[idx][3][0])+'"' : '';
 		var text  = self.include_text  ? wrapper+(actual || self.data[idx][3][0])+wrapper : '';
 		var px = self.data[idx][4];
@@ -402,10 +398,9 @@
 		//  * the variation has an image defined for the current image set
 		if (variation_data.length && variation_data[3] && !self.data[idx][7]){
 
-			img_set = self.choose_image_set(img_set, variation_data[3]);
-
+			use_set = self.choose_image_set(img_set, variation_data[3]);
 			full_idx = variation_data[0];
-			img = self.img_sets[img_set].path+full_idx+'.png';
+			img = self.img_sets[use_set].path+full_idx+'.png' + self.img_suffix;
 			px = variation_data[1];
 			py = variation_data[2];
 			extra = '';
