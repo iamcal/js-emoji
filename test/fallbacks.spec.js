@@ -32,12 +32,15 @@ describe("Fallbacks", function(){
 
 		// this only exists for apple and twitter
 		emoji.img_set = 'apple';
+		expect(emoji.replace_colons(':woman-swimming:')).toBe(emoji_image_cp_path('1f3ca-200d-2640-fe0f', '/a/'));
 		expect(emoji.replace_colons(':woman-swimming::skin-tone-6:')).toBe(emoji_image_cp_path('1f3ca-1f3ff-200d-2640-fe0f', '/a/'));
 
 		emoji.img_set = 'google';
+		expect(emoji.replace_colons(':woman-swimming:')).toBe(emoji_image_cp_path('1f3ca-200d-2640-fe0f', '/a/'));
 		expect(emoji.replace_colons(':woman-swimming::skin-tone-6:')).toBe(emoji_image_cp_path('1f3ca-1f3ff-200d-2640-fe0f', '/a/'));
 
 		emoji.img_set = 'twitter';
+		expect(emoji.replace_colons(':woman-swimming:')).toBe(emoji_image_cp_path('1f3ca-200d-2640-fe0f', '/t/'));
 		expect(emoji.replace_colons(':woman-swimming::skin-tone-6:')).toBe(emoji_image_cp_path('1f3ca-1f3ff-200d-2640-fe0f', '/t/'));
 
 	});
@@ -48,12 +51,15 @@ describe("Fallbacks", function(){
 
 		// this only exists for apple and twitter
 		emoji.img_set = 'apple';
+		expect(emoji.replace_colons(':woman-swimming:')).toBe(emoji_sheet_cp_path('1f3ca-200d-2640-fe0f', '/a.png', '83.33333333333334% 25%', '4900%'));
 		expect(emoji.replace_colons(':woman-swimming::skin-tone-6:')).toBe(emoji_sheet_cp_path('1f3ca-1f3ff-200d-2640-fe0f', '/a.png', '83.33333333333334% 35.41666666666667%', '4900%'));
 
 		emoji.img_set = 'google';
-		expect(emoji.replace_colons(':woman-swimming::skin-tone-6:')).toBe(emoji_sheet_cp_path('1f3ca-1f3ff-200d-2640-fe0f', '/a.png', '83.33333333333334% 35.41666666666667%', '4900%'));
+		expect(emoji.replace_colons(':woman-swimming:')).toBe(emoji_sheet_cp_path('1f3ca-200d-2640-fe0f', '/g.png', '83.33333333333334% 25%', '4900%'));
+		expect(emoji.replace_colons(':woman-swimming::skin-tone-6:')).toBe(emoji_sheet_cp_path('1f3ca-1f3ff-200d-2640-fe0f', '/g.png', '83.33333333333334% 35.41666666666667%', '4900%'));
 
 		emoji.img_set = 'twitter';
+		expect(emoji.replace_colons(':woman-swimming:')).toBe(emoji_sheet_cp_path('1f3ca-200d-2640-fe0f', '/t.png', '83.33333333333334% 25%', '4900%'));
 		expect(emoji.replace_colons(':woman-swimming::skin-tone-6:')).toBe(emoji_sheet_cp_path('1f3ca-1f3ff-200d-2640-fe0f', '/t.png', '83.33333333333334% 35.41666666666667%', '4900%'));
 
 	});
