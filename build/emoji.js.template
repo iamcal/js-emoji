@@ -33,10 +33,12 @@
 		 * @type {object}
 		 */
 		self.img_sets = {
-			'apple'    : {'path' : '/emoji-data/img-apple-64/'   , 'sheet' : '/emoji-data/sheet_apple_64.png',    'mask' : 1 },
-			'google'   : {'path' : '/emoji-data/img-google-64/'  , 'sheet' : '/emoji-data/sheet_google_64.png',   'mask' : 2 },
-			'twitter'  : {'path' : '/emoji-data/img-twitter-64/' , 'sheet' : '/emoji-data/sheet_twitter_64.png',  'mask' : 4 },
-			'emojione' : {'path' : '/emoji-data/img-emojione-64/', 'sheet' : '/emoji-data/sheet_emojione_64.png', 'mask' : 8 }
+			'apple'     : {'path' : '/emoji-data/img-apple-64/'    , 'sheet' : '/emoji-data/sheet_apple_64.png',     'mask' : 1  },
+			'google'    : {'path' : '/emoji-data/img-google-64/'   , 'sheet' : '/emoji-data/sheet_google_64.png',    'mask' : 2  },
+			'twitter'   : {'path' : '/emoji-data/img-twitter-64/'  , 'sheet' : '/emoji-data/sheet_twitter_64.png',   'mask' : 4  },
+			'emojione'  : {'path' : '/emoji-data/img-emojione-64/' , 'sheet' : '/emoji-data/sheet_emojione_64.png',  'mask' : 8  },
+			'facebook'  : {'path' : '/emoji-data/img-facebook-64/' , 'sheet' : '/emoji-data/sheet_facebook_64.png',  'mask' : 16 },
+			'messenger' : {'path' : '/emoji-data/img-messenger-64/', 'sheet' : '/emoji-data/sheet_messenger_64.png', 'mask' : 32 }
 		};
 
 		/**
