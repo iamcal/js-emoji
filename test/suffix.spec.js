@@ -19,9 +19,11 @@ describe("Allows cache-busting suffixes", function(){
 
 		emoji.img_suffix = '';
 		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601.png" class="emoji" data-codepoints="2601" />');
+		expect(emoji.replace_colons(':swimmer::skin-tone-6:')).toBe('<img src="/1f3ca-1f3ff.png" class="emoji" data-codepoints="1f3ca-1f3ff" />');
 
 		emoji.img_suffix = '?FOO';
 		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601.png?FOO" class="emoji" data-codepoints="2601" />');
+		expect(emoji.replace_colons(':swimmer::skin-tone-6:')).toBe('<img src="/1f3ca-1f3ff.png?FOO" class="emoji" data-codepoints="1f3ca-1f3ff" />');
 	});
 
 });
