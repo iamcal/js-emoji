@@ -150,5 +150,7 @@
 		if ($row['has_img_google']) $has_imgs_bits |= 2;
 		if ($row['has_img_twitter']) $has_imgs_bits |= 4;
 		if ($row['has_img_emojione']) $has_imgs_bits |= 8;
+		if ($row['has_img_facebook']) $has_imgs_bits |= 16;
+		if ($row['has_img_messenger']) $has_imgs_bits |= 32;
 		return $has_imgs_bits;
 	}
