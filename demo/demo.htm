@@ -37,6 +37,8 @@
 <option value="google">Google (Android, Hangouts)</option>
 <option value="twitter">Twitter</option>
 <option value="emojione">EmojiOne</option>
+<option value="facebook">Facebook</option>
+<option value="messenger">Messenger</option>
 </select>
 
 <div id="out5"></div>
@@ -71,12 +73,10 @@
 
 var emoji = new EmojiConvertor();
 
-emoji.img_sets = {
-	'apple'    : {'path' : '/js-emoji/build/emoji-data/img-apple-64/'   , 'sheet' : '/js-emoji/build/emoji-data/sheet_apple_64.png',    'mask' : 1 },
-	'google'   : {'path' : '/js-emoji/build/emoji-data/img-google-64/'  , 'sheet' : '/js-emoji/build/emoji-data/sheet_google_64.png',   'mask' : 2 },
-	'twitter'  : {'path' : '/js-emoji/build/emoji-data/img-twitter-64/' , 'sheet' : '/js-emoji/build/emoji-data/sheet_twitter_64.png',  'mask' : 4 },
-	'emojione' : {'path' : '/js-emoji/build/emoji-data/img-emojione-64/', 'sheet' : '/js-emoji/build/emoji-data/sheet_emojione_64.png', 'mask' : 8 }
-};
+for (var i in emoji.img_sets){
+	emoji.img_sets[i].path = '/js-emoji/build/emoji-data/img-'+i+'-64/';
+	emoji.img_sets[i].sheet = '/js-emoji/build/emoji-data/sheet_'+i+'_64.png';
+}
 
 emoji.use_sheet = true;
 
