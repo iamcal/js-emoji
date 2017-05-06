@@ -505,8 +505,10 @@
 			if (self.variations_data[i]['1f3fb'][0] == i+'-1f3fb') continue;
 
 			for (var k in self.variations_data[i]){
-				a.push(self.variations_data[i][k][4].replace('*', '\\*'));
-				self.map.unified_vars[self.variations_data[i][k][4]] = [i, k];
+				for (var j=0; j<self.variations_data[i][k][4].length; j++){
+					a.push(self.variations_data[i][k][4][j].replace('*', '\\*'));
+					self.map.unified_vars[self.variations_data[i][k][4][j]] = [i, k];
+				}
 			}
 		}
 

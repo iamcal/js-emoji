@@ -13,6 +13,7 @@
 	$out = array();
 	$vars_out = array();
 	$text_out = array();
+	$obsoletes = array();
 
 	foreach ($d as $row){
 
@@ -41,22 +42,46 @@
 			}
 		}
 		if (count($row['skin_variations'])){
-			list($root_key) = explode('.', $row['image']);
 
 			foreach ($row['skin_variations'] as $k2 => $row2){
 
-				list($key) = explode('.', $row2['image']);
+				list($sub_key) = explode('.', $row2['image']);
 
-				$vars_out[$root_key][StrToLower($k2)] = array(
-					$key,
+				$vars_out[$key][StrToLower($k2)] = array(
+					$sub_key,
 					$row2['sheet_x'],
 					$row2['sheet_y'],
 					calc_img_has($row2),
-					calc_bytes($row2['unified']),
+					array(calc_bytes($row2['unified'])),
 				);
 			}
 		}
+
+		if ($row['obsoleted_by']){
+			$obsoletes[$key] = StrToLower($row['obsoleted_by']);
+		}
 	}
+
+
+	#
+	# merge obsoletes with their new versions
+	#
+
+	foreach ($obsoletes as $old_key => $new_key){
+
+		$out[$new_key][0] = array_unique(array_merge($out[$new_key][0], $out[$old_key][0])); # codepoints
+		$out[$new_key][3] = array_unique(array_merge($out[$new_key][3], $out[$old_key][3])); # shortnames
+
+		if (is_array($vars_out[$new_key])){
+			foreach ($vars_out[$new_key] as $k => $v){
+				$vars_out[$new_key][$k][4] = array_unique(array_merge($vars_out[$new_key][$k][4], $vars_out[$old_key][$k][4]));
+			}
+		}
+
+		unset($out[$old_key]);
+		unset($vars_out[$old_key]);
+	}
+
 
 	$json = pretty_print_json($out);
 	$json_vars = pretty_print_json($vars_out);
