@@ -22,13 +22,13 @@ describe("Skin variations", function(){
 		expect(emoji.replace_colons('a :smile::skin-tone-2: b')).toBe('a '+emoji_span('1f604')+emoji_span('1f3fb')+' b');
 
 		// test all the skin tones with a skin-varying emoji
-		expect(emoji.replace_colons(':ok_woman::skin-tone-1:')).toBe(emoji_span('1f646')+':skin-tone-1:');
-		expect(emoji.replace_colons(':ok_woman::skin-tone-2:')).toBe(emoji_span('1f646-1f3fb'));
-		expect(emoji.replace_colons(':ok_woman::skin-tone-3:')).toBe(emoji_span('1f646-1f3fc'));
-		expect(emoji.replace_colons(':ok_woman::skin-tone-4:')).toBe(emoji_span('1f646-1f3fd'));
-		expect(emoji.replace_colons(':ok_woman::skin-tone-5:')).toBe(emoji_span('1f646-1f3fe'));
-		expect(emoji.replace_colons(':ok_woman::skin-tone-6:')).toBe(emoji_span('1f646-1f3ff'));
-		expect(emoji.replace_colons(':ok_woman::skin-tone-7:')).toBe(emoji_span('1f646')+':skin-tone-7:');
+		expect(emoji.replace_colons(':thumbsup::skin-tone-1:')).toBe(emoji_span('1f44d')+':skin-tone-1:');
+		expect(emoji.replace_colons(':thumbsup::skin-tone-2:')).toBe(emoji_span('1f44d-1f3fb'));
+		expect(emoji.replace_colons(':thumbsup::skin-tone-3:')).toBe(emoji_span('1f44d-1f3fc'));
+		expect(emoji.replace_colons(':thumbsup::skin-tone-4:')).toBe(emoji_span('1f44d-1f3fd'));
+		expect(emoji.replace_colons(':thumbsup::skin-tone-5:')).toBe(emoji_span('1f44d-1f3fe'));
+		expect(emoji.replace_colons(':thumbsup::skin-tone-6:')).toBe(emoji_span('1f44d-1f3ff'));
+		expect(emoji.replace_colons(':thumbsup::skin-tone-7:')).toBe(emoji_span('1f44d')+':skin-tone-7:');
 
 		// test all the skin tones with a non-skin-varying emoji
 		expect(emoji.replace_colons(':zap::skin-tone-1:')).toBe(emoji_span('26a1')+':skin-tone-1:');
@@ -39,23 +39,29 @@ describe("Skin variations", function(){
 		expect(emoji.replace_colons(':zap::skin-tone-6:')).toBe(emoji_span('26a1')+emoji_span('1f3ff'));
 		expect(emoji.replace_colons(':zap::skin-tone-7:')).toBe(emoji_span('26a1')+':skin-tone-7:');
 
+		// test the gender skin tones (inserted in the middle)
+		expect(emoji.replace_colons(':ok_woman::skin-tone-1:')).toBe(emoji_span('1f646-200d-2640-fe0f')+':skin-tone-1:');
+		expect(emoji.replace_colons(':ok_woman::skin-tone-2:')).toBe(emoji_span('1f646-1f3fb-200d-2640-fe0f'));
+		expect(emoji.replace_colons(':ok_woman::skin-tone-3:')).toBe(emoji_span('1f646-1f3fc-200d-2640-fe0f'));
+		expect(emoji.replace_colons(':ok_woman::skin-tone-4:')).toBe(emoji_span('1f646-1f3fd-200d-2640-fe0f'));
+		expect(emoji.replace_colons(':ok_woman::skin-tone-5:')).toBe(emoji_span('1f646-1f3fe-200d-2640-fe0f'));
+		expect(emoji.replace_colons(':ok_woman::skin-tone-6:')).toBe(emoji_span('1f646-1f3ff-200d-2640-fe0f'));
+		expect(emoji.replace_colons(':ok_woman::skin-tone-7:')).toBe(emoji_span('1f646-200d-2640-fe0f')+':skin-tone-7:');
+
 		// multiple skins in a row work correctly
-		expect(emoji.replace_colons(':ok_woman::skin-tone-3::skin-tone-3:')).toBe(emoji_span('1f646-1f3fc')+emoji_span('1f3fc'));
+		expect(emoji.replace_colons(':thumbsup::skin-tone-3::skin-tone-3:')).toBe(emoji_span('1f44d-1f3fc')+emoji_span('1f3fc'));
 		expect(emoji.replace_colons(':zap::skin-tone-3::skin-tone-3:')).toBe(emoji_span('26a1')+emoji_span('1f3fc')+emoji_span('1f3fc'));
 
 		// multiple prefixes in a row work correctly
-		expect(emoji.replace_colons(':ok_woman::ok_woman::skin-tone-5:')).toBe(emoji_span('1f646')+emoji_span('1f646-1f3fe'));
+		expect(emoji.replace_colons(':thumbsup::thumbsup::skin-tone-5:')).toBe(emoji_span('1f44d')+emoji_span('1f44d-1f3fe'));
 
 		// fails as expected if they're not contiguous
-		expect(emoji.replace_colons(':ok_woman: :skin-tone-4:')).toBe(emoji_span('1f646')+' '+emoji_span('1f3fd'));	
+		expect(emoji.replace_colons(':thumbsup: :skin-tone-4:')).toBe(emoji_span('1f44d')+' '+emoji_span('1f3fd'));	
 
 		// test skin tone variation text
 		emoji.include_text = true;
 		expect(emoji.replace_colons('a :+1::skin-tone-2: b')).toBe('a '+emoji_span('1f44d-1f3fb', ':+1::skin-tone-2:')+' b');
 		emoji.include_text = false;
-
-		// test new gender skin tones
-		expect(emoji.replace_colons(':woman-swimming::skin-tone-3:')).toBe(emoji_span('1f3ca-1f3fc-200d-2640-fe0f'));
 	});
 
 	it("replaces unified sequences correctly", function(){
@@ -67,23 +73,25 @@ describe("Skin variations", function(){
 		var skin5	= emoji_unified(0x1f3fe);
 		var skin6	= emoji_unified(0x1f3ff);
 		var skin7	= emoji_unified(0x1f3f2); // also invalid
-		var ok_woman	= emoji_unified(0x1f646);
+		var thumbsup	= emoji_unified(0x1f44d);
 		var zap		= emoji_unified(0x26a1);
+		var ok_woman_start = emoji_unified(0x1f646);
+		var ok_woman_trail = emoji_unified(0x200d) + emoji_unified(0x2640) + emoji_unified(0xfe0f);
 
 		// this emoji has skin tone variations
-		expect(emoji.replace_unified('a '+ok_woman+skin2+' b')).toBe('a '+emoji_span('1f646-1f3fb')+' b');
+		expect(emoji.replace_unified('a '+thumbsup+skin2+' b')).toBe('a '+emoji_span('1f44d-1f3fb')+' b');
 
 		// this one doesn't
 		expect(emoji.replace_unified('a '+zap+skin2+' b')).toBe('a '+emoji_span('26a1')+emoji_span('1f3fb')+' b');
 
 		// test all the skin tones with a skin-varying emoji
-		expect(emoji.replace_unified(ok_woman+skin1)).toBe(emoji_span('1f646')+skin1);
-		expect(emoji.replace_unified(ok_woman+skin2)).toBe(emoji_span('1f646-1f3fb'));
-		expect(emoji.replace_unified(ok_woman+skin3)).toBe(emoji_span('1f646-1f3fc'));
-		expect(emoji.replace_unified(ok_woman+skin4)).toBe(emoji_span('1f646-1f3fd'));
-		expect(emoji.replace_unified(ok_woman+skin5)).toBe(emoji_span('1f646-1f3fe'));
-		expect(emoji.replace_unified(ok_woman+skin6)).toBe(emoji_span('1f646-1f3ff'));
-		expect(emoji.replace_unified(ok_woman+skin7)).toBe(emoji_span('1f646')+skin7);
+		expect(emoji.replace_unified(thumbsup+skin1)).toBe(emoji_span('1f44d')+skin1);
+		expect(emoji.replace_unified(thumbsup+skin2)).toBe(emoji_span('1f44d-1f3fb'));
+		expect(emoji.replace_unified(thumbsup+skin3)).toBe(emoji_span('1f44d-1f3fc'));
+		expect(emoji.replace_unified(thumbsup+skin4)).toBe(emoji_span('1f44d-1f3fd'));
+		expect(emoji.replace_unified(thumbsup+skin5)).toBe(emoji_span('1f44d-1f3fe'));
+		expect(emoji.replace_unified(thumbsup+skin6)).toBe(emoji_span('1f44d-1f3ff'));
+		expect(emoji.replace_unified(thumbsup+skin7)).toBe(emoji_span('1f44d')+skin7);
 
 		// test all the skin tones with a non-skin-varying emoji
 		expect(emoji.replace_unified(zap+skin1)).toBe(emoji_span('26a1')+skin1);
@@ -94,23 +102,22 @@ describe("Skin variations", function(){
 		expect(emoji.replace_unified(zap+skin6)).toBe(emoji_span('26a1')+emoji_span('1f3ff'));
 		expect(emoji.replace_unified(zap+skin7)).toBe(emoji_span('26a1')+skin7);
 
+		// test all the skin tones with a inner-skin-tone modifier
+		expect(emoji.replace_unified(ok_woman_start+skin2+ok_woman_trail)).toBe(emoji_span('1f646-1f3fb-200d-2640-fe0f'));
+		expect(emoji.replace_unified(ok_woman_start+skin3+ok_woman_trail)).toBe(emoji_span('1f646-1f3fc-200d-2640-fe0f'));
+		expect(emoji.replace_unified(ok_woman_start+skin4+ok_woman_trail)).toBe(emoji_span('1f646-1f3fd-200d-2640-fe0f'));
+		expect(emoji.replace_unified(ok_woman_start+skin5+ok_woman_trail)).toBe(emoji_span('1f646-1f3fe-200d-2640-fe0f'));
+		expect(emoji.replace_unified(ok_woman_start+skin6+ok_woman_trail)).toBe(emoji_span('1f646-1f3ff-200d-2640-fe0f'));
+
 		// multiple skins in a row work correctly
-		expect(emoji.replace_unified(ok_woman+skin3+skin3)).toBe(emoji_span('1f646-1f3fc')+emoji_span('1f3fc'));
+		expect(emoji.replace_unified(thumbsup+skin3+skin3)).toBe(emoji_span('1f44d-1f3fc')+emoji_span('1f3fc'));
 		expect(emoji.replace_unified(zap     +skin3+skin3)).toBe(emoji_span('26a1')+emoji_span('1f3fc')+emoji_span('1f3fc'));
 
 		// multiple prefixes in a row work correctly
-		expect(emoji.replace_unified(ok_woman+ok_woman+skin5)).toBe(emoji_span('1f646')+emoji_span('1f646-1f3fe'));
+		expect(emoji.replace_unified(thumbsup+thumbsup+skin5)).toBe(emoji_span('1f44d')+emoji_span('1f44d-1f3fe'));
 
 		// fails as expected if they're not contiguous
-		expect(emoji.replace_unified(ok_woman+' '+skin4)).toBe(emoji_span('1f646')+' '+emoji_span('1f3fd'));
-
-		// test new gender skin tones
-		var woman_swimming_skin3 = emoji_unified(0x1f3ca)	// swimming
-					+ emoji_unified(0x1f3fc)	// skin tone 3
-					+ emoji_unified(0x200d)		// zero-width joiner
-					+ emoji_unified(0x2640)		// woman
-					+ emoji_unified(0xfe0f);	// image-mode
-		expect(emoji.replace_unified(woman_swimming_skin3)).toBe(emoji_span('1f3ca-1f3fc-200d-2640-fe0f'));
+		expect(emoji.replace_unified(thumbsup+' '+skin4)).toBe(emoji_span('1f44d')+' '+emoji_span('1f3fd'));
 	});
 
 });
