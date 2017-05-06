@@ -1,11 +1,8 @@
 {
-  "name": "js-emoji",
+  "name": "emoji-js",
   "version": "3.2.0",
   "description": "A JS Emoji conversion library",
   "main": "lib/emoji.js",
-  "directories": {
-    "test": "test"
-  },
   "files": [
     "LICENSE",
     "README.md",
@@ -26,9 +23,6 @@
     "karma-phantomjs-launcher": "~1.0.0",
     "karma-story-reporter": "^0.3.1",
     "phantomjs-prebuilt": "~2.1.7"
-  },
-  "scripts": {
-    "test": "grunt karma"
   },
   "repository": {
     "type": "git",

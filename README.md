@@ -10,6 +10,11 @@ work on the host computer - either native character codes, a CSS styled span or 
 representation.
 
 
+## Installation
+
+Either clone the git repo, or `npm install emoji-js`
+
+
 ## Usage
 
 ```html
