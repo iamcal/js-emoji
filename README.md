@@ -55,6 +55,12 @@ emoji.removeAliases([
   'cat',
 ]);
 
+// convert colons to unicode
+emoji.init_env(); // else auto-detection will trigger when we first convert
+emoji.replace_mode = 'unified';
+emoji.allow_native = true;
+var output3 = emoji.replace_colons(input);
+
 </script>
 ```
 
