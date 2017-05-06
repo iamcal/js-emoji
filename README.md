@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/iamcal/js-emoji.svg)](https://travis-ci.org/iamcal/js-emoji)
 [![Coverage Status](https://coveralls.io/repos/iamcal/js-emoji/badge.svg)](https://coveralls.io/r/iamcal/js-emoji)
 
-Recent OSX and iOS versions allow display and input of emoji. It's nice to show them on 
+Most macOS and iOS versions allow display and input of emoji. It's nice to show them on 
 other devices too, and the browser is a good place to do it. This library converts emoji
 (either from character codes or colon-sequences like `:smile:`) into something that will
 work on the host computer - either native character codes, a CSS styled span or a text
@@ -74,7 +74,7 @@ To upgrade old code, simply add this line in a global context:
 
 The library is designed to be used with the following flow:
 
-1.  User enters text on an iPhone/iPod, Mac running OSX Lion or Android phone
+1.  User enters text on an iPhone/iPod, Mac running OSX Lion (or later) or Android phone
 2.  Within that text, user enters some emoji
 3.  Data is stored by application, optionally translated to `:colon:` style
 4.  When data is viewed by users on iPhone, Lion Mac or Android phone, emoji appear normally

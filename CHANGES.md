@@ -1,8 +1,8 @@
 # Version History
 
-## 3.2.0 - 2017-??-??
+## 3.2.0 - 2017-05-05
 
-* Updated to emoji-data 2.5.0, with Unicode 9 and Emoji 4 codepoints
+* Updated to emoji-data 2.5.1, with Unicode 9 and Emoji 4 codepoints
 * Support for non-appended skin tone modified, e.g. `:woman-swimming:`
 
 
