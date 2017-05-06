@@ -347,19 +347,11 @@
 		// modifier (used if we can't combine the glyph) and set variation_idx to key of the
 		// variation modifier (used below)
 		var extra = '';
-		var variation_data = [];
+		var var_idx = null;
 		if (typeof variation === 'object'){
 			extra = self.replacement(variation.idx, variation.actual, variation.wrapper);
-			if (self.variations_data[idx] && self.variations_data[idx][variation.idx]){
-				variation_data = self.variations_data[idx][variation.idx];
-			}
+			var_idx = variation.idx;
 		}
-
-
-		// img_set is the set we have chosen to use, while
-		// use_set is the one we'll need to use in single-image mode
-		var img_set = self.img_set;
-		var use_set = self.choose_image_set(img_set, self.data[idx][6]);
 
 		// deal with simple modes (colons and text) first
 		wrapper = wrapper || '';
@@ -378,68 +370,87 @@
 		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
 		// use the variation image. otherwise, return it as a separate image (already calculated in `extra`).
 		// first we set up the params we'll use if we can't use a variation.
-		var img = self.data[idx][7] || self.img_sets[use_set].path+idx+'.png' + self.img_suffix;
+		var img = self.find_image(idx, var_idx);
 		var title = self.include_title ? ' title="'+(actual || self.data[idx][3][0])+'"' : '';
 		var text  = self.include_text  ? wrapper+(actual || self.data[idx][3][0])+wrapper : '';
-		var px = self.data[idx][4];
-		var py = self.data[idx][5];
 
-		// now we'll see if we can use a varition. if we can, we can override the params above and blank
-		// out `extra` so we output a single glyph.
-		// we need to check that:
-		//  * we requested a variation
-		//  * such a variation exists in `emoji.variations_data` (which sets `variation_data` above)
-		//  * we're not using a custom image for self glyph
-		//  * the variation has an image defined for the current image set
-		if (variation_data.length && variation_data[3] && !self.data[idx][7]){
+		// custom image for this glyph?
+		if (self.data[idx][7]){
+			img.path = self.data[idx][7];
+			img.px = null;
+			img.py = null;
+			img.is_var = false;
+		}
 
-			use_set = self.choose_image_set(img_set, variation_data[3]);
-			full_idx = variation_data[0];
-			img = self.img_sets[use_set].path+full_idx+'.png' + self.img_suffix;
-			px = variation_data[1];
-			py = variation_data[2];
+		// if we're displaying a variation, include it in the text and remove the extra
+		if (img.is_var){
 			extra = '';
-
 			// add variation text
 			if (self.include_text && variation && variation.actual && variation.wrapper) {
 				text += variation.wrapper+variation.actual+variation.wrapper;
 			}
 		}
 
+		// output
 		if (self.supports_css) {
-			if (self.use_sheet && px != null && py != null){
+			if (self.use_sheet && img.px != null && img.py != null){
 				var mul = 100 / (self.sheet_size - 1);
-				var style = 'background: url('+self.img_sets[img_set].sheet+');background-position:'+(mul*px)+'% '+(mul*py)+'%;background-size:'+self.sheet_size+'00%';
-				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+' data-codepoints="'+full_idx+'">'+text+'</span></span>'+extra;
+				var style = 'background: url('+img.sheet+');background-position:'+(mul*img.px)+'% '+(mul*img.py)+'%;background-size:'+self.sheet_size+'00%';
+				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+' data-codepoints="'+img.full_idx+'">'+text+'</span></span>'+extra;
 			}else if (self.use_css_imgs){
-				return '<span class="emoji emoji-'+idx+'"'+title+' data-codepoints="'+full_idx+'">'+text+'</span>'+extra;
+				return '<span class="emoji emoji-'+idx+'"'+title+' data-codepoints="'+img.full_idx+'">'+text+'</span>'+extra;
 			}else{
-				return '<span class="emoji emoji-sizer" style="background-image:url('+img+')"'+title+' data-codepoints="'+full_idx+'">'+text+'</span>'+extra;
+				return '<span class="emoji emoji-sizer" style="background-image:url('+img.path+')"'+title+' data-codepoints="'+img.full_idx+'">'+text+'</span>'+extra;
 			}
 		}
-		return '<img src="'+img+'" class="emoji" data-codepoints="'+full_idx+'" '+title+'/>'+extra;
+		return '<img src="'+img.path+'" class="emoji" data-codepoints="'+img.full_idx+'" '+title+'/>'+extra;
 	};
 
-	// Finds the best image set which supports this glyph
+	// Finds the best image to display, taking into account image set precedence and obsoletes
 	/** @private */
-	emoji.prototype.choose_image_set = function(default_set, bit_field){
+	emoji.prototype.find_image = function(idx, var_idx){
 		var self = this;
+
+		// set up some initial state
+		var out = {
+			'path'		: '',
+			'sheet'		: '',
+			'px'		: self.data[idx][4],
+			'py'		: self.data[idx][5],
+			'full_idx'	: idx,
+			'is_var'	: false
+		};
+		var use_mask = self.data[idx][6];
+
+		// can we use a variation?
+		if (var_idx && self.variations_data[idx] && self.variations_data[idx][var_idx]){
+			var var_data = self.variations_data[idx][var_idx];
+
+			out.px = var_data[1];
+			out.py = var_data[2];
+			out.full_idx = var_data[0];
+			out.is_var = true;
+			use_mask = var_data[3];
+		}
 
 		// this matches `build/build_image.php` `in emoji-data`, so that sheet and images modes always
 		// agree about the image to use.
-		var try_order = ['apple', 'emojione', 'google', 'twitter', 'facebook', 'messenger'];
+		var try_order = [self.img_set, 'apple', 'emojione', 'google', 'twitter', 'facebook', 'messenger'];
 
-		if (bit_field & self.img_sets[default_set].mask) return default_set;
-
+		// for each image set, see if we have the image we need. otherwise check for an obsolete in
+		// that image set
 		for (var j=0; j<try_order.length; j++){
-			if (bit_field & self.img_sets[try_order[j]].mask){
-				return try_order[j];
+			if (use_mask & self.img_sets[try_order[j]].mask){
+				out.path = self.img_sets[try_order[j]].path+out.full_idx+'.png' + self.img_suffix;
+				// if we're not changing glyph, use our base set for sheets - it has every glyph
+				out.sheet = self.img_sets[self.img_set].sheet;
+				return out;
 			}
+			
 		}
 
-		return default_set;
+		return out;
 	};
-
 
 	// Initializes the text emoticon data
 	/** @private */
@@ -585,6 +596,8 @@
 	emoji.prototype.emoticons_data = #DATA-TEXT#;
 	/** @private */
 	emoji.prototype.variations_data = #DATA-VARS#;
+	/** @private */
+	emoji.prototype.obsoletes_data = #OBS-MAP#;
 
 
 	// export
