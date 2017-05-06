@@ -18,8 +18,9 @@ function emoji_unified(cp){
 	return String.fromCharCode(h) + String.fromCharCode(l);
 }
 
-function emoji_image_cp_path(cp, path){
-	return '<span class="emoji emoji-sizer" style="background-image:url('+path+cp+'.png)" data-codepoints="'+cp+'"></span>';
+function emoji_image_cp_path(cp, path, img_cp){
+	if (!img_cp) img_cp = cp;
+	return '<span class="emoji emoji-sizer" style="background-image:url('+path+img_cp+'.png)" data-codepoints="'+cp+'"></span>';
 }
 
 function emoji_sheet_cp_path(cp, path, b_pos){
