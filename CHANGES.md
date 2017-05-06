@@ -1,5 +1,10 @@
 # Version History
 
+## 3.2.1 - 2017-??-??
+
+* Fixed the jQuery plugin to work with 2.x - https://github.com/iamcal/js-emoji/issues/74
+
+
 ## 3.2.0 - 2017-05-05
 
 * Updated to emoji-data 2.5.1, with Unicode 9 and Emoji 4 codepoints
