@@ -1,12 +1,3 @@
-function emoji_image_cp_path(cp, path){
-	return '<span class="emoji emoji-sizer" style="background-image:url('+path+cp+'.png)" data-codepoints="'+cp+'"></span>';
-}
-
-function emoji_sheet_cp_path(cp, path, b_pos, b_size){
-	return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="background: url('+path+');background-position:'+b_pos+';background-size:'+b_size
-		+'" data-codepoints="'+cp+'"></span></span>';
-}
-
 describe("Fallbacks", function(){
 
 	var emoji = new EmojiConvertor();
