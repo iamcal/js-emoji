@@ -7,6 +7,20 @@
 
 
 	#
+	# bit masks for various sets
+	#
+
+	$set_masks = array(
+		'apple'		=> 1,
+		'google'	=> 2,
+		'twitter'	=> 4,
+		'emojione'	=> 8,
+		'facebook'	=> 16,
+		'messenger'	=> 32,
+	);
+
+
+	#
 	# build the catalog
 	#
 
@@ -78,6 +92,7 @@
 			}
 		}
 
+
 		unset($out[$old_key]);
 		unset($vars_out[$old_key]);
 	}
@@ -111,11 +126,22 @@
 
 
 	#
+	# format list of sets
+	#
+
+	$sets = array();
+	foreach ($set_masks as $k => $v){
+		$sets[] = "\t\t\t'{$k}' : {'path' : '/emoji-data/img-{$k}-64/', 'sheet' : '/emoji-data/sheet_{$k}_64.png', 'mask' : $v},";
+	}
+	$sets = implode("\n", $sets);
+
+
+	#
 	# output
 	#
 
 	$template = file_get_contents($dir.'/emoji.js.template');
-	echo str_replace(array('#SHEET-SIZE#', '#DATA#', '#DATA-TEXT#', '#DATA-VARS#'), array($sheet_size, $json, $json_text, $json_vars), $template);
+	echo str_replace(array('#SHEET-SIZE#', '#DATA#', '#DATA-TEXT#', '#DATA-VARS#', '#SETS#'), array($sheet_size, $json, $json_text, $json_vars, $sets), $template);
 
 
 	#
@@ -171,11 +197,8 @@
 
 	function calc_img_has($row){
 		$has_imgs_bits = 0;
-		if ($row['has_img_apple']) $has_imgs_bits |= 1;
-		if ($row['has_img_google']) $has_imgs_bits |= 2;
-		if ($row['has_img_twitter']) $has_imgs_bits |= 4;
-		if ($row['has_img_emojione']) $has_imgs_bits |= 8;
-		if ($row['has_img_facebook']) $has_imgs_bits |= 16;
-		if ($row['has_img_messenger']) $has_imgs_bits |= 32;
+		foreach ($GLOBALS['set_masks'] as $k => $v){
+			if ($row['has_img_'.$k]) $has_imgs_bits |= $v;
+		}
 		return $has_imgs_bits;
 	}
