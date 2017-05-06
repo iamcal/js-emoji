@@ -72,7 +72,41 @@
 		}
 
 		if ($row['obsoleted_by']){
-			$obsoletes[$key] = StrToLower($row['obsoleted_by']);
+			$new_key = StrToLower($row['obsoleted_by']);
+			$obsoletes[$key] = $new_key;
+		}
+	}
+
+
+	#
+	# build the obsoletes map
+	#
+	# new_key => [old_key, sheet_x, sheet_y, bit_mask]
+	#
+
+	$obs_map = array();
+
+	foreach ($obsoletes as $old_key => $new_key){
+
+		$obs_map[$new_key] = array(
+			$old_key,
+			$out[$old_key][4],
+			$out[$old_key][5],
+			$out[$old_key][6],
+		);
+
+		if (is_array($vars_out[$old_key])){
+			foreach ($vars_out[$old_key] as $k => $old_row){
+
+				$new_row = $vars_out[$new_key][$k];
+
+				$obs_map[$new_row[0]] = array(
+					$old_row[0],
+					$old_row[1],
+					$old_row[2],
+					$old_row[3],
+				);
+			}
 		}
 	}
 
@@ -101,6 +135,7 @@
 	$json = pretty_print_json($out);
 	$json_vars = pretty_print_json($vars_out);
 	$json_text = pretty_print_json($text_out);
+	$obs_map = pretty_print_json($obs_map);
 
 
 	#
@@ -141,7 +176,17 @@
 	#
 
 	$template = file_get_contents($dir.'/emoji.js.template');
-	echo str_replace(array('#SHEET-SIZE#', '#DATA#', '#DATA-TEXT#', '#DATA-VARS#', '#SETS#'), array($sheet_size, $json, $json_text, $json_vars, $sets), $template);
+
+	$map = array(
+		'#SHEET-SIZE#'	=> $sheet_size,
+		'#DATA#'	=> $json,
+		'#DATA-TEXT#'	=> $json_text,
+		'#DATA-VARS#'	=> $json_vars,
+		'#SETS#'	=> $sets,
+		'#OBS-MAP#'	=> $obs_map,
+	);
+
+	echo str_replace(array_keys($map), array_values($map), $template);
 
 
 	#
