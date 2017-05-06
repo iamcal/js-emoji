@@ -6,6 +6,12 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "CHANGES.md",
+    "lib"
+  ],
   "devDependencies": {
     "grunt": "~1.0.1",
     "grunt-contrib-uglify": "~1.0.1",
