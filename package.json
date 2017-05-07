@@ -1,6 +1,6 @@
 {
   "name": "emoji-js",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "A JS Emoji conversion library",
   "main": "lib/emoji.js",
   "files": [
@@ -9,6 +9,9 @@
     "CHANGES.md",
     "lib"
   ],
+  "dependencies": {
+    "emoji-datasource": "2.5.2"
+  },
   "devDependencies": {
     "grunt": "~1.0.1",
     "grunt-contrib-uglify": "~1.0.1",
