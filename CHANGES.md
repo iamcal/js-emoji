@@ -1,5 +1,10 @@
 # Version History
 
+## 3.2.2 - 2017-05-08
+
+* Updated to emoji-data 3.0.0 to fix npm incompatibility
+
+
 ## 3.2.1 - 2017-05-06
 
 * Fixed the jQuery plugin to work with 2.x - https://github.com/iamcal/js-emoji/issues/74
