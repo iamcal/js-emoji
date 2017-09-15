@@ -85,7 +85,7 @@
 		 * @memberof emoji
 		 * @type bool
 		 */
-		self.wrap_native = true;
+		self.wrap_native = false;
 
 		/**
 		 * Set to true to use CSS sprites instead of individual images on 
@@ -345,7 +345,7 @@
 
 	// Does the actual replacement of a character with the appropriate
 	/** @private */
-	emoji.prototype.replacement = function(idx, actual, wrapper, variation){
+	emoji.prototype.replacement = function(idx, actual, wrapper, variation, is_extra){
 		var self = this;
 
 		var full_idx = idx;
@@ -356,7 +356,7 @@
 		var extra = '';
 		var var_idx = null;
 		if (typeof variation === 'object'){
-			extra = self.replacement(variation.idx, variation.actual, variation.wrapper);
+			extra = self.replacement(variation.idx, variation.actual, variation.wrapper, undefined, true);
 			var_idx = variation.idx;
 		}
 
@@ -369,9 +369,9 @@
 		// native modes next.
 		// for variations selectors, we just need to output them raw, which `extra` will contain.
 		self.init_env();
-		if (self.replace_mode == 'unified'  && self.allow_native && self.data[idx][0][0]) return self.format_native(self.data[idx][0][0]) + extra;
-		if (self.replace_mode == 'softbank' && self.allow_native && self.data[idx][1]   ) return self.format_native(self.data[idx][1]   ) + extra;
-		if (self.replace_mode == 'google'   && self.allow_native && self.data[idx][2]   ) return self.format_native(self.data[idx][2]   ) + extra;
+		if (self.replace_mode == 'unified'  && self.allow_native && self.data[idx][0][0]) return self.format_native(self.data[idx][0][0] + extra, !is_extra);
+		if (self.replace_mode == 'softbank' && self.allow_native && self.data[idx][1]   ) return self.format_native(self.data[idx][1]    + extra, !is_extra);
+		if (self.replace_mode == 'google'   && self.allow_native && self.data[idx][2]   ) return self.format_native(self.data[idx][2]    + extra, !is_extra);
 
 		// finally deal with image modes.
 		// variation selectors are more complex here - if the image set and particular emoji supports variations, then
@@ -415,8 +415,10 @@
 
 	// Wraps the output of a native endpoint, if configured
 	/** @private */
-	emoji.prototype.format_native = function(native){
-		if (self.wrap_native){
+	emoji.prototype.format_native = function(native, allow_wrap){
+		var self = this;
+
+		if (self.wrap_native && allow_wrap){
 			return '<span class="emoji-native">'+ native + '</span>';
 		}
 		return native;
