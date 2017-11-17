@@ -122,7 +122,11 @@
 
 		if (is_array($vars_out[$new_key])){
 			foreach ($vars_out[$new_key] as $k => $v){
-				$vars_out[$new_key][$k][4] = array_unique(array_merge($vars_out[$new_key][$k][4], $vars_out[$old_key][$k][4]));
+				if (!is_array($vars_out[$old_key][$k][4])) {
+					$vars_out[$new_key][$k][4] = $vars_out[$new_key][$k][4];
+				} else {
+					$vars_out[$new_key][$k][4] = array_unique(array_merge($vars_out[$new_key][$k][4], $vars_out[$old_key][$k][4]));
+				}
 			}
 		}
 
