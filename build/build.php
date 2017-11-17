@@ -1,7 +1,9 @@
 <?php
+	$options = getopt("", array("tpl::", "skip-nq"));
 	error_reporting(E_ALL & ~E_NOTICE);
 
 	$dir = dirname(__FILE__);
+	$tpl = $options['tpl'] ? realpath($options['tpl']) : $dir.'/emoji.js.template';
 	$in = file_get_contents($dir.'/emoji-data/emoji.json');
 	$d = json_decode($in, true);
 
@@ -49,7 +51,7 @@
 				$text_out[$txt] = $row['short_name'];
 			}
 		}
-		if ($row['non_qualified']){
+		if (!isset($options['skip-nq']) && $row['non_qualified']){
 			$out[$key][0][] = calc_bytes($row['non_qualified']);
 		}
 		if (count($row['skin_variations'])){
@@ -176,7 +178,7 @@
 	# output
 	#
 
-	$template = file_get_contents($dir.'/emoji.js.template');
+	$template = file_get_contents($tpl);
 
 	$map = array(
 		'#SHEET-SIZE#'	=> $sheet_size,
