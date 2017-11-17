@@ -401,8 +401,12 @@
 		// output
 		if (self.supports_css) {
 			if (self.use_sheet && img.px != null && img.py != null){
-				var mul = 100 / (self.sheet_size - 1);
-				var style = 'background: url('+img.sheet+');background-position:'+(mul*img.px)+'% '+(mul*img.py)+'%;background-size:'+self.sheet_size+'00%';
+				var sheet_size = self.sheet_size * (img.sheet_size+2); // size of image in pixels
+				var sheet_x = 100 * (((img.px * (img.sheet_size+2)) + 1) / (sheet_size - img.sheet_size));
+				var sheet_y = 100 * (((img.py * (img.sheet_size+2)) + 1) / (sheet_size - img.sheet_size));
+				var sheet_sz = 100 * (sheet_size / img.sheet_size);
+
+				var style = 'background: url('+img.sheet+');background-position:'+(sheet_x)+'% '+(sheet_y)+'%;background-size:'+sheet_sz+'% '+sheet_sz+'%';
 				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+' data-codepoints="'+img.full_idx+'">'+text+'</span></span>'+extra;
 			}else if (self.use_css_imgs){
 				return '<span class="emoji emoji-'+idx+'"'+title+' data-codepoints="'+img.full_idx+'">'+text+'</span>'+extra;
@@ -433,6 +437,7 @@
 		var out = {
 			'path'		: '',
 			'sheet'		: '',
+			'sheet_size'	: 0,
 			'px'		: self.data[idx][4],
 			'py'		: self.data[idx][5],
 			'full_idx'	: idx,
@@ -462,6 +467,7 @@
 				out.path = self.img_sets[try_order[j]].path+out.full_idx+'.png' + self.img_suffix;
 				// if we're not changing glyph, use our base set for sheets - it has every glyph
 				out.sheet = self.img_sets[self.img_set].sheet;
+				out.sheet_size = self.img_sets[self.img_set].sheet_size;
 				return out;
 			}
 			if (self.obsoletes_data[out.full_idx]){
@@ -470,6 +476,7 @@
 				if (ob_data[3] & self.img_sets[try_order[j]].mask){
 					out.path = self.img_sets[try_order[j]].path+ob_data[0]+'.png' + self.img_suffix;
 					out.sheet = self.img_sets[try_order[j]].sheet;
+					out.sheet_size = self.img_sets[try_order[j]].sheet_size;
 					out.px = ob_data[1];
 					out.py = ob_data[2];
 					return out;

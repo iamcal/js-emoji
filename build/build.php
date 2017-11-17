@@ -168,7 +168,7 @@
 
 	$sets = array();
 	foreach ($set_masks as $k => $v){
-		$sets[] = "\t\t\t'{$k}' : {'path' : '/emoji-data/img-{$k}-64/', 'sheet' : '/emoji-data/sheet_{$k}_64.png', 'mask' : $v},";
+		$sets[] = "\t\t\t'{$k}' : {'path' : '/emoji-data/img-{$k}-64/', 'sheet' : '/emoji-data/sheet_{$k}_64.png', 'sheet_size' : 64, 'mask' : $v},";
 	}
 	$sets = implode("\n", $sets);
 
