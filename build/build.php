@@ -50,10 +50,8 @@
 				$text_out[$txt] = $row['short_name'];
 			}
 		}
-		if (count($row['variations'])){
-			foreach ($row['variations'] as $var){
-				array_unshift($out[$key][0], calc_bytes($var));
-			}
+		if ($row['non_qualified']){
+			$out[$key][0][] = calc_bytes($row['non_qualified']);
 		}
 		if (count($row['skin_variations'])){
 
@@ -122,7 +120,11 @@
 
 		if (is_array($vars_out[$new_key])){
 			foreach ($vars_out[$new_key] as $k => $v){
-				$vars_out[$new_key][$k][4] = array_unique(array_merge($vars_out[$new_key][$k][4], $vars_out[$old_key][$k][4]));
+				# this might not be defined. in some cases a non-skin-tone
+				# emoji was replaced with a new skin-tone aware version
+				if (is_array($vars_out[$old_key][$k][4])){
+					$vars_out[$new_key][$k][4] = array_unique(array_merge($vars_out[$new_key][$k][4], $vars_out[$old_key][$k][4]));
+				}
 			}
 		}
 
