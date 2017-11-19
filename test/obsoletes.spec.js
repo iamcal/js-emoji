@@ -15,6 +15,9 @@ describe("Obsoletes", function(){
 	emoji.allow_native = false;
 	emoji.avoid_ms_emoji = true;
 
+	var ok_woman_pos	= '63.991520290732886% 34.00969109630527%';
+	var ok_man_pos		= '63.991520290732886% 46.002422774076315%';
+
 	it("converts unified to the new form", function(){
 
 		var swimmer		= emoji_unified(0x1f3ca);
@@ -66,14 +69,16 @@ describe("Obsoletes", function(){
 		emoji.use_sheet = true;
 
 		emoji.img_set = 'apple';
-		expect(emoji.replace_colons(':ok_woman::skin-tone-4:'          )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/a.png', '91.66666666666667% 87.5%'));
-		expect(emoji.replace_colons(':woman-gesturing-ok::skin-tone-4:')).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/a.png', '91.66666666666667% 87.5%'));
-		expect(emoji.replace_colons(':man-gesturing-ok::skin-tone-4:'  )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2642-fe0f', '/a.png', '91.66666666666667% 100%'));
+		expect(emoji.replace_colons(':ok_woman::skin-tone-4:'          )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/a.png', ok_woman_pos));
+		expect(emoji.replace_colons(':woman-gesturing-ok::skin-tone-4:')).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/a.png', ok_woman_pos));
+		expect(emoji.replace_colons(':man-gesturing-ok::skin-tone-4:'  )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2642-fe0f', '/a.png', ok_man_pos));
 
+		// this is not longer a super useful test, since we do fixups at the path level now,
+		// so all obsolete emoji will have images
 		emoji.img_set = 'google';
-		expect(emoji.replace_colons(':ok_woman::skin-tone-4:'          )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g.png', '50% 27.083333333333336%'));
-		expect(emoji.replace_colons(':woman-gesturing-ok::skin-tone-4:')).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g.png', '50% 27.083333333333336%'));
-		expect(emoji.replace_colons(':man-gesturing-ok::skin-tone-4:'  )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2642-fe0f', '/g.png', '91.66666666666667% 100%'));
+		expect(emoji.replace_colons(':ok_woman::skin-tone-4:'          )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g.png', ok_woman_pos));
+		expect(emoji.replace_colons(':woman-gesturing-ok::skin-tone-4:')).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g.png', ok_woman_pos));
+		expect(emoji.replace_colons(':man-gesturing-ok::skin-tone-4:'  )).toBe(emoji_sheet_cp_path('1f646-1f3fd-200d-2642-fe0f', '/g.png', ok_man_pos));
 	});
 
 	it("obsolete fallbacks work correctly (images)", function(){
@@ -87,9 +92,9 @@ describe("Obsoletes", function(){
 		expect(emoji.replace_colons(':man-gesturing-ok::skin-tone-4:'  )).toBe(emoji_image_cp_path('1f646-1f3fd-200d-2642-fe0f', '/a/'));
 
 		emoji.img_set = 'google';
-		expect(emoji.replace_colons(':ok_woman::skin-tone-4:'          )).toBe(emoji_image_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g/', '1f646-1f3fd')); // img path differs from codepoints
-		expect(emoji.replace_colons(':woman-gesturing-ok::skin-tone-4:')).toBe(emoji_image_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g/', '1f646-1f3fd')); // img path differs from codepoints
-		expect(emoji.replace_colons(':man-gesturing-ok::skin-tone-4:'  )).toBe(emoji_image_cp_path('1f646-1f3fd-200d-2642-fe0f', '/a/')); // not in google, so falls back
+		expect(emoji.replace_colons(':ok_woman::skin-tone-4:'                )).toBe(emoji_image_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g/', '1f646-1f3fd-200d-2640-fe0f')); // img path no longer differs from codepoints
+		expect(emoji.replace_colons(':woman-gesturing-ok::skin-tone-4:'      )).toBe(emoji_image_cp_path('1f646-1f3fd-200d-2640-fe0f', '/g/', '1f646-1f3fd-200d-2640-fe0f')); // img path no longer differs from codepoints
+		expect(emoji.replace_colons(':person_in_lotus_position::skin-tone-4:')).toBe(emoji_image_cp_path('1f9d8-1f3fd-200d-2640-fe0f', '/g/', '1f9d8-1f3fd-200d-2640-fe0f'));
 	});
 
 });

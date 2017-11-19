@@ -20,7 +20,7 @@ describe("Correctly supports different modes", function(){
 		emoji.use_sheet = true;
 		emoji.use_css_imgs = false;
 
-		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="background: url(/sheet.png);background-position:0% 87.5%;background-size:4900%" data-codepoints="2601"></span></span>');
+		expect(emoji.replace_colons(':cloud:')).toBe(emoji_sheet_cp_path('2601-fe0f', '/sheet.png', '93.97334948516051% 77.98304058146577%'));
 	});
 
 	it("Uses CSS classes with CSS background-sizing support", function(){
@@ -29,7 +29,7 @@ describe("Correctly supports different modes", function(){
 		emoji.use_sheet = false;
 		emoji.use_css_imgs = true;
 
-		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji emoji-2601" data-codepoints="2601"></span>');
+		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji emoji-2601-fe0f" data-codepoints="2601-fe0f"></span>');
 	});
 
 	it("Uses individual images with CSS background-sizing support", function(){
@@ -38,7 +38,7 @@ describe("Correctly supports different modes", function(){
 		emoji.use_sheet = false;
 		emoji.use_css_imgs = false;
 
-		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji emoji-sizer" style="background-image:url(/2601.png)" data-codepoints="2601"></span>');
+		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji emoji-sizer" style="background-image:url(/2601-fe0f.png)" data-codepoints="2601-fe0f"></span>');
 	});
 
 	it("Uses images without CSS background-sizing support", function(){
@@ -47,7 +47,7 @@ describe("Correctly supports different modes", function(){
 		emoji.use_sheet = false;
 		emoji.use_css_imgs = false;
 
-		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601.png" class="emoji" data-codepoints="2601" />');
+		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601-fe0f.png" class="emoji" data-codepoints="2601-fe0f" />');
 	});
 
 });

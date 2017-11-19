@@ -16,7 +16,10 @@ describe("Unified replacer", function(){
 	it("replaces single codepoints correctly", function(){
 
 		// simple codepoint - cloud
-		expect(emoji.replace_unified(emoji_unified(0x2601))).toBe(emoji_span('2601'));
+		expect(emoji.replace_unified(emoji_unified(0x2601))).toBe(emoji_span('2601-fe0f'));
+
+		expect(emoji.replace_unified(emoji_unified(0x2601)+emoji_unified(0xfe0f))).toBe(emoji_span('2601-fe0f'));
+		// simpe codepoint - fully qualified - cloud
 
 		// surrogate pair - smile
 		expect(emoji.replace_unified(emoji_unified(0x1f604))).toBe(emoji_span('1f604'));
@@ -37,7 +40,7 @@ describe("Unified replacer", function(){
 
 		// key cap 5
 		var cap = emoji_unified(0x20e3);
-		expect(emoji.replace_unified('5'+cap)).toBe(emoji_span('0035-20e3'));
+		expect(emoji.replace_unified('5'+cap)).toBe(emoji_span('0035-fe0f-20e3'));
 
 		// key cap 5 with a space
 		expect(emoji.replace_unified('5 '+cap)).toBe('5 '+cap);
