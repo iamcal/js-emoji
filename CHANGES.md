@@ -1,5 +1,11 @@
 # Version History
 
+## 3.4.0 - 2017-11-19
+
+* Updated to emoji-data 4.0.0, supporting the Emoji 5 standard
+* Support for emoji spritesheets with 1px padding to avoid image bleed
+
+
 ## 3.2.2 - 2017-05-08
 
 * Updated to emoji-data 3.0.0 to fix npm incompatibility
