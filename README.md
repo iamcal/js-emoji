@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/iamcal/js-emoji.svg)](https://travis-ci.org/iamcal/js-emoji)
 [![Coverage Status](https://coveralls.io/repos/iamcal/js-emoji/badge.svg)](https://coveralls.io/r/iamcal/js-emoji)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fiamcal%2Fjs-emoji.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fiamcal%2Fjs-emoji?ref=badge_shield)
 
 Most macOS and iOS versions allow display and input of emoji. It's nice to show them on 
 other devices too, and the browser is a good place to do it. This library converts emoji
@@ -119,3 +120,7 @@ You don't need to worry about this if you translate to colon syntax before stora
 ## Version History
 
 See [CHANGES.md](CHANGES.md)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fiamcal%2Fjs-emoji.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fiamcal%2Fjs-emoji?ref=badge_large)
