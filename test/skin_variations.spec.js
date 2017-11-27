@@ -58,6 +58,9 @@ describe("Skin variations", function(){
 		// fails as expected if they're not contiguous
 		expect(emoji.replace_colons(':thumbsup: :skin-tone-4:')).toBe(emoji_span('1f44d')+' '+emoji_span('1f3fd'));	
 
+		// ZWJ sequence where skin tone is not at the end
+		expect(emoji.replace_colons(':male-farmer::skin-tone-3:')).toBe(emoji_span('1f468-1f3fc-200d-1f33e'));
+
 		// test skin tone variation text
 		emoji.include_text = true;
 		expect(emoji.replace_colons('a :+1::skin-tone-2: b')).toBe('a '+emoji_span('1f44d-1f3fb', ':+1::skin-tone-2:')+' b');
@@ -118,6 +121,16 @@ describe("Skin variations", function(){
 
 		// fails as expected if they're not contiguous
 		expect(emoji.replace_unified(thumbsup+' '+skin4)).toBe(emoji_span('1f44d')+' '+emoji_span('1f3fd'));
+	});
+
+	it("replaces colon sequences correctly with unified codepoints", function(){
+
+		emoji.allow_native = true;
+		emoji.replace_mode = 'unified';
+
+		// ZWJ sequence where skin tone is not at the end
+		expect(emoji.replace_colons(':male-farmer::skin-tone-3:')).toBe(emoji_unified(0x1f468) + emoji_unified(0x1f3fc) + emoji_unified(0x200d) + emoji_unified(0x1f33e));
+
 	});
 
 });
