@@ -1,5 +1,10 @@
 # Version History
 
+## 3.5.0 - 2017-01-03
+
+* Update to emoji-data 4.0.3
+* Update method spritesheet positions are calculated to help alignment, prevent cutoffs, artifacts
+
 ## 3.4.1 - ????-??-??
 
 * Corrected unified output for ZWJ seequences where the skin tone is not the last codepoint - https://github.com/iamcal/js-emoji/issues/101
