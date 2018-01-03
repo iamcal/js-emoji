@@ -24,5 +24,5 @@ function emoji_image_cp_path(cp, path, img_cp){
 }
 
 function emoji_sheet_cp_path(cp, path, b_pos){
-	return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="background: url('+path+');background-position:'+b_pos+';background-size:5259.375% 5259.375%" data-codepoints="'+cp+'"></span></span>';
+	return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="background: url('+path+');background-position:'+b_pos+';background-size:5200% 5200%" data-codepoints="'+cp+'"></span></span>';
 }

@@ -20,7 +20,7 @@ describe("Correctly supports different modes", function(){
 		emoji.use_sheet = true;
 		emoji.use_css_imgs = false;
 
-		expect(emoji.replace_colons(':cloud:')).toBe(emoji_sheet_cp_path('2601-fe0f', '/sheet.png', '93.97334948516051% 77.98304058146577%'));
+		expect(emoji.replace_colons(':cloud:')).toBe(emoji_sheet_cp_path('2601-fe0f', '/sheet.png', '92.15686274509804% 33.333333333333336%'));
 	});
 
 	it("Uses CSS classes with CSS background-sizing support", function(){
