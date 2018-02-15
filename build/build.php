@@ -66,6 +66,10 @@
 					calc_img_has($row2),
 					array(calc_bytes($row2['unified'])),
 				);
+
+				if ($row2['non_qualified']){
+					$vars_out[$key][StrToLower($k2)][4][] = calc_bytes($row2['non_qualified']);
+				}
 			}
 		}
 
