@@ -56,10 +56,13 @@ describe("Skin variations", function(){
 		expect(emoji.replace_colons(':thumbsup::thumbsup::skin-tone-5:')).toBe(emoji_span('1f44d')+emoji_span('1f44d-1f3fe'));
 
 		// fails as expected if they're not contiguous
-		expect(emoji.replace_colons(':thumbsup: :skin-tone-4:')).toBe(emoji_span('1f44d')+' '+emoji_span('1f3fd'));	
+		expect(emoji.replace_colons(':thumbsup: :skin-tone-4:')).toBe(emoji_span('1f44d')+' '+emoji_span('1f3fd'));
 
 		// ZWJ sequence where skin tone is not at the end
 		expect(emoji.replace_colons(':male-farmer::skin-tone-3:')).toBe(emoji_span('1f468-1f3fc-200d-1f33e'));
+
+		// sequence that was broken between v4.0.0 and v4.0.1 oof emoji-data
+		expect(emoji.replace_colons(':point_up::skin-tone-4:')).toBe(emoji_span('261d-1f3fd'));
 
 		// test skin tone variation text
 		emoji.include_text = true;
