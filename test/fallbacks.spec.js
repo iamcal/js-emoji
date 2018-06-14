@@ -44,9 +44,9 @@ describe("Fallbacks", function(){
 
 		emoji.use_sheet = true;
 
-		var obs_turban_pos	= '44.003634161114476% 8.025439127801333%';
-		var man_turban_pos	= '42.00484554815264% 97.97092671108419%';
-		var woman_turban_pos	= '42.00484554815264% 85.97819503331314%';
+		var obs_turban_pos	= '41.181710213776725% 86.25296912114014%';
+		var man_turban_pos	= '41.181710213776725% 74.49524940617577%';
+		var woman_turban_pos	= '41.181710213776725% 62.7375296912114%';
 
 		// only apple, google and twitter have the gendered versions
 		emoji.img_set = 'apple';
