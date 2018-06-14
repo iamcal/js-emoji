@@ -1,8 +1,10 @@
 # Version History
 
-## 3.4.1 - ????-??-??
+## 3.4.1 - 2018-06-14
 
 * Corrected unified output for ZWJ seequences where the skin tone is not the last codepoint - https://github.com/iamcal/js-emoji/issues/101
+* Updated to emoji-data v4.0.4 (containg several fixes)
+
 
 ## 3.4.0 - 2017-11-19
 
