@@ -4,6 +4,7 @@
 
 * Updated to emoji-data 4.1.0
 * Removed EmojiOne at the request of EmojiOne/JoyPixels staff
+* Added support for React Native
 
 ## 3.4.1 - 2018-06-14
 
