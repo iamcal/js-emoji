@@ -88,7 +88,7 @@
 		self.wrap_native = false;
 
 		/**
-		 * Set to true to use CSS sprites instead of individual images on 
+		 * Set to true to use CSS sprites instead of individual images on
 		 * platforms that support it.
 		 *
 		 * @memberof emoji
@@ -466,7 +466,7 @@
 
 		// this matches `build/build_image.php` `in emoji-data`, so that sheet and images modes always
 		// agree about the image to use.
-		var try_order = [self.img_set, 'apple', 'emojione', 'google', 'twitter', 'facebook', 'messenger'];
+		var try_order = [self.img_set, 'apple', 'google', 'twitter', 'facebook', 'messenger'];
 
 		// for each image set, see if we have the image we need. otherwise check for an obsolete in
 		// that image set
@@ -502,13 +502,13 @@
 		if (self.inits.emoticons) return;
 		self.init_colons(); // we require this for the emoticons map
 		self.inits.emoticons = 1;
-		
+
 		var a = [];
 		self.map.emoticons = {};
 		for (var i in self.emoticons_data){
 			// because we never see some characters in our text except as entities, we must do some replacing
 			var emoticon = i.replace(/\&/g, '&amp;').replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
-			
+
 			if (!self.map.colons[self.emoticons_data[i]]) continue;
 
 			self.map.emoticons[emoticon] = self.map.colons[self.emoticons_data[i]];
