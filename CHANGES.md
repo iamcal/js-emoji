@@ -2,7 +2,7 @@
 
 ## 3.5.0 - 2020-01-??
 
-* Updated to emoji-data 4.1.0, supporting Unicode v11.0.0
+* Updated to emoji-data 4.1.0
 * Removed EmojiOne at the request of EmojiOne/JoyPixels staff
 
 ## 3.4.1 - 2018-06-14
