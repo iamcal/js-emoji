@@ -407,10 +407,10 @@
 		// output
 		if (self.supports_css) {
 			if (self.use_sheet && img.px != null && img.py != null){
-				var sheet_size = self.sheet_size * (img.sheet_size+2); // size of image in pixels
-				var sheet_x = 100 * (((img.px * (img.sheet_size+2)) + 1) / (sheet_size - img.sheet_size));
-				var sheet_y = 100 * (((img.py * (img.sheet_size+2)) + 1) / (sheet_size - img.sheet_size));
-				var sheet_sz = 100 * (sheet_size / img.sheet_size);
+				// simplified calculation of `100 * (position * sprite_size) / ( (sheet_size * sprite_size) - sprite_size )`
+				var sheet_x = 100 * img.px / (self.sheet_size - 1);
+				var sheet_y = 100 * img.py / (self.sheet_size - 1);
+				var sheet_sz = 100 * self.sheet_size;
 
 				var style = 'background: url('+img.sheet+');background-position:'+(sheet_x)+'% '+(sheet_y)+'%;background-size:'+sheet_sz+'% '+sheet_sz+'%';
 				return '<span class="emoji-outer emoji-sizer"><span class="emoji-inner" style="'+style+'"'+title+' data-codepoints="'+img.full_idx+'">'+text+'</span></span>'+extra;
