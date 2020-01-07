@@ -8,3 +8,11 @@
 6. Merge PR on GitHub
 7. Add a Git tag
 8. `npm publish`
+
+
+## Build options
+
+`build.php [--tpl=<tpl>] [--skip-nq]`
+
+* `--tpl=<tpl>` - provide a custom template to build from, instead of the default `build/emoji.js.template`
+* `--skip-nq` - skip conversion of non qualified emoji bytes. This avoids matching plain characters like © as an emoji.
