@@ -1,5 +1,10 @@
 # Version History
 
+## 3.5.0 - 2020-01-??
+
+* Updated to emoji-data 4.1.0, supporting Unicode v11.0.0
+* Removed EmojiOne at the request of EmojiOne/JoyPixels staff
+
 ## 3.4.1 - 2018-06-14
 
 * Corrected unified output for ZWJ seequences where the skin tone is not the last codepoint - https://github.com/iamcal/js-emoji/issues/101

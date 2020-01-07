@@ -14,9 +14,8 @@
 		'apple'		=> 1,
 		'google'	=> 2,
 		'twitter'	=> 4,
-		'emojione'	=> 8,
-		'facebook'	=> 16,
-		'messenger'	=> 32,
+		'facebook'	=> 8,
+		'messenger'	=> 16,
 	);
 
 
