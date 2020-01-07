@@ -1,6 +1,6 @@
 # Version History
 
-## 3.5.0 - 2020-01-??
+## 3.5.0 - 2020-01-07
 
 * Updated to emoji-data 4.1.0
 * Removed EmojiOne at the request of EmojiOne/JoyPixels staff
