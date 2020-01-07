@@ -1,5 +1,9 @@
 # Version History
 
+## 3.5.1 - ????-??-??
+
+* Fixed positioning of CSS sprites to avoid blurring & cutoffs
+
 ## 3.5.0 - 2020-01-07
 
 * Updated to emoji-data 4.1.0
