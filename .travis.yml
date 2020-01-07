@@ -1,6 +1,7 @@
 language: node
 node_js:
   - '0.10'
+dist: trusty
 git:
   submodules: false
 before_install:
