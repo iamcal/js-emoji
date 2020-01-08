@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Slack Emoji demo</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=420, user-scalable=no" />
+	<link href="emoji.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<table width="100%"><tr valign="top"><td width="50%">
+
+<textarea id="input" style="width: 100%; height: 600px" onkeyup="go()" onchange="go()">
+*Classic Emoji*
+Point up -> :point_up:
+Point up, dark skin -> :point_up::skin-tone-6:
+
+*New Emoji*
+Avocado -> :avocado:
+Deer -> :deer:
+
+*Gendered Professions*
+Male doctor -> :male-doctor:
+Female doctor -> :female-doctor:
+Female doctor, dark skin -> :female-doctor::skin-tone-6:
+
+*Gendered Gestures*
+OK woman -> :ok_woman:
+OK woman ->  :woman-gesturing-ok:
+OK woman, dark skin -> :ok_woman::skin-tone-6:
+OK woman, dark skin -> :woman-gesturing-ok::skin-tone-6:
+OK man ->  :man-gesturing-ok:
+OK man, dark skin -> :man-gesturing-ok::skin-tone-6:
+
+*No native iOS support*
+UN flag -> :flag-un:
+Eject -> :eject:
+Female sign -> :female_sign:
+Male sign -> :male_sign:
+
+*No native Android support*
+Rainbow flag -> :rainbow-flag:
+Weird eye thing -> :eye-in-speech-bubble:
+Clipperton island flag -> :flag-cp:
+
+</textarea>
+
+</td><td>
+
+<div id="out3" style="width: 100%; min-height: 600px; background-color: #eee; padding: 4px;"></div>
+
+</td></tr></table>
+
+<script src="../lib/emoji.js" type="text/javascript"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
+<script>
+
+var emoji = new EmojiConvertor();
+
+for (var i in emoji.img_sets){
+	emoji.img_sets[i].path = '/js-emoji/build/emoji-data/img-'+i+'-64/';
+	emoji.img_sets[i].sheet = '/js-emoji/build/emoji-data/sheet_'+i+'_64.png';
+}
+
+emoji.use_sheet = true;
+
+emoji.init_env();
+var auto_mode = emoji.replace_mode;
+go();
+
+function go(){
+
+	emoji.img_set = 'apple';
+	emoji.replace_mode = auto_mode;
+	emoji.text_mode = false;
+
+	var text = document.getElementById('input').value;
+	var out = emoji.replace_colons(text);
+
+	out = out.replace(/\n/g,'<br>\n');
+	out = out.replace(/\*(.*?)\*/g, '<b>$1</b>');
+
+	document.getElementById('out3').innerHTML = out;
+}
+
+
+</script>
+
+</body>
+</html>
