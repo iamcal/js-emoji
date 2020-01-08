@@ -47,7 +47,7 @@ the defaults should work well on all platforms. There are two overrides which ig
 other replacement-mode preferences:
 
 * `emoji.text_mode = true` - force text output mode, e.g. `smile` (default `false`)
-* `emoji.colo_mode = true` - force colon output mode, e.g. `:smile:` (default: `false`)
+* `emoji.colons_mode = true` - force colon output mode, e.g. `:smile:` (default: `false`)
 
 After that, the mode is determined automatically by examining the environment and determining
 capabilities. You can introspect the auto-detected mode by checking `emoji.replace_mode`, which
@@ -101,7 +101,7 @@ spritesheets will not work, and some images may be wrong or missing!
 
 If you need to cache-bust your images, you can use the following property:
 
-    emoji..img_suffix = '?foo';
+    emoji.img_suffix = '?foo';
 
 This will cause the generated URLs to have `?foo` appended (default: `''`).
 
