@@ -3,6 +3,7 @@
 ## 3.5.1 - ????-??-??
 
 * Fixed positioning of CSS sprites to avoid blurring & cutoffs
+* Better documentation
 
 ## 3.5.0 - 2020-01-07
 
