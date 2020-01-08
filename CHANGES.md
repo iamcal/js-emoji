@@ -4,6 +4,7 @@
 
 * Fixed positioning of CSS sprites to avoid blurring & cutoffs
 * Better documentation
+* Include `emoji.css` in the NPM package
 
 ## 3.5.0 - 2020-01-07
 
