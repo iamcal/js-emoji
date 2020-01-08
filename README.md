@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/iamcal/js-emoji.svg)](https://travis-ci.org/iamcal/js-emoji)
 [![Coverage Status](https://coveralls.io/repos/iamcal/js-emoji/badge.svg)](https://coveralls.io/r/iamcal/js-emoji)
 
-Most macOS and iOS versions allow display and input of emoji. It's nice to show them on 
-other devices too, and the browser is a good place to do it. This library converts emoji
+Modern computers and phones allow the display and input of emoji, but you often want
+to display them on older devices, or in the browser. This library converts emoji
 (either from character codes or colon-sequences like `:smile:`) into something that will
 work on the host computer - either native character codes, a CSS styled span or a text
 representation.
@@ -30,38 +30,7 @@ var output1 = emoji.replace_unified(input);
 // replaces :smile: with platform appropriate content
 var output2 = emoji.replace_colons(input);
 
-// force text output mode
-emoji.text_mode = true;
-
-// show the short-name as a `title` attribute for css/img emoji
-emoji.include_title = true;
-
-// change the path to your emoji images (requires trailing slash)
-// you can grab the images from the emoji-data link here:
-// https://github.com/iamcal/js-emoji/tree/master/build
-emoji.img_sets.apple.path = 'http://my-cdn.com/emoji-apple-64/';
-emoji.img_sets.apple.sheet = 'http://my-cdn.com/emoji-apple-sheet-64.png';
-
-// Configure this library to use the sheets defined in `img_sets` (see above)
-emoji.use_sheet = true;
-
-// find out the auto-detected mode
-alert(emoji.replace_mode);
-
-// add some aliases of your own - you can override builtins too
-emoji.addAliases({
-  'doge' : '1f415',
-  'cat'  : '1f346'
-});
-
-// remove your custom aliases - this will reset builtins
-emoji.removeAliases([
-  'doge',
-  'cat',
-]);
-
-// convert colons to unicode
-emoji.init_env(); // else auto-detection will trigger when we first convert
+// convert colons explicitly to unicode
 emoji.replace_mode = 'unified';
 emoji.allow_native = true;
 var output3 = emoji.replace_colons(input);
@@ -70,6 +39,90 @@ var output3 = emoji.replace_colons(input);
 ```
 
 You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
+
+## Output control
+
+There are many options to control the format of the replacement, although
+the defaults should work well on all platforms. There are two overrides which ignore all
+other replacement-mode preferences:
+
+* `emoji.text_mode = true` - force text output mode, e.g. `smile` (default `false`)
+* `emoji.colo_mode = true` - force colon output mode, e.g. `:smile:` (default: `false`)
+
+After that, the mode is determined automatically by examining the environment and determining
+capabilities. You can introspect the auto-detected mode by checking `emoji.replace_mode`, which
+can have the following values:
+
+* `native` - Output Unicode code points
+* `softbank` - Output _legacy_ Softbank/iOS code points
+* `google` - Output _legacy_ Android code points
+* `css` - Output HTML images, using `<span>` elements with CSS background images
+* `img` - Output HTML images, using `<img>` elements
+
+You can explicitly override the `emoji.replace_mode` to any of the above values. There are a few
+options which determine how the `emoji.replace_mode` value is used at run-time:
+
+* `emoji.allow_native = true` - Allow output of code points (default: `true`, otherwise falls back to `css` or `img` mode)
+* `emoji.use_sheet = true` - Use spritesheets with CSS positioning, instead of individual images (default: `false`, only applies in `css` mode)
+* `emoji.use_css_imgs = true` - Use individual CSS classes for each emoji, rather than inlining the positioning (default: `false`, only applies in `css` mode, requires the CSS file to be loaded)
+* `emoji.avoid_ms_emoji = true` - For browsers on Windows, don't allow native code points (because they look awful) (default: `true`)
+
+There are also some further options that change the nature of the output under various modes:
+
+* `emoji.wrap_native = true` - Wrap native code points in `<span class="emoji-native"></span>` to allow styling (default: `false`, only applies in `native`, `google` and `softbank` modes)
+* `emoji.include_title = true` - Set the `"title"` property on the `<span>` or `<img>` tag to the short-name, e.g. `:smile:` (default: `false`, only applies in `css` and `img` modes)
+* `emoji.include_text = true` - Set the text inside the `<span>` tag to the short-name, e.g. `:smile:` (default: `false`, only applies in `css` mode)
+
+
+## Images
+
+The library supports using multiple image sets, which can be selected using
+the `emoji.img_set` property. Valid values are:
+
+* `apple` (default)
+* `google`
+* `twitter`
+* `facebook`
+* `messenger`
+
+This value is the used as a lookup in the `emoji.img_sets` property, which defines
+each set. By default, it assumes your images are under the path `/emoji-data/`, but
+you can override these values:
+
+    emoji.img_sets.apple.path = 'http://my-cdn.com/emoji-apple-64/';
+    emoji.img_sets.apple.sheet = 'http://my-cdn.com/emoji-apple-sheet-64.png';
+
+The `.path` property, the directory containing individual images, must end in a trailing slash.
+The `.sheet` property points directly to a spritesheet.
+The images can be found in the emoji-data repository: https://github.com/iamcal/emoji-data
+
+Make sure you use the same version of the images that this library was built with, otherwise 
+spritesheets will not work, and some images may be wrong or missing!
+
+If you need to cache-bust your images, you can use the following property:
+
+    emoji..img_suffix = '?foo';
+
+This will cause the generated URLs to have `?foo` appended (default: `''`).
+
+
+## Further options
+
+If you wish to allow `:SMILE:` to work the same as `:smile:`, you can set `emoji.allow_caps = true` (default: `false`)
+
+You can add your own emoji aliases, even overriding built-in emoji:
+
+    emoji.addAliases({
+      'doge' : '1f415',
+      'cat'  : '1f346'
+    });
+
+You can then remove your custom aliases, which will also reset built-in emoji back to their original state:
+
+    emoji.removeAliases([
+      'doge',
+      'cat',
+    ]);
 
 
 ## Upgrading from 1.x or 2.x
@@ -85,21 +138,22 @@ To upgrade old code, simply add this line in a global context:
 
 The library is designed to be used with the following flow:
 
-1.  User enters text on an iPhone/iPod, Mac running OSX Lion (or later) or Android phone
-2.  Within that text, user enters some emoji
-3.  Data is stored by application, optionally translated to `:colon:` style
-4.  When data is viewed by users on iPhone, Lion Mac or Android phone, emoji appear normally
-5.  When data is viewed on PC, older Mac or Linux, emoji are replaced with inline `<span>` elements with background images or simple images.
+1.  User enters text on a modern device, containing native emoji
+2.  Data is stored by application, optionally translated to `:colon:` style
+3.  When data is viewed by users on iPhone, Mac or Android phone, emoji appear natively
+4.  When data is viewed on older devices, emoji are replaced with inline `<span>` elements with background images or simple images.
 
-While the JS library can replace unified emoji codes (as used by iOS6), it's **much** slower than
-replacing colon sequences. By translating to and storing colon sequences on the backend, you are able to:
+While the JS library can replace native emoji codepoints, it's significantly slower than replacing colon sequences.
+By translating to and storing colon sequences on the backend, you are able to:
 
-* Support Android phones (Google emoji codepoints)
+* Support older Android phones (Google emoji codepoints)
 * Support older iPhones (Softbank emoji codepoints)
-* Allow PC users to enter `:smile:` and have it appear as an emoji everywhere
+* Allow users to enter `:smile:` and have it appear as an emoji everywhere
 
 
 ## Using MySQL for storage
+
+**You don't need to worry about this if you translate to colon syntax before storage.**
 
 Some special care may be needed to store emoji in your database. While some characters (e.g. Cloud, U+2601) are
 within the Basic Multilingual Plane (BMP), others (e.g. Close Umbrella, U+1F302) are not. As such, 
@@ -112,8 +166,6 @@ You can modify a database and table using a statement like:
     ALTER TABLE my_table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 You will also need to modify your connection character set.
-
-You don't need to worry about this if you translate to colon syntax before storage.
 
 
 ## Version History
