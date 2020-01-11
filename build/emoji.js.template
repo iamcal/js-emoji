@@ -551,7 +551,9 @@
 		}
 		for (var i in self.variations_data){
 			// skip simple append-style skin tones
-			if (self.variations_data[i]['1f3fb'][0] == i+'-1f3fb') continue;
+			if (self.variations_data[i]['1f3fb']){
+				if (self.variations_data[i]['1f3fb'][0] == i+'-1f3fb') continue;
+			}
 
 			for (var k in self.variations_data[i]){
 				for (var j=0; j<self.variations_data[i][k][4].length; j++){
