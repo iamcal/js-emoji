@@ -15,7 +15,7 @@ representation.
 Either clone the git repo, or `npm install emoji-js`
 
 
-## Usage
+## Browser Usage
 
 ```html
 <link href="emoji.css" rel="stylesheet" type="text/css" />
@@ -39,6 +39,18 @@ var output3 = emoji.replace_colons(input);
 ```
 
 You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
+
+## Node Usage
+
+After installing the package via `npm install emoji-js`:
+
+```js
+var EmojiConvertor = require('emoji-js');
+
+var emoji = new EmojiConvertor();
+
+console.log(emoji.replace_colons("Hello :smile:"));
+```
 
 ## Output control
 
