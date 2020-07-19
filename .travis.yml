@@ -1,6 +1,6 @@
 language: node
 node_js:
-  - '0.10'
+  - 12
 dist: trusty
 git:
   submodules: false
