@@ -31,7 +31,7 @@ describe("Fallbacks", function(){
 
 	var short_name_a = ':woman-golfing:';
 	var codepoints_a = '1f3cc-fe0f-200d-2640-fe0f';
-	var positions_a = '17.857142857142858% 25%';
+	var positions_a = '17.54385964912281% 7.017543859649122%';
 
 
 	it("falls back correctly with images", function(){
