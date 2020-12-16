@@ -47,7 +47,7 @@
 			$out[$key][] = $row['text'];
 		}
 
-		if (is_array($row['texts']) && count($row['texts'])){
+		if (!empty($row['texts'])){
 			foreach ($row['texts'] as $txt){
 				$text_out[$txt] = $row['short_name'];
 			}
@@ -55,7 +55,7 @@
 		if (!isset($options['skip-nq']) && $row['non_qualified']){
 			$out[$key][0][] = calc_bytes($row['non_qualified']);
 		}
-		if (is_array($row['skin_variations']) && count($row['skin_variations'])){
+		if (!empty($row['skin_variations'])){
 
 			foreach ($row['skin_variations'] as $k2 => $row2){
 
@@ -153,7 +153,7 @@
 		$max = max($max, $row['sheet_x']);
 		$max = max($max, $row['sheet_y']);
 
-		if (is_array($row['skin_variations']) && count($row['skin_variations'])){
+		if (!empty($row['skin_variations'])){
 			foreach ($row['skin_variations'] as $row2){
 				$max = max($max, $row2['sheet_x']);
 				$max = max($max, $row2['sheet_y']);
