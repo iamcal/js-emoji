@@ -65,7 +65,7 @@ After that, the mode is determined automatically by examining the environment an
 capabilities. You can introspect the auto-detected mode by checking `emoji.replace_mode`, which
 can have the following values:
 
-* `native` - Output Unicode code points
+* `unified` - Output Unicode code points
 * `softbank` - Output _legacy_ Softbank/iOS code points
 * `google` - Output _legacy_ Android code points
 * `css` - Output HTML images, using `<span>` elements with CSS background images
@@ -108,7 +108,7 @@ The `.path` property, the directory containing individual images, must end in a 
 The `.sheet` property points directly to a spritesheet.
 The images can be found in the emoji-data repository: https://github.com/iamcal/emoji-data
 
-Make sure you use the same version of the images that this library was built with, otherwise 
+Make sure you use the same version of the images that this library was built with, otherwise
 spritesheets will not work, and some images may be wrong or missing!
 
 If you need to cache-bust your images, you can use the following property:
@@ -168,8 +168,8 @@ By translating to and storing colon sequences on the backend, you are able to:
 **You don't need to worry about this if you translate to colon syntax before storage.**
 
 Some special care may be needed to store emoji in your database. While some characters (e.g. Cloud, U+2601) are
-within the Basic Multilingual Plane (BMP), others (e.g. Close Umbrella, U+1F302) are not. As such, 
-they require 4 bytes of storage to encode each character. Inside MySQL, this requires switching from `utf8` 
+within the Basic Multilingual Plane (BMP), others (e.g. Close Umbrella, U+1F302) are not. As such,
+they require 4 bytes of storage to encode each character. Inside MySQL, this requires switching from `utf8`
 storage to `utf8mb4`.
 
 You can modify a database and table using a statement like:
