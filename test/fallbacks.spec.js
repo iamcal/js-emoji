@@ -5,12 +5,12 @@ describe("Fallbacks", function(){
 	emoji.img_sets.apple.path = '/a/';
 	emoji.img_sets.google.path = '/g/';
 	emoji.img_sets.twitter.path = '/t/';
-	emoji.img_sets.messenger.path = '/m/';
+	emoji.img_sets.facebook.path = '/f/';
 
 	emoji.img_sets.apple.sheet = '/a.png';
 	emoji.img_sets.google.sheet = '/g.png';
 	emoji.img_sets.twitter.sheet = '/t.png';
-	emoji.img_sets.messenger.sheet = '/m.png';
+	emoji.img_sets.facebook.sheet = '/f.png';
 
 	emoji.use_css_imgs = false;
 	emoji.colons_mode = false;
@@ -19,47 +19,51 @@ describe("Fallbacks", function(){
 	emoji.allow_native = false;
 	emoji.avoid_ms_emoji = true;
 
+
+	// this tests uses a special emoji:
+	//
+	// 1F3CC-FE0F-200D-2640-FE0F / woman-golfing
+	//	this emoji has no image for facebook and no obsolete fallback
+	//
+	// these tests used to also check that missing images with an obsolete
+	// fallback would use the images from the obsolete, but no cases like
+	// that currently exist in our supported image sets
+
+	var short_name_a = ':woman-golfing:';
+	var codepoints_a = '1f3cc-fe0f-200d-2640-fe0f';
+	var positions_a = '17.857142857142858% 25%';
+
+
 	it("falls back correctly with images", function(){
 
 		emoji.use_sheet = false;
 
-		// only apple, google and twitter have the gendered versions
+		// apple & google support this emoji
 		emoji.img_set = 'apple';
-		expect(emoji.replace_colons(':man_with_turban:')).toBe(emoji_image_cp_path('1f473-200d-2642-fe0f', '/a/'));
-		expect(emoji.replace_colons(':woman-wearing-turban:')).toBe(emoji_image_cp_path('1f473-200d-2640-fe0f', '/a/'));
+		expect(emoji.replace_colons(short_name_a)).toBe(emoji_image_cp_path(codepoints_a, '/a/'));
 
 		emoji.img_set = 'google';
-		expect(emoji.replace_colons(':man_with_turban:')).toBe(emoji_image_cp_path('1f473-200d-2642-fe0f', '/g/'));
-		expect(emoji.replace_colons(':woman-wearing-turban:')).toBe(emoji_image_cp_path('1f473-200d-2640-fe0f', '/g/'));
+		expect(emoji.replace_colons(short_name_a)).toBe(emoji_image_cp_path(codepoints_a, '/g/'));
 
-		// the first will use the old obsolete CP image path
-		// the second will fallback to apple
-		emoji.img_set = 'messenger';
-		expect(emoji.replace_colons(':man_with_turban:')).toBe(emoji_image_cp_path('1f473-200d-2642-fe0f', '/m/', '1f473'));
-		expect(emoji.replace_colons(':woman-wearing-turban:')).toBe(emoji_image_cp_path('1f473-200d-2640-fe0f', '/a/'));
-
+		// facebook does not, so this will fallback to apple
+		emoji.img_set = 'facebook';
+		expect(emoji.replace_colons(short_name_a)).toBe(emoji_image_cp_path(codepoints_a, '/a/'));
 	});
 
 	it("falls back correctly with sheets", function(){
 
 		emoji.use_sheet = true;
 
-		var obs_turban_pos	=  '41.1764705882353% 86.27450980392157%';
-		var man_turban_pos	=  '41.1764705882353% 74.50980392156863%';
-		var woman_turban_pos = '41.1764705882353% 62.745098039215684%';
-
-		// only apple, google and twitter have the gendered versions
+		// apple & google support this emoji
 		emoji.img_set = 'apple';
-		expect(emoji.replace_colons(':man_with_turban:')).toBe(emoji_sheet_cp_path('1f473-200d-2642-fe0f', '/a.png', man_turban_pos));
-		expect(emoji.replace_colons(':woman-wearing-turban:')).toBe(emoji_sheet_cp_path('1f473-200d-2640-fe0f', '/a.png', woman_turban_pos));
+		expect(emoji.replace_colons(short_name_a)).toBe(emoji_sheet_cp_path(codepoints_a, '/a.png', positions_a));
 
 		emoji.img_set = 'google';
-		expect(emoji.replace_colons(':man_with_turban:')).toBe(emoji_sheet_cp_path('1f473-200d-2642-fe0f', '/g.png', man_turban_pos));
-		expect(emoji.replace_colons(':woman-wearing-turban:')).toBe(emoji_sheet_cp_path('1f473-200d-2640-fe0f', '/g.png', woman_turban_pos));
+		expect(emoji.replace_colons(short_name_a)).toBe(emoji_sheet_cp_path(codepoints_a, '/g.png', positions_a));
 
-		emoji.img_set = 'messenger';
-		expect(emoji.replace_colons(':man_with_turban:')).toBe(emoji_sheet_cp_path('1f473-200d-2642-fe0f', '/m.png', obs_turban_pos));
-		expect(emoji.replace_colons(':woman-wearing-turban:')).toBe(emoji_sheet_cp_path('1f473-200d-2640-fe0f', '/m.png', woman_turban_pos));
+		// facebook does not, but the facebook sheet contains the apple image
+		emoji.img_set = 'facebook';
+		expect(emoji.replace_colons(short_name_a)).toBe(emoji_sheet_cp_path(codepoints_a, '/f.png', positions_a));
 	});
 
 });

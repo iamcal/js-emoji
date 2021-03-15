@@ -1,6 +1,6 @@
 {
   "name": "emoji-js",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "A JS Emoji conversion library",
   "main": "lib/emoji.js",
   "files": [
@@ -10,7 +10,7 @@
     "lib"
   ],
   "dependencies": {
-    "emoji-datasource": "4.1.0"
+    "emoji-datasource": "5.0.0"
   },
   "devDependencies": {
     "grunt": "~1.0.1",
