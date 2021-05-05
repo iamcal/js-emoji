@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches: ['master', 'main']
+  pull_request:
+    branches: ['master', 'main']
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.0
+
+    - run: npm install -g grunt-cli
+    - run: npm install -g bower
+    - run: npm install
+    - run: bower install
+    - run: grunt
+    - run: cp ./coverage/*/lcov.info ./coverage/
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
