@@ -25,7 +25,8 @@
     "karma-jasmine": "~0.3.5",
     "karma-phantomjs-launcher": "~1.0.0",
     "karma-story-reporter": "^0.3.1",
-    "phantomjs-prebuilt": "~2.1.7"
+    "phantomjs-prebuilt": "~2.1.7",
+    "uglify-js": "^3.13.5"
   },
   "repository": {
     "type": "git",
@@ -42,5 +43,12 @@
   "bugs": {
     "url": "https://github.com/iamcal/js-emoji/issues"
   },
-  "homepage": "https://github.com/iamcal/js-emoji"
+  "homepage": "https://github.com/iamcal/js-emoji",
+  "scripts": {
+    "compile": "php build/build.php > lib/emoji.js",
+    "uglify": "echo \"/* $(npm -s run env echo '$npm_package_name') $(date +%Y-%m-%d) */\" > lib/emoji.min.js; ./node_modules/.bin/uglifyjs -c -m -- lib/emoji.js >> lib/emoji.min.js",
+    "test": "./node_modules/.bin/karma start karma.conf.js --single-run --log-level error",
+    "coverage": "./node_modules/.bin/karma start karma-cover.conf.js --single-run --log-level disable",
+    "build": "npm run compile && npm run uglify && npm run test && npm run coverage"
+  }
 }
