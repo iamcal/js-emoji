@@ -25,9 +25,7 @@ jobs:
         php-version: 8.0
 
     - run: npm install -g grunt-cli
-    - run: npm install -g bower
     - run: npm install
-    - run: bower install
     - run: grunt
     - run: cp ./coverage/*/lcov.info ./coverage/
 
