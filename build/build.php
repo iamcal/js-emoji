@@ -70,7 +70,7 @@
 			}
 		}
 
-		if ($row['obsoleted_by']){
+		if (isset($row['obsoleted_by'])){
 			$new_key = StrToLower($row['obsoleted_by']);
 			$obsoletes[$key] = $new_key;
 		}
@@ -94,7 +94,7 @@
 			$out[$old_key][6],
 		);
 
-		if (is_array($vars_out[$old_key])){
+		if (isset($vars_out[$old_key]) && is_array($vars_out[$old_key])){
 			foreach ($vars_out[$old_key] as $k => $old_row){
 
 				$new_row = $vars_out[$new_key][$k];
@@ -119,7 +119,7 @@
 		$out[$new_key][0] = array_unique(array_merge($out[$new_key][0], $out[$old_key][0])); # codepoints
 		$out[$new_key][3] = array_unique(array_merge($out[$new_key][3], $out[$old_key][3])); # shortnames
 
-		if (is_array($vars_out[$new_key])){
+		if (isset($vars_out[$new_key]) && is_array($vars_out[$new_key])){
 			foreach ($vars_out[$new_key] as $k => $v){
 				# this might not be defined. in some cases a non-skin-tone
 				# emoji was replaced with a new skin-tone aware version
