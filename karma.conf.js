@@ -18,11 +18,15 @@ module.exports = function(config) {
     autoWatch: false,
     browsers: ['ChromeHeadless'],
     singleRun: false,
-    concurrency: 1,
     plugins: [
       'karma-jasmine',
       'karma-chrome-launcher',
       'karma-story-reporter',
-    ]
+    ],
+    client: {
+      jasmine: {
+        random: false
+      }
+    }
   })
 }
