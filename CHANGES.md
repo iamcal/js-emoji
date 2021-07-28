@@ -5,6 +5,7 @@
 * Fixed positioning of CSS sprites to avoid blurring & cutoffs
 * Better documentation
 * Include `emoji.css` in the NPM package
+* Support for Mac OS Big Sur user agent matching
 
 ## 3.5.0 - 2020-01-07
 
