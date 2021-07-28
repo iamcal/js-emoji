@@ -1,12 +1,14 @@
 # Version History
 
-## 3.5.1 - ????-??-??
+## 3.6.0 - 2021-07-27
 
 * Updated to Emoji 13.1 (emoji-data v7.0.2)
 * Fixed positioning of CSS sprites to avoid blurring & cutoffs
 * Better documentation
 * Include `emoji.css` in the NPM package
 * Support for Mac OS Big Sur user agent matching
+* This library *does not yet support* multiple skin tones in a single emoji
+* Fixed some emojis being duplicated (see #113)
 
 ## 3.5.0 - 2020-01-07
 
