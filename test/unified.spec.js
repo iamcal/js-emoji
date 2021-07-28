@@ -68,5 +68,24 @@ describe("Unified replacer", function(){
 		expect(emoji.replace_unified(uni)).toBe(spn);
 	});
 
+	it("replaces Emoji 13.1 multi-codepoint ligatures correctly", function(){
+
+		var src = ':man_with_beard::skin-tone-2:';
+		var uni = emoji_unified(0x1f9d4)
+			+ emoji_unified(0x1f3fb)
+			+ emoji_unified(0x200d)
+			+ emoji_unified(0x2642)
+			+ emoji_unified(0xfe0f);
+		var spn = emoji_span('1f9d4-1f3fb-200d-2642-fe0f');
+
+		emoji.allow_native = true;
+		emoji.replace_mode = 'unified';
+		expect(emoji.replace_colons(src)).toBe(uni);
+
+		emoji.allow_native = false;
+		emoji.replace_mode = 'css';
+		expect(emoji.replace_unified(uni)).toBe(spn);
+	});
+
 });
 
