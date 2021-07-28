@@ -40,7 +40,7 @@ var output3 = emoji.replace_colons(input);
 </script>
 ```
 
-You can view a live demo <a href="http://unicodey.com/js-emoji/demo/demo.htm">here</a>.
+You can view a live demo <a href="http://projects.iamcal.com/js-emoji/demo/demo.htm">here</a>.
 
 ## Node Usage
 
