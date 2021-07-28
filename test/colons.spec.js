@@ -43,5 +43,25 @@ describe("Colons replacer", function(){
 		expect(emoji.replace_colons(':ClOuD:')).toBe(emoji_span('2601-fe0f'));
 	});
 
-});
 
+	it("doesn't duplicate certain codepoints", function(){
+
+		// As explained in issue #143, certain shortcodes were
+		// being rendered twice, due to having multiple variant unified
+		// sequences (gender specific plus gender neutral). We should only
+		// ever output the first variation.
+
+		var emoji = new EmojiConvertor();
+
+		emoji.replace_mode = 'unified';
+		emoji.allow_native = true;
+
+		expect(emoji.replace_colons(':man-running::skin-tone-2:')).toBe('\u{1F3C3}\u{1F3FB}\u{200D}\u{2642}\u{FE0F}');
+
+		emoji.colons_mode = true;
+
+		expect(emoji.replace_unified('\u{1F3C3}\u{1F3FB}\u{200D}\u{2642}\u{FE0F}')).toBe(':man-running::skin-tone-2:');
+		expect(emoji.replace_unified('\u{1F3C3}\u{1F3FB}')).toBe(':man-running::skin-tone-2:');
+	});
+
+});

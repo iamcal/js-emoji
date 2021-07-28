@@ -460,7 +460,7 @@
 			out.py = var_data[2];
 			out.full_idx = var_data[0];
 			out.is_var = true;
-			out.unified = var_data[4];
+			out.unified = var_data[4][0];
 			use_mask = var_data[3];
 		}
 
