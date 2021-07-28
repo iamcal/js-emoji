@@ -2,6 +2,7 @@
 
 ## 3.5.1 - ????-??-??
 
+* Updated to Emoji 13.1 (emoji-data v7.0.2)
 * Fixed positioning of CSS sprites to avoid blurring & cutoffs
 * Better documentation
 * Include `emoji.css` in the NPM package
