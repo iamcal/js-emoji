@@ -1,5 +1,9 @@
 # Version History
 
+## 3.6.1 - ????-??-??
+
+* Updated dev dependency versions based on security advisories
+
 ## 3.6.0 - 2021-07-27
 
 * Updated to Emoji 13.1 (emoji-data v7.0.2)
