@@ -1,7 +1,7 @@
 
 describe("Correctly supports different modes", function(){
 
-	//console.log("modes", emoji.inits, emoji.supports_css, emoji.replace_mode);
+	//console.log("modes", emoji.inits, emoji.replace_mode);
 
 	var emoji = new EmojiConvertor();
 
@@ -16,7 +16,6 @@ describe("Correctly supports different modes", function(){
 
 	it("Uses spritesheets with CSS background-sizing support", function(){
 
-		emoji.supports_css = true;
 		emoji.use_sheet = true;
 		emoji.use_css_imgs = false;
 
@@ -25,7 +24,6 @@ describe("Correctly supports different modes", function(){
 
 	it("Uses CSS classes with CSS background-sizing support", function(){
 
-		emoji.supports_css = true;
 		emoji.use_sheet = false;
 		emoji.use_css_imgs = true;
 
@@ -34,21 +32,23 @@ describe("Correctly supports different modes", function(){
 
 	it("Uses individual images with CSS background-sizing support", function(){
 
-		emoji.supports_css = true;
 		emoji.use_sheet = false;
 		emoji.use_css_imgs = false;
 
 		expect(emoji.replace_colons(':cloud:')).toBe('<span class="emoji emoji-sizer" style="background-image:url(/2601-fe0f.png)" data-codepoints="2601-fe0f"></span>');
 	});
 
-	it("Uses images without CSS background-sizing support", function(){
+	it("Allows explicitly overriding the replacement mode", function(){
 
-		emoji.supports_css = false;
-		emoji.use_sheet = false;
-		emoji.use_css_imgs = false;
+		// we have an explicit override test here, because 1) it's in the docs and 2) it was previously broken (for 'img' mode only)
+		var e = new EmojiConvertor();
+		e.img_set = 'apple';
+		e.img_sets.apple.path = '/';
+		e.replace_mode = 'img';
 
-		expect(emoji.replace_colons(':cloud:')).toBe('<img src="/2601-fe0f.png" class="emoji" data-codepoints="2601-fe0f" />');
+		expect(e.replace_colons(':smile:')).toBe('<img src="/1f604.png" class="emoji" data-codepoints="1f604" />');
 	});
+
 
 });
 
