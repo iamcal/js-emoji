@@ -405,7 +405,7 @@
 		}
 
 		// output
-		if (self.supports_css) {
+		if (self.replace_mode == 'css') {
 			if (self.use_sheet && img.px != null && img.py != null){
 				// simplified calculation of `100 * (position * sprite_size) / ( (sheet_size * sprite_size) - sprite_size )`
 				var sheet_x = 100 * img.px / (self.sheet_size - 1);
@@ -578,20 +578,20 @@
 		if (self.inits.env) return;
 		self.inits.env = 1;
 		self.replace_mode = 'img';
-		self.supports_css = false;
+		var supports_css = false;
 		if (typeof(navigator) !== 'undefined') {
 			var ua = navigator.userAgent;
 			if (typeof window !== 'undefined' && window.getComputedStyle){
 				try {
 					var st = window.getComputedStyle(document.body);
 					if (st['background-size'] || st['backgroundSize']){
-						self.supports_css = true;
+						supports_css = true;
 					}
 				} catch(e){
 					// Swallow an exception caused by hidden iFrames on Firefox
 					// https://github.com/iamcal/js-emoji/issues/73
 					if (ua.match(/Firefox/i)){
-						self.supports_css = true;
+						supports_css = true;
 					}
 				}
 			}
@@ -629,8 +629,9 @@
 			self.replace_mode = 'google';
 			return;
 		}
-		if (self.supports_css){
+		if (supports_css){
 			self.replace_mode = 'css';
+			return;
 		}
 		// nothing fancy detected - use images
 	};
