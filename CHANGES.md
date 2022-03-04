@@ -1,8 +1,9 @@
 # Version History
 
-## 3.6.1 - ????-??-??
+## 3.7.0 - 2022-03-04
 
 * Updated dev dependency versions based on security advisories
+* Removed the (undocumented) `.supports_css` prop that was used in tests and was incorrectly stopping `.replace_mode = 'img'` from working - https://github.com/iamcal/js-emoji/issues/152
 
 ## 3.6.0 - 2021-07-27
 
