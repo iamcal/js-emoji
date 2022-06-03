@@ -96,5 +96,12 @@ describe("Emoticons replacer", function(){
 		expect(emoji.replace_emoticons_with_colons('6) six\n8) eight')).toBe('6) six\n8) eight');
 	});
 
+	it("replaces multiple emoticons", function(){
+
+		var e = emoji_span('1f604');
+
+		expect(emoji.replace_emoticons(':D :D :D')).toBe(e+' '+e+' '+e);
+	});
+
 });
 
