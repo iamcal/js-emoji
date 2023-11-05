@@ -601,7 +601,7 @@
 					}
 				}
 			}
-			if (navigator.product.match(/ReactNative/i)){
+			if (/ReactNative/i.test(navigator.product)){
 				self.replace_mode = 'unified';
 				return;
 			}
