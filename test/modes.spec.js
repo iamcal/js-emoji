@@ -6,6 +6,7 @@ describe("Correctly supports different modes", function(){
 	var emoji = new EmojiConvertor();
 
 	emoji.img_set = 'apple';
+	emoji.replace_mode = 'css';
 	emoji.img_sets.apple.path = '/';
 	emoji.img_sets.apple.sheet = '/sheet.png';
 	emoji.colons_mode = false;
@@ -19,7 +20,7 @@ describe("Correctly supports different modes", function(){
 		emoji.use_sheet = true;
 		emoji.use_css_imgs = false;
 
-		expect(emoji.replace_colons(':cloud:')).toBe(emoji_sheet_cp_path('2601-fe0f', '/sheet.png', '93.22033898305085% 76.27118644067797%'));
+		expect(emoji.replace_colons(':cloud:')).toBe(emoji_sheet_cp_path('2601-fe0f', '/sheet.png', '95% 18.333333333333332%'));
 	});
 
 	it("Uses CSS classes with CSS background-sizing support", function(){
