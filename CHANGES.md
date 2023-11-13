@@ -1,7 +1,8 @@
 # Version History
 
-## 3.7.1 - 2022-03-??
+## 3.8.0 - 2023-11-13
 
+* Updated to Emoji 15.0 (emoji-data v15.0.1) - https://github.com/iamcal/js-emoji/pull/177
 * Detect when an invalid value is set for img_set and throw an exception - https://github.com/iamcal/js-emoji/issues/153
 
 ## 3.7.0 - 2022-03-04

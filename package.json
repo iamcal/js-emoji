@@ -1,6 +1,6 @@
 {
   "name": "emoji-js",
-  "version": "3.7.0",
+  "version": "3.8.0",
   "description": "A JS Emoji conversion library",
   "main": "lib/emoji.js",
   "files": [
