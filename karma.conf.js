@@ -7,7 +7,7 @@ module.exports = function(config) {
     files: [
       'test/preamble.js',
       'lib/emoji.min.js',
-      'test/*.js'
+      "test/*.js",
     ],
     exclude: [
     ],

@@ -4,6 +4,7 @@ describe("Unified replacer", function(){
 	var emoji = new EmojiConvertor();
 
 	emoji.img_set = 'apple';
+	emoji.replace_mode = 'css';
 	emoji.img_sets.apple.path = '/';
 	emoji.use_css_imgs = false;
 	emoji.colons_mode = false;

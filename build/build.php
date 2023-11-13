@@ -17,7 +17,6 @@
 		'google'	=> 2,
 		'twitter'	=> 4,
 		'facebook'	=> 8,
-		'messenger'	=> 16,
 	);
 
 

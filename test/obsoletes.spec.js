@@ -8,6 +8,7 @@ describe("Obsoletes", function(){
 	emoji.img_sets.google.path = '/g/';
 	emoji.img_sets.google.sheet = '/g.png';
 
+	emoji.replace_mode = 'css';
 	emoji.use_css_imgs = false;
 	emoji.colons_mode = false;
 	emoji.text_mode = false;
@@ -15,8 +16,8 @@ describe("Obsoletes", function(){
 	emoji.allow_native = false;
 	emoji.avoid_ms_emoji = true;
 
-	var ok_woman_pos	= '57.6271186440678% 42.3728813559322%';
-	var ok_man_pos		= '57.6271186440678% 52.54237288135593%';
+	var ok_woman_pos	= '55% 88.33333333333333%';
+	var ok_man_pos		= '55% 98.33333333333333%';
 
 	it("converts unified to the new form", function(){
 
