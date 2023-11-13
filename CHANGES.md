@@ -1,5 +1,9 @@
 # Version History
 
+## 3.8.1 - ????-??-??
+
+* Avoid error in environments that don't implement `navigator.product` - https://github.com/iamcal/js-emoji/pull/176
+
 ## 3.8.0 - 2023-11-13
 
 * Updated to Emoji 15.0 (emoji-data v15.0.1) - https://github.com/iamcal/js-emoji/pull/177
