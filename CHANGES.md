@@ -3,6 +3,7 @@
 ## 3.8.1 - ????-??-??
 
 * Avoid error in environments that don't implement `navigator.product` - https://github.com/iamcal/js-emoji/pull/176
+* Better support for environment detection in Node21 - https://github.com/iamcal/js-emoji/pull/181
 
 ## 3.8.0 - 2023-11-13
 
