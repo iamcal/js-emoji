@@ -114,6 +114,15 @@
 		 */
 		self.allow_caps = false;
 
+		/**
+		 *
+		 * Avoid "obsoleted" gender-neutral emoji in favor of gendered versions.
+		 *
+		 * @memberof emoji
+		 * @type bool
+		 */
+		self.convert_obsoletes = false;
+
 
 		/**
 		 *
@@ -484,16 +493,18 @@
 				out.sheet_size = self.img_sets[self.img_set].sheet_size;
 				return out;
 			}
-			if (self.obsoletes_data[out.full_idx]){
-				var ob_data = self.obsoletes_data[out.full_idx];
+			if (self.convert_obsoletes){
+				if (self.obsoletes_data[out.full_idx]){
+					var ob_data = self.obsoletes_data[out.full_idx];
 
-				if (ob_data[3] & self.img_sets[try_order[j]].mask){
-					out.path = self.img_sets[try_order[j]].path+ob_data[0]+'.png' + self.img_suffix;
-					out.sheet = self.img_sets[try_order[j]].sheet;
-					out.sheet_size = self.img_sets[try_order[j]].sheet_size;
-					out.px = ob_data[1];
-					out.py = ob_data[2];
-					return out;
+					if (ob_data[3] & self.img_sets[try_order[j]].mask){
+						out.path = self.img_sets[try_order[j]].path+ob_data[0]+'.png' + self.img_suffix;
+						out.sheet = self.img_sets[try_order[j]].sheet;
+						out.sheet_size = self.img_sets[try_order[j]].sheet_size;
+						out.px = ob_data[1];
+						out.py = ob_data[2];
+						return out;
+					}
 				}
 			}
 		}
