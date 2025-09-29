@@ -23,7 +23,13 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_DISABLE,
     autoWatch: false,
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-setuid-sandbox']
+      },
+    },
     singleRun: false,
     plugins: [
       'karma-jasmine',
