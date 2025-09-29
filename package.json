@@ -15,13 +15,13 @@
   "devDependencies": {
     "jasmine-core": "~3.7",
     "karma": "^6.4.1",
-    "karma-chrome-launcher": "^3.1.1",
+    "karma-chrome-launcher": "^3.2.0",
     "karma-coverage": "~2.0",
     "karma-jasmine": "^4.0.2",
     "karma-story-reporter": "^0.3.1",
+    "minimatch": "^3.0.5",
     "puppeteer": "~9.1.1",
-    "uglify-js": "^3.17.4",
-    "minimatch": "^3.0.5"
+    "uglify-js": "^3.17.4"
   },
   "repository": {
     "type": "git",
