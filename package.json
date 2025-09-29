@@ -10,7 +10,8 @@
     "lib"
   ],
   "dependencies": {
-    "emoji-datasource": "15.0.1"
+    "emoji-datasource": "15.0.1",
+    "tar-fs": "^2.1.4"
   },
   "devDependencies": {
     "jasmine-core": "~3.7",
