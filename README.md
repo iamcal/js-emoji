@@ -97,7 +97,6 @@ the `emoji.img_set` property. Valid values are:
 * `google`
 * `twitter`
 * `facebook`
-* `messenger`
 
 This value is used as a lookup in the `emoji.img_sets` property, which defines
 each set. By default, it assumes your images are under the path `/emoji-data/`, but
