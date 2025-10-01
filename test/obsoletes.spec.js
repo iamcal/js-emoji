@@ -16,8 +16,8 @@ describe("Obsoletes", function(){
 	emoji.allow_native = false;
 	emoji.avoid_ms_emoji = true;
 
-	var ok_woman_pos	= '55% 88.33333333333333%';
-	var ok_man_pos		= '55% 98.33333333333333%';
+	var ok_woman_pos	= '55.73770491803279% 29.508196721311474%';
+	var ok_man_pos		= '55.73770491803279% 39.34426229508197%';
 
 	it("converts unified to the new form", function(){
 
