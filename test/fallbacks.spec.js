@@ -23,16 +23,16 @@ describe("Fallbacks", function(){
 
 	// this tests uses a special emoji:
 	//
-	// 1F3CC-FE0F-200D-2640-FE0F / woman-golfing
+	// 1F426-200D-1F525 / PHOENIX
 	//	this emoji has no image for facebook and no obsolete fallback
 	//
 	// these tests used to also check that missing images with an obsolete
 	// fallback would use the images from the obsolete, but no cases like
 	// that currently exist in our supported image sets
 
-	var short_name_a = ':woman-golfing:';
-	var codepoints_a = '1f3cc-fe0f-200d-2640-fe0f';
-	var positions_a = '15% 58.333333333333336%';
+	var short_name_a = ':phoenix:';
+	var codepoints_a = '1f426-200d-1f525';
+	var positions_a = '18.0327868852459% 57.377049180327866%';
 
 
 	it("falls back correctly with images", function(){
