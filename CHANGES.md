@@ -1,6 +1,6 @@
 # Version History
 
-## 3.9.0 - 2025-10-??
+## 3.9.0 - 2025-10-01
 
 * Update to Emoji 16.0 (emoji-data v16.0.0)
 
